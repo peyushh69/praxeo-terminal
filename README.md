@@ -3,7 +3,7 @@
 
 Praxeo Terminal is an elite, End-of-Day (EOD) quantitative analytics dashboard designed for the Indian Stock Market. Built with a minimalist, retro-cyberpunk aesthetic, it strips away market noise to deliver deep, mathematical insights directly to retail traders. 
 
-Live Preview: [Insert Your Vercel Link Here]
+Live Preview: https://praxeo-terminal.vercel.app/
 
 ---
 
