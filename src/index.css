@@ -1,0 +1,119 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'Space Mono', 'JetBrains Mono', monospace;
+    background-color: #000000;
+    color: #f1f5f9;
+    letter-spacing: -0.01em;
+  }
+}
+
+.font-pixel {
+  font-family: 'Press Start 2P', monospace;
+}
+
+.font-silk {
+  font-family: 'Silkscreen', monospace;
+}
+
+.font-pixelify {
+  font-family: 'Pixelify Sans', sans-serif;
+}
+
+.font-vt323 {
+  font-family: 'VT323', monospace;
+}
+
+.font-tech-mono {
+  font-family: 'Space Mono', 'JetBrains Mono', monospace;
+}
+
+/* Deep Pure Black Terminal Praxis Cards */
+.praxis-card {
+  position: relative;
+  background-color: #050507;
+  border: 1px solid #18181f;
+  border-radius: 0.875rem;
+}
+
+.praxis-card-orange {
+  background-color: #ff3b00;
+  color: #000000;
+  border-radius: 0.75rem;
+}
+
+/* Retro Pixel Glows */
+.shadow-pixel-orange {
+  box-shadow: 0 0 20px rgba(255, 59, 0, 0.35);
+}
+
+.shadow-pixel-green {
+  box-shadow: 0 0 16px rgba(190, 242, 100, 0.4);
+}
+
+.shadow-terminal-amber {
+  box-shadow: 0 0 16px rgba(245, 158, 11, 0.25);
+}
+
+.text-pixel-glow {
+  text-shadow: 0 0 8px rgba(255, 59, 0, 0.6);
+}
+
+/* Pixel Dot Beads */
+.dot-bead {
+  width: 14px;
+  height: 14px;
+  border-radius: 9999px;
+  transition: all 0.2s ease;
+}
+
+/* Deep Black Terminal Grid */
+.bg-praxis-grid, .bg-grid-praxis {
+  background-color: #000000;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* Running ticker tape marquee */
+@keyframes tickerMarquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-ticker {
+  display: flex;
+  width: max-content;
+  animation: tickerMarquee 32s linear infinite;
+}
+
+.animate-ticker:hover {
+  animation-play-state: paused;
+}
+
+/* Custom terminal scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #000000;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1e1e24;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #ff3b00;
+}
+
+
