@@ -314,16 +314,6 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
 
         {/* Right: Quick Action Controls */}
         <div className="flex items-center gap-2 flex-wrap">
-          {/* Switch to Breadth Engine */}
-          <button
-            onClick={onNavigateBreadth}
-            id="btn-nav-to-breadth"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#0e0e16] border border-[#222232] hover:border-[#bef264] text-slate-300 hover:text-white font-pixel text-[8px] sm:text-[9px] transition-all cursor-pointer"
-          >
-            <Layers className="w-3.5 h-3.5 text-[#bef264]" />
-            <span>MARKET BREADTH</span>
-          </button>
-
           {/* Guide / Methodology Drawer Trigger */}
           <button
             onClick={() => setShowGuide(!showGuide)}

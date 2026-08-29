@@ -153,14 +153,6 @@ export const MinimalHeader: React.FC<MinimalHeaderProps> = ({
       {/* 2. RUNNING TICKER TAPE (Continuous infinite scroll on high-contrast white background) */}
       <div className="border-b border-slate-200 bg-white overflow-hidden relative text-xs text-slate-900 shadow-sm h-[26px] flex items-center">
         <div className="flex items-center w-full h-full">
-          
-          {/* Market Status Static Indicator on left of ticker (Black background contrast box) */}
-          <div className="hidden sm:flex items-center gap-1.5 pl-3 sm:pl-5 pr-3.5 h-full z-10 bg-black border-r border-black flex-shrink-0">
-            <span className={`w-1.5 h-1.5 rounded-full ${isMarketOpen ? 'bg-emerald-400 animate-pulse' : 'bg-rose-500'}`} />
-            <span className="font-pixel text-[8px] text-white font-bold whitespace-nowrap tracking-wider">
-              {isMarketOpen ? 'NSE LIVE' : 'NSE CLOSED'}
-            </span>
-          </div>
 
           {/* Running Continuous Marquee Ticker */}
           <div className="overflow-hidden whitespace-nowrap flex-1 flex">

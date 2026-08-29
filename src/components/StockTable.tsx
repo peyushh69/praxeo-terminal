@@ -5,7 +5,6 @@ import {
   ArrowUp,
   ArrowDown,
   Download,
-  Terminal,
   Eye,
 } from 'lucide-react';
 import type { StockBreadthItem } from '../types';
@@ -244,20 +243,12 @@ export const StockTable: React.FC<StockTableProps> = ({
       <div className="p-3 sm:p-4 border-b border-[#181826] space-y-3">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <div className="p-1.5 bg-[#ff3b00]/10 border border-[#ff3b00]/30 text-[#ff3b00] rounded-lg">
-              <Terminal className="w-3.5 h-3.5" />
-            </div>
-            <div>
-              <div className="text-[8px] sm:text-[9px] uppercase font-pixel text-[#ff3b00] tracking-wider">
-                CONSTITUENTS // REAL-TIME PERFORMANCE
-              </div>
-              <h3 className="font-pixel text-xs sm:text-sm text-white flex items-center gap-2 mt-0.5">
-                <span>{indexName.toUpperCase()} CONSTITUENTS</span>
-                <span className="text-[9px] px-1.5 py-0.5 border border-[#bef264]/40 bg-[#bef264]/10 text-[#bef264] font-pixel rounded">
-                  {filteredAndSortedStocks.length} OF {stocks.length}
-                </span>
-              </h3>
-            </div>
+            <h3 className="font-pixel text-xs sm:text-sm text-white flex items-center gap-2">
+              <span>{indexName.toUpperCase()} CONSTITUENTS</span>
+              <span className="text-[9px] px-1.5 py-0.5 border border-[#bef264]/40 bg-[#bef264]/10 text-[#bef264] font-pixel rounded">
+                {filteredAndSortedStocks.length} OF {stocks.length}
+              </span>
+            </h3>
           </div>
 
           {/* Search, Sector, and CSV export */}
