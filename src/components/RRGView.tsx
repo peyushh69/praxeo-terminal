@@ -14,6 +14,8 @@ import {
   Layers,
   Sparkles,
   ChevronRight,
+  ChevronDown,
+  ChevronUp,
   CheckSquare,
   Square,
   HelpCircle,
@@ -21,8 +23,88 @@ import {
   Crosshair,
   RefreshCw,
   Zap,
+  Calendar,
+  History,
 } from 'lucide-react';
 import type { RRGResponse, RRGSectorItem, RRGQuadrant } from '../types';
+
+export type RRGTimeframeOption = 'daily' | '1w' | '1m' | '3m' | '6m' | '1y' | '3y' | '5y';
+
+interface TimeframeDef {
+  id: RRGTimeframeOption;
+  label: string;
+  shortLabel: string;
+  badge: string;
+  defaultTrail: number;
+  description: string;
+  trailOptions: number[];
+}
+
+const HISTORICAL_TIMEFRAME_OPTIONS: TimeframeDef[] = [
+  {
+    id: '1w',
+    label: '1 WEEK',
+    shortLabel: '1W',
+    badge: '1W (5P)',
+    defaultTrail: 5,
+    description: 'Weekly short-term relative momentum rotation (5 periods)',
+    trailOptions: [3, 5, 8, 12],
+  },
+  {
+    id: '1m',
+    label: '1 MONTH',
+    shortLabel: '1M',
+    badge: '1M (5P)',
+    defaultTrail: 5,
+    description: '1 Month relative trajectory shift (5 weekly periods)',
+    trailOptions: [3, 5, 8, 12],
+  },
+  {
+    id: '3m',
+    label: '3 MONTHS',
+    shortLabel: '3M',
+    badge: '3M (13P)',
+    defaultTrail: 13,
+    description: 'Quarterly sector cycle lookback (13 weekly periods)',
+    trailOptions: [6, 10, 13, 18],
+  },
+  {
+    id: '6m',
+    label: '6 MONTHS',
+    shortLabel: '6M',
+    badge: '6M (26P)',
+    defaultTrail: 26,
+    description: 'Semi-annual macro trend transition (26 weekly periods)',
+    trailOptions: [12, 18, 26, 36],
+  },
+  {
+    id: '1y',
+    label: '1 YEAR',
+    shortLabel: '1Y',
+    badge: '1Y (52P)',
+    defaultTrail: 52,
+    description: 'Full 1-Year structural rotation cycle (52 weekly periods)',
+    trailOptions: [20, 36, 52, 75],
+  },
+  {
+    id: '3y',
+    label: '3 YEARS',
+    shortLabel: '3Y',
+    badge: '3Y (78P)',
+    defaultTrail: 78,
+    description: '3-Year multi-cycle macro sector leadership trend (78 weekly periods)',
+    trailOptions: [36, 52, 78, 104],
+  },
+  {
+    id: '5y',
+    label: '5 YEARS',
+    shortLabel: '5Y',
+    badge: '5Y (104P)',
+    defaultTrail: 104,
+    description: '5-Year long-term secular bull/bear structural rotation (104 weekly periods)',
+    trailOptions: [52, 78, 104, 156],
+  },
+];
 
 interface RRGViewProps {
   onBackHome: () => void;
@@ -36,7 +118,7 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
   const [error, setError] = useState<string | null>(null);
 
   // Settings & Filters
-  const [timeframe, setTimeframe] = useState<'daily' | 'weekly'>('daily');
+  const [timeframe, setTimeframe] = useState<RRGTimeframeOption>('daily');
   const [trailLength, setTrailLength] = useState<number>(8);
   const [benchmark, setBenchmark] = useState<string>('^NSEI');
   const [selectedQuadrant, setSelectedQuadrant] = useState<'ALL' | RRGQuadrant>('ALL');
@@ -45,6 +127,9 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
   const [showLabels, setShowLabels] = useState<boolean>(true);
   const [showTrails, setShowTrails] = useState<boolean>(true);
   const [showGuide, setShowGuide] = useState<boolean>(false);
+  const [showTimeframeDropdown, setShowTimeframeDropdown] = useState<boolean>(false);
+
+  const timeframeDropdownRef = useRef<HTMLDivElement>(null);
 
   // Interactive Playback Animation
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
@@ -57,6 +142,48 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
   // Tooltip State
   const [hoveredSector, setHoveredSector] = useState<RRGSectorItem | null>(null);
   const [tooltipPos, setTooltipPos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (timeframeDropdownRef.current && !timeframeDropdownRef.current.contains(event.target as Node)) {
+        setShowTimeframeDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Handle switching timeframe with adaptive trail default
+  const handleSelectTimeframe = (newTf: RRGTimeframeOption) => {
+    setTimeframe(newTf);
+    if (newTf === 'daily') {
+      setTrailLength(8);
+    } else {
+      const match = HISTORICAL_TIMEFRAME_OPTIONS.find(opt => opt.id === newTf);
+      if (match) {
+        setTrailLength(match.defaultTrail);
+      }
+    }
+    setPlaybackIndex(null);
+    setIsPlaying(false);
+    setShowTimeframeDropdown(false);
+  };
+
+  // Determine active historical option details
+  const activeHistoricalOption = useMemo(() => {
+    return HISTORICAL_TIMEFRAME_OPTIONS.find(opt => opt.id === timeframe) || HISTORICAL_TIMEFRAME_OPTIONS[0];
+  }, [timeframe]);
+
+  const isHistoricalActive = timeframe !== 'daily';
+
+  // Dynamic trail options based on timeframe
+  const currentTrailOptions = useMemo(() => {
+    if (timeframe === 'daily') {
+      return [5, 8, 12, 16];
+    }
+    return activeHistoricalOption.trailOptions;
+  }, [timeframe, activeHistoricalOption]);
 
   // Fetch RRG data with retry
   const fetchRRGData = async (force = false, retryCount = 2) => {
@@ -519,36 +646,120 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
               </select>
             </div>
 
-            {/* Timeframe */}
-            <div className="flex items-center rounded-lg bg-[#090910] border border-[#202030] p-0.5">
+            {/* Timeframe Selector with Expandable Arrow & Sliding Bar */}
+            <div className="relative flex items-center rounded-lg bg-[#090910] border border-[#202030] p-0.5" ref={timeframeDropdownRef}>
+              {/* Daily Button */}
               <button
-                onClick={() => setTimeframe('daily')}
+                onClick={() => handleSelectTimeframe('daily')}
                 className={`px-2.5 py-1 rounded font-pixel text-[8px] sm:text-[9px] transition-all cursor-pointer ${
                   timeframe === 'daily' ? 'bg-[#ff3b00] text-black font-bold' : 'text-slate-400 hover:text-white'
                 }`}
               >
                 DAILY (1D)
               </button>
+
+              {/* Historical Timeframe Button with Arrow */}
               <button
-                onClick={() => setTimeframe('weekly')}
-                className={`px-2.5 py-1 rounded font-pixel text-[8px] sm:text-[9px] transition-all cursor-pointer ${
-                  timeframe === 'weekly' ? 'bg-[#ff3b00] text-black font-bold' : 'text-slate-400 hover:text-white'
+                onClick={() => setShowTimeframeDropdown(!showTimeframeDropdown)}
+                className={`flex items-center gap-1 px-2.5 py-1 rounded font-pixel text-[8px] sm:text-[9px] transition-all cursor-pointer ${
+                  isHistoricalActive ? 'bg-[#ff3b00] text-black font-bold shadow-sm' : 'text-slate-400 hover:text-white'
                 }`}
+                title="Select historical rotation timeframe (1W, 1M, 3M, 6M, 1Y)"
               >
-                WEEKLY (1W)
+                <span>{activeHistoricalOption.label} ({activeHistoricalOption.shortLabel})</span>
+                {showTimeframeDropdown ? (
+                  <ChevronUp className="w-3 h-3 text-current transition-transform" />
+                ) : (
+                  <ChevronDown className="w-3 h-3 text-current transition-transform" />
+                )}
               </button>
+
+              {/* Expandable Dropdown with Sliding Bar */}
+              {showTimeframeDropdown && (
+                <div className="absolute top-full left-0 mt-1.5 z-50 w-80 bg-[#090914] border-2 border-[#ff3b00] rounded-xl p-3 shadow-2xl space-y-3">
+                  <div className="flex items-center justify-between border-b border-[#1c1c2e] pb-1.5">
+                    <div className="flex items-center gap-1.5">
+                      <History className="w-3.5 h-3.5 text-[#ff3b00]" />
+                      <span className="font-pixel text-[9px] text-white">HISTORICAL LOOKBACK</span>
+                    </div>
+                    <span className="font-mono text-[9px] text-[#bef264] font-bold">
+                      {activeHistoricalOption.shortLabel}
+                    </span>
+                  </div>
+
+                  {/* 1. Quick Select Buttons */}
+                  <div className="grid grid-cols-7 gap-1">
+                    {HISTORICAL_TIMEFRAME_OPTIONS.map((opt) => {
+                      const isSelected = timeframe === opt.id;
+                      return (
+                        <button
+                          key={opt.id}
+                          onClick={() => handleSelectTimeframe(opt.id)}
+                          className={`py-1.5 rounded font-pixel text-[8px] transition-all cursor-pointer text-center ${
+                            isSelected
+                              ? 'bg-[#ff3b00] text-black font-bold ring-1 ring-[#ff3b00]'
+                              : 'bg-[#121220] text-slate-300 hover:text-white hover:bg-[#1a1a2e]'
+                          }`}
+                        >
+                          {opt.shortLabel}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* 2. Interactive Sliding Bar (Slider) */}
+                  <div className="space-y-1.5 bg-[#05050a] border border-[#1a1a28] rounded-lg p-2.5">
+                    <div className="flex justify-between text-[8px] font-pixel text-slate-400">
+                      <span>SLIDING RANGE:</span>
+                      <span className="text-[#ff3b00] font-bold">{activeHistoricalOption.label}</span>
+                    </div>
+                    <input
+                      type="range"
+                      min="0"
+                      max={HISTORICAL_TIMEFRAME_OPTIONS.length - 1}
+                      step="1"
+                      value={HISTORICAL_TIMEFRAME_OPTIONS.findIndex((o) => o.id === (timeframe === 'daily' ? '1w' : timeframe))}
+                      onChange={(e) => {
+                        const idx = parseInt(e.target.value, 10);
+                        const selectedOpt = HISTORICAL_TIMEFRAME_OPTIONS[idx];
+                        if (selectedOpt) {
+                          handleSelectTimeframe(selectedOpt.id);
+                        }
+                      }}
+                      className="w-full accent-[#ff3b00] cursor-pointer"
+                    />
+                    <div className="flex justify-between text-[8px] font-mono text-slate-500 px-0.5">
+                      {HISTORICAL_TIMEFRAME_OPTIONS.map((opt) => (
+                        <span
+                          key={opt.id}
+                          className={`cursor-pointer hover:text-white transition-colors ${timeframe === opt.id ? 'text-[#bef264] font-bold' : ''}`}
+                          onClick={() => handleSelectTimeframe(opt.id)}
+                        >
+                          {opt.shortLabel}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Description */}
+                  <div className="text-[10px] text-slate-400 font-mono leading-tight bg-[#040408] rounded p-1.5 border border-[#141420]">
+                    {activeHistoricalOption.description}
+                  </div>
+                </div>
+              )}
             </div>
 
-            {/* Trail Length */}
+            {/* Adaptive Trail Length */}
             <div className="flex items-center gap-1 bg-[#090910] border border-[#202030] rounded-lg px-2 py-1">
               <span className="text-slate-400 text-[10px] font-pixel">TRAIL:</span>
-              {[5, 8, 12, 16].map((len) => (
+              {currentTrailOptions.map((len) => (
                 <button
                   key={len}
                   onClick={() => setTrailLength(len)}
                   className={`px-1.5 py-0.5 rounded text-[8px] font-pixel cursor-pointer ${
                     trailLength === len ? 'bg-[#bef264] text-black font-bold' : 'text-slate-400 hover:text-white'
                   }`}
+                  title={`${len} Periods Lookback Trail`}
                 >
                   {len}P
                 </button>
@@ -1030,8 +1241,11 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
 
         {/* Playback Progress Slider (When playing or scrubbing) */}
         {data && (
-          <div className="flex items-center gap-3 bg-[#06060c] border border-[#161622] rounded-lg p-2 text-xs">
-            <span className="text-slate-400 font-pixel text-[8px] whitespace-nowrap">TIMELINE SCRUB:</span>
+          <div className="flex flex-wrap items-center gap-3 bg-[#06060c] border border-[#161622] rounded-lg p-2.5 text-xs">
+            <div className="flex items-center gap-1.5 whitespace-nowrap">
+              <History className="w-3.5 h-3.5 text-[#ff3b00]" />
+              <span className="text-slate-400 font-pixel text-[8px]">TIMELINE SCRUB:</span>
+            </div>
             <input
               type="range"
               min="0"
@@ -1041,13 +1255,23 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
                 setIsPlaying(false);
                 setPlaybackIndex(parseInt(e.target.value, 10));
               }}
-              className="flex-1 accent-[#ff3b00] cursor-pointer"
+              className="flex-1 min-w-[140px] accent-[#ff3b00] cursor-pointer"
             />
-            <span className="font-mono text-slate-300 text-[10px] tabular-nums whitespace-nowrap">
-              {playbackIndex !== null
-                ? `Period ${playbackIndex + 1}/${data.sectors[0]?.trail.length || trailLength}`
-                : 'Current (Latest)'}
-            </span>
+            <div className="flex items-center gap-2 whitespace-nowrap">
+              {data.sectors[0]?.trail && (
+                <span className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-[#10101a] border border-[#222234] text-[#bef264] font-mono text-[9px]">
+                  <Calendar className="w-2.5 h-2.5" />
+                  {playbackIndex !== null && data.sectors[0].trail[playbackIndex]
+                    ? data.sectors[0].trail[playbackIndex].date
+                    : data.sectors[0].trail[data.sectors[0].trail.length - 1]?.date || 'Latest'}
+                </span>
+              )}
+              <span className="font-mono text-slate-300 text-[10px] tabular-nums">
+                {playbackIndex !== null
+                  ? `Period ${playbackIndex + 1}/${data.sectors[0]?.trail.length || trailLength}`
+                  : `Current (${data.sectors[0]?.trail.length || trailLength}P)`}
+              </span>
+            </div>
           </div>
         )}
 

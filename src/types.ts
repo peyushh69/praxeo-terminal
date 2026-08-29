@@ -228,7 +228,7 @@ export interface RRGResponse {
     currentPrice: number;
     changePercent: number;
   };
-  timeframe: 'daily' | 'weekly';
+  timeframe: 'daily' | 'weekly' | '1d' | '1w' | '1m' | '3m' | '6m' | '1y' | string;
   trailLength: number;
   sectors: RRGSectorItem[];
   quadrantCounts: {

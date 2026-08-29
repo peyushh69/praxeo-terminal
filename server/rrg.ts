@@ -25,8 +25,9 @@ function timeoutPromise<T>(promise: Promise<T>, ms: number, fallbackValue: T): P
   ]);
 }
 
-async function fetchHistoricalCloses(ticker: string, timeframe: 'daily' | 'weekly' = 'daily'): Promise<RawCandleData | null> {
-  const cacheKey = `${ticker}_${timeframe}`;
+async function fetchHistoricalCloses(ticker: string, isWeekly = false): Promise<RawCandleData | null> {
+  const timeframeKey = isWeekly ? 'weekly' : 'daily';
+  const cacheKey = `${ticker}_${timeframeKey}`;
   const cached = rrgSymbolCache.get(cacheKey);
   if (cached && Date.now() - cached.timestamp < SYMBOL_CACHE_TTL) {
     return cached.data;
@@ -34,14 +35,15 @@ async function fetchHistoricalCloses(ticker: string, timeframe: 'daily' | 'weekl
 
   // 1. Try yahoo-finance2 client
   try {
-    const oneYearAgo = new Date();
-    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
-    const period1 = oneYearAgo.toISOString().split('T')[0];
+    const lookbackYears = isWeekly ? 2 : 1;
+    const pastDate = new Date();
+    pastDate.setFullYear(pastDate.getFullYear() - lookbackYears);
+    const period1 = pastDate.toISOString().split('T')[0];
 
     const chartRes: any = await timeoutPromise(
       yfClient.chart(ticker, {
         period1,
-        interval: timeframe === 'weekly' ? '1wk' : '1d',
+        interval: isWeekly ? '1wk' : '1d',
       }),
       3500,
       null
@@ -91,8 +93,9 @@ async function fetchHistoricalCloses(ticker: string, timeframe: 'daily' | 'weekl
 
   // 2. Secondary fallback via direct endpoint
   try {
-    const interval = timeframe === 'weekly' ? '1wk' : '1d';
-    const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(ticker)}?range=6mo&interval=${interval}&includePrePost=false`;
+    const interval = isWeekly ? '1wk' : '1d';
+    const range = isWeekly ? '2y' : '1y';
+    const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(ticker)}?range=${range}&interval=${interval}&includePrePost=false`;
     const response: any = await timeoutPromise(
       axios.get(url, {
         headers: {
@@ -124,7 +127,7 @@ async function fetchHistoricalCloses(ticker: string, timeframe: 'daily' | 'weekl
       }
     }
 
-    if (validCloses.length < 20) return null;
+    if (validCloses.length < 15) return null;
 
     const meta = result.meta || {};
     const currentPrice = meta.regularMarketPrice || validCloses[validCloses.length - 1];
@@ -212,11 +215,40 @@ function generateFallbackSectorSeries(sectorId: string, benchCloses: number[]): 
 
 export async function computeRRG(
   benchmarkTicker = '^NSEI',
-  timeframe: 'daily' | 'weekly' = 'daily',
-  trailLength = 8,
+  timeframe = 'daily',
+  trailLength?: number,
   forceRefresh = false
 ): Promise<RRGResponse> {
-  const cacheKey = `${benchmarkTicker}_${timeframe}_${trailLength}`;
+  const normTf = timeframe.toLowerCase();
+  const isWeekly = normTf === 'weekly' || normTf === '1w' || normTf === '1m' || normTf === '3m' || normTf === '6m' || normTf === '1y';
+
+  // Determine standard trail length based on requested historical range if not explicitly overridden
+  let effectiveTrail = trailLength;
+  if (!effectiveTrail || isNaN(effectiveTrail) || effectiveTrail <= 0) {
+    switch (normTf) {
+      case '1w':
+      case 'weekly':
+        effectiveTrail = 5;
+        break;
+      case '1m':
+        effectiveTrail = 5;
+        break;
+      case '3m':
+        effectiveTrail = 13;
+        break;
+      case '6m':
+        effectiveTrail = 26;
+        break;
+      case '1y':
+        effectiveTrail = 52;
+        break;
+      default:
+        effectiveTrail = 8;
+        break;
+    }
+  }
+
+  const cacheKey = `${benchmarkTicker}_${normTf}_${effectiveTrail}`;
   const now = Date.now();
 
   if (!forceRefresh && cachedRRG && cachedRRG.key === cacheKey && now - cachedRRG.timestamp < CACHE_TTL_MS) {
@@ -224,21 +256,26 @@ export async function computeRRG(
   }
 
   // 1. Fetch Benchmark (Default: NIFTY 50)
-  let benchData = await fetchHistoricalCloses(benchmarkTicker, timeframe);
-  if (!benchData || benchData.closes.length < 30) {
+  let benchData = await fetchHistoricalCloses(benchmarkTicker, isWeekly);
+  if (!benchData || benchData.closes.length < 25) {
     // Synthetic fallback benchmark series
     const dates: string[] = [];
     const closes: number[] = [];
     let price = 24100;
+    const count = isWeekly ? 104 : 260;
     const baseDate = new Date();
-    baseDate.setDate(baseDate.getDate() - 120);
+    baseDate.setDate(baseDate.getDate() - (isWeekly ? 730 : 365));
 
-    for (let i = 0; i < 120; i++) {
+    for (let i = 0; i < count; i++) {
       const d = new Date(baseDate);
-      d.setDate(d.getDate() + i);
-      if (d.getDay() !== 0 && d.getDay() !== 6) {
+      if (isWeekly) {
+        d.setDate(d.getDate() + i * 7);
+      } else {
+        d.setDate(d.getDate() + i);
+      }
+      if (isWeekly || (d.getDay() !== 0 && d.getDay() !== 6)) {
         dates.push(d.toISOString().split('T')[0]);
-        price += (Math.random() - 0.48) * 140;
+        price += (Math.random() - 0.48) * (isWeekly ? 250 : 120);
         closes.push(price);
       }
     }
@@ -259,8 +296,8 @@ export async function computeRRG(
 
   // 3. Fetch data for all sectors in parallel
   const sectorDataPromises = targetSectors.map(async (sec) => {
-    let data = await fetchHistoricalCloses(sec.ticker, timeframe);
-    if (!data || data.closes.length < 30) {
+    let data = await fetchHistoricalCloses(sec.ticker, isWeekly);
+    if (!data || data.closes.length < 25) {
       const syntheticCloses = generateFallbackSectorSeries(sec.id, benchCloses);
       data = {
         dates: benchDates,
@@ -281,7 +318,7 @@ export async function computeRRG(
     const { sector, data } = item;
     const sCloses = data.closes;
     const commonLength = Math.min(N, sCloses.length);
-    if (commonLength < 25) continue;
+    if (commonLength < 15) continue;
 
     // Align series
     const bSlice = benchCloses.slice(N - commonLength);
@@ -295,9 +332,13 @@ export async function computeRRG(
     }
 
     // 2. RS-Ratio calculation (10 EMA trend comparison normalized to 100)
-    const rsEmaFast = computeEMA(rsRaw, 10);
-    const rsEmaSlow = computeEMA(rsRaw, 26);
-    const rsStd = computeRollingStdDev(rsRaw, 14);
+    const fastPeriod = isWeekly ? 8 : 10;
+    const slowPeriod = isWeekly ? 18 : 26;
+    const stdPeriod = isWeekly ? 10 : 14;
+
+    const rsEmaFast = computeEMA(rsRaw, fastPeriod);
+    const rsEmaSlow = computeEMA(rsRaw, slowPeriod);
+    const rsStd = computeRollingStdDev(rsRaw, stdPeriod);
 
     const rsRatioSeries: number[] = [];
     for (let i = 0; i < commonLength; i++) {
@@ -311,21 +352,21 @@ export async function computeRRG(
     }
 
     // 3. RS-Momentum calculation (Rate of change of RS-Ratio centered at 100)
-    const ratioEma = computeEMA(rsRatioSeries, 5);
-    const ratioStd = computeRollingStdDev(rsRatioSeries, 10);
+    const ratioEma = computeEMA(rsRatioSeries, isWeekly ? 4 : 5);
+    const ratioStd = computeRollingStdDev(rsRatioSeries, isWeekly ? 8 : 10);
 
     const rsMomentumSeries: number[] = [];
     for (let i = 0; i < commonLength; i++) {
       const momDeviation = (rsRatioSeries[i] - ratioEma[i]) / ratioStd[i];
-      // 5-period ROC
+      // 4-period ROC
       const roc = i >= 4 ? (rsRatioSeries[i] - rsRatioSeries[i - 4]) : 0;
       const momScore = 100 + (momDeviation * 2.0 + roc * 0.8);
       const clampedMom = Math.max(92, Math.min(108, Number(momScore.toFixed(2))));
       rsMomentumSeries.push(clampedMom);
     }
 
-    // 4. Extract Trail Data (Last `trailLength` periods)
-    const trailSliceLength = Math.min(trailLength, commonLength);
+    // 4. Extract Trail Data (Last `effectiveTrail` periods)
+    const trailSliceLength = Math.min(effectiveTrail, commonLength);
     const trail: RRGDataPoint[] = [];
 
     const startIndex = commonLength - trailSliceLength;
@@ -397,8 +438,8 @@ export async function computeRRG(
       currentPrice: benchData.currentPrice,
       changePercent: benchChg,
     },
-    timeframe,
-    trailLength,
+    timeframe: normTf as any,
+    trailLength: effectiveTrail,
     sectors: processedSectors,
     quadrantCounts,
     lastUpdated: new Date().toISOString(),

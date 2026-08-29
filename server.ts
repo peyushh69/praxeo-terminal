@@ -31,8 +31,8 @@ async function startServer() {
   app.get('/api/rrg', async (req, res) => {
     try {
       const benchmark = (req.query.benchmark as string) || '^NSEI';
-      const timeframe = (req.query.timeframe as 'daily' | 'weekly') || 'daily';
-      const trailLength = parseInt(req.query.trail as string, 10) || 8;
+      const timeframe = (req.query.timeframe as string) || 'daily';
+      const trailLength = req.query.trail ? parseInt(req.query.trail as string, 10) : undefined;
       const forceRefresh = req.query.refresh === 'true';
 
       const data = await computeRRG(benchmark, timeframe, trailLength, forceRefresh);
