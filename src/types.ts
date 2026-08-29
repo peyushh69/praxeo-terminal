@@ -239,3 +239,19 @@ export interface RRGResponse {
   };
   lastUpdated: string;
 }
+
+export interface MarketNewsItem {
+  id: string;
+  title: string;
+  link: string;
+  source: string;
+  sourceCode: string;
+  pubDate: string;
+  timeAgo: string;
+  relatedStock?: {
+    name: string;
+    ticker: string;
+  };
+  sentiment?: 'BULLISH' | 'BEARISH' | 'NEUTRAL';
+  category: 'MARKET' | 'ECONOMY' | 'CORPORATE' | 'COMMODITY' | 'GLOBAL';
+}

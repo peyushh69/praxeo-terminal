@@ -3,6 +3,7 @@ import path from 'path';
 import { createServer as createViteServer } from 'vite';
 import { fetchMarketBreadth, fetchMarketTickers } from './server/yahoo.js';
 import { computeRRG } from './server/rrg.js';
+import { fetchLiveMarketNews } from './server/news.js';
 import { SECTORAL_INDICES } from './src/data/sectoralIndices.js';
 
 async function startServer() {
@@ -40,6 +41,18 @@ async function startServer() {
     } catch (error: any) {
       console.error('Error in /api/rrg:', error);
       res.status(500).json({ success: false, error: error.message || 'Failed to compute Relative Rotation Graph' });
+    }
+  });
+
+  // Real-time market news feed (Google News + Financial RSS Feeds)
+  app.get('/api/news', async (req, res) => {
+    try {
+      const forceRefresh = req.query.refresh === 'true';
+      const news = await fetchLiveMarketNews(forceRefresh);
+      res.json({ success: true, data: news, count: news.length });
+    } catch (error: any) {
+      console.error('Error in /api/news:', error);
+      res.status(500).json({ success: false, error: error.message || 'Failed to fetch live market news' });
     }
   });
 

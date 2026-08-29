@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowRight, Compass, Layers, Quote } from 'lucide-react';
+import { ArrowRight, Compass, Layers, Quote, Sparkles } from 'lucide-react';
+import { LiveMarketNewsTerminal } from './LiveMarketNewsTerminal';
 
 interface Level1HomepageProps {
   onEnterBreadth: () => void;
@@ -114,54 +115,59 @@ export const Level1Homepage: React.FC<Level1HomepageProps> = ({ onEnterBreadth, 
     }
   }, []);
 
-  const handleNextQuote = () => {
-    const next = (quoteIndex + 1) % MARKET_QUOTES.length;
-    setQuoteIndex(next);
-    try {
-      localStorage.setItem('praxeo_quote_index', next.toString());
-    } catch {
-      // ignore
-    }
-  };
-
   const currentQuote = MARKET_QUOTES[quoteIndex] || MARKET_QUOTES[0];
 
   return (
-    <div className="min-h-[calc(100vh-80px)] bg-[#000000] flex flex-col items-center justify-center px-4 py-10 select-none relative font-mono">
+    <div className="min-h-[calc(100vh-80px)] bg-[#000000] flex flex-col justify-start px-3 sm:px-6 lg:px-8 py-6 select-none relative font-mono">
       
-      {/* Container */}
-      <div className="relative z-10 max-w-xl w-full flex flex-col items-center text-center space-y-6">
-        
-        {/* Dynamic Market Quote (Open layout, matching website typography with side neon green quote sign) */}
-        <div className="max-w-xl mx-auto py-1 flex items-start gap-3 text-left">
-          <Quote className="w-4 h-4 text-[#bef264] shrink-0 mt-1 opacity-90" />
-          <div className="space-y-1.5 flex-1">
-            <p className="text-white text-sm sm:text-base font-mono font-medium tracking-normal leading-relaxed">
+      {/* 1. TOP CENTER QUOTE SECTION (Prominently centered at the top) */}
+      <div className="w-full max-w-6xl mx-auto mb-6 text-center">
+        <div className="inline-flex items-start sm:items-center gap-3 bg-[#07070e] border border-[#222238] hover:border-[#bef264]/60 rounded-xl px-5 py-3 shadow-lg max-w-3xl mx-auto text-left transition-all">
+          <Quote className="w-5 h-5 text-[#bef264] shrink-0 mt-0.5 sm:mt-0 opacity-90" />
+          <div className="space-y-1 flex-1">
+            <p className="text-white text-xs sm:text-sm md:text-base font-mono font-medium tracking-normal leading-relaxed">
               &ldquo;{currentQuote.quote}&rdquo;
             </p>
-            <p className="text-slate-400 text-xs font-mono tracking-wide">
-              — {currentQuote.author}
-            </p>
+            <div className="flex items-center justify-between text-slate-400 text-[10px] sm:text-xs font-mono">
+              <span className="text-[#bef264] font-medium">— {currentQuote.author}</span>
+              <span className="text-[9px] text-slate-600 font-pixel">#DAILY INSIGHT</span>
+            </div>
           </div>
         </div>
+      </div>
 
-        {/* 2 Focused Indicator Launch Cards */}
-        <div className="w-full space-y-4 pt-1">
+      {/* 2. MAIN 2-COLUMN SPLIT DASHBOARD */}
+      <div className="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        
+        {/* LEFT COLUMN: 2 Primary Launch Cards (Market Breadth & Rotation Matrix) */}
+        <div className="lg:col-span-5 flex flex-col space-y-4">
           
-          {/* INDICATOR 01: MARKET BREADTH */}
-          <div className="w-full bg-[#050508] border border-[#ff3b00]/40 hover:border-[#ff3b00] rounded-xl p-5 text-left space-y-4 transition-all duration-150">
+          <div className="flex items-center justify-between px-1">
+            <span className="font-pixel text-[10px] text-[#ff8800] tracking-wider">
+              PRIMARY SUITE MODULES
+            </span>
+            <span className="text-slate-500 font-mono text-[10px]">
+              2 ACTIVE ENGINES
+            </span>
+          </div>
+
+          {/* OPTION 01: MARKET BREADTH */}
+          <div className="w-full bg-[#050508] border-2 border-[#ff3b00]/50 hover:border-[#ff3b00] rounded-xl p-5 text-left space-y-4 transition-all duration-150 shadow-lg group">
             <div className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-lg bg-[#ff3b00]/10 border border-[#ff3b00]/30 flex items-center justify-center shrink-0">
-                  <Layers className="w-4 h-4 text-[#ff3b00]" />
+                <div className="w-10 h-10 rounded-lg bg-[#ff3b00]/10 border border-[#ff3b00]/40 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                  <Layers className="w-5 h-5 text-[#ff3b00]" />
                 </div>
                 <div>
-                  <h2 className="font-pixel text-sm sm:text-base text-white">
+                  <h2 className="font-pixel text-sm sm:text-base text-white tracking-wide">
                     MARKET BREADTH
                   </h2>
+                  <p className="text-[10px] text-slate-400 font-mono">
+                    Advance/Decline & 52-Week Multi-Sector Health
+                  </p>
                 </div>
               </div>
-              <span className="px-2 py-0.5 rounded text-[8px] font-pixel bg-[#160808] text-[#ff3b00] border border-[#ff3b00]/30">
+              <span className="px-2 py-0.5 rounded text-[8px] font-pixel bg-[#160808] text-[#ff3b00] border border-[#ff3b00]/40">
                 15 SECTORS
               </span>
             </div>
@@ -169,27 +175,30 @@ export const Level1Homepage: React.FC<Level1HomepageProps> = ({ onEnterBreadth, 
             <button
               id="btn-market-breadth-launch"
               onClick={onEnterBreadth}
-              className="w-full py-3 bg-[#ff3b00] hover:bg-[#ff4d14] text-black font-pixel text-xs tracking-wider rounded-lg transition-all flex items-center justify-center gap-2 cursor-pointer font-bold"
+              className="w-full py-3.5 bg-[#ff3b00] hover:bg-[#ff4d14] text-black font-pixel text-xs tracking-wider rounded-lg transition-all flex items-center justify-center gap-2 cursor-pointer font-bold shadow-md active:scale-[0.99]"
             >
-              <span>MARKET BREADTH</span>
+              <span>LAUNCH MARKET BREADTH</span>
               <ArrowRight className="w-4 h-4 text-black" />
             </button>
           </div>
 
-          {/* INDICATOR 02: SECTOR ROTATION MATRIX */}
-          <div className="w-full bg-[#050508] border border-[#bef264]/40 hover:border-[#bef264] rounded-xl p-5 text-left space-y-4 transition-all duration-150">
+          {/* OPTION 02: SECTOR ROTATION MATRIX */}
+          <div className="w-full bg-[#050508] border-2 border-[#bef264]/50 hover:border-[#bef264] rounded-xl p-5 text-left space-y-4 transition-all duration-150 shadow-lg group">
             <div className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-lg bg-[#bef264]/10 border border-[#bef264]/30 flex items-center justify-center shrink-0">
-                  <Compass className="w-4 h-4 text-[#bef264]" />
+                <div className="w-10 h-10 rounded-lg bg-[#bef264]/10 border border-[#bef264]/40 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                  <Compass className="w-5 h-5 text-[#bef264]" />
                 </div>
                 <div>
-                  <h2 className="font-pixel text-sm sm:text-base text-white">
+                  <h2 className="font-pixel text-sm sm:text-base text-white tracking-wide">
                     SECTOR ROTATION MATRIX
                   </h2>
+                  <p className="text-[10px] text-slate-400 font-mono">
+                    Relative Strength vs Momentum (1W to 5Y RRG)
+                  </p>
                 </div>
               </div>
-              <span className="px-2 py-0.5 rounded text-[8px] font-pixel bg-[#0b1408] text-[#bef264] border border-[#bef264]/30">
+              <span className="px-2 py-0.5 rounded text-[8px] font-pixel bg-[#0b1408] text-[#bef264] border border-[#bef264]/40">
                 MOMENTUM
               </span>
             </div>
@@ -197,13 +206,37 @@ export const Level1Homepage: React.FC<Level1HomepageProps> = ({ onEnterBreadth, 
             <button
               id="btn-rotation-matrix-launch"
               onClick={onEnterRotation}
-              className="w-full py-3 bg-[#bef264] hover:bg-[#cbf77f] text-black font-pixel text-xs tracking-wider rounded-lg transition-all flex items-center justify-center gap-2 cursor-pointer font-bold"
+              className="w-full py-3.5 bg-[#bef264] hover:bg-[#cbf77f] text-black font-pixel text-xs tracking-wider rounded-lg transition-all flex items-center justify-center gap-2 cursor-pointer font-bold shadow-md active:scale-[0.99]"
             >
-              <span>ROTATION MATRIX</span>
+              <span>LAUNCH ROTATION MATRIX</span>
               <ArrowRight className="w-4 h-4 text-black" />
             </button>
           </div>
 
+          {/* Small Feature Footnote */}
+          <div className="text-[9px] text-slate-600 font-mono px-1 flex items-center justify-between pt-1">
+            <span>REAL-TIME NSE / BSE REFRESH</span>
+            <span>PROPRIETARY QUANT ALGO</span>
+          </div>
+
+        </div>
+
+        {/* RIGHT COLUMN: Real-time India Financial News Terminal (Bloomberg / DJ Box) */}
+        <div className="lg:col-span-7 flex flex-col space-y-2">
+          <div className="flex items-center justify-between px-1">
+            <div className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-[#ff3b00] animate-ping" />
+              <span className="font-pixel text-[10px] text-white tracking-wider">
+                LIVE FINANCIAL INTELLIGENCE WIRE
+              </span>
+            </div>
+            <span className="text-[9px] font-pixel text-[#bef264]">
+              ONE-LINE BULLETINS
+            </span>
+          </div>
+
+          {/* Terminal Box */}
+          <LiveMarketNewsTerminal />
         </div>
 
       </div>
