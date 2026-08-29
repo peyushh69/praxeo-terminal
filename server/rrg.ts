@@ -12,21 +12,40 @@ interface RawCandleData {
   previousClose: number;
 }
 
-// In-memory cache for RRG results (2 min TTL)
+// In-memory cache for RRG results (3 min TTL)
 let cachedRRG: { key: string; timestamp: number; data: RRGResponse } | null = null;
-const CACHE_TTL_MS = 2 * 60 * 1000;
+const CACHE_TTL_MS = 3 * 60 * 1000;
+const rrgSymbolCache = new Map<string, { data: RawCandleData; timestamp: number }>();
+const SYMBOL_CACHE_TTL = 10 * 60 * 1000;
+
+function timeoutPromise<T>(promise: Promise<T>, ms: number, fallbackValue: T): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<T>((resolve) => setTimeout(() => resolve(fallbackValue), ms)),
+  ]);
+}
 
 async function fetchHistoricalCloses(ticker: string, timeframe: 'daily' | 'weekly' = 'daily'): Promise<RawCandleData | null> {
+  const cacheKey = `${ticker}_${timeframe}`;
+  const cached = rrgSymbolCache.get(cacheKey);
+  if (cached && Date.now() - cached.timestamp < SYMBOL_CACHE_TTL) {
+    return cached.data;
+  }
+
   // 1. Try yahoo-finance2 client
   try {
     const oneYearAgo = new Date();
     oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
     const period1 = oneYearAgo.toISOString().split('T')[0];
 
-    const chartRes: any = await yfClient.chart(ticker, {
-      period1,
-      interval: timeframe === 'weekly' ? '1wk' : '1d',
-    });
+    const chartRes: any = await timeoutPromise(
+      yfClient.chart(ticker, {
+        period1,
+        interval: timeframe === 'weekly' ? '1wk' : '1d',
+      }),
+      3500,
+      null
+    );
 
     if (chartRes && Array.isArray(chartRes.quotes) && chartRes.quotes.length >= 15) {
       const meta = chartRes.meta || {};
@@ -56,12 +75,14 @@ async function fetchHistoricalCloses(ticker: string, timeframe: 'daily' | 'weekl
         const currentPrice = regularMarketPrice || validCloses[lastIdx];
         const previousClose = chartPrevClose || (validCloses.length > 1 ? validCloses[lastIdx - 1] : currentPrice);
 
-        return {
+        const result = {
           dates: validDates,
           closes: validCloses,
           currentPrice: Number(currentPrice.toFixed(2)),
           previousClose: Number(previousClose.toFixed(2)),
         };
+        rrgSymbolCache.set(cacheKey, { data: result, timestamp: Date.now() });
+        return result;
       }
     }
   } catch {
@@ -72,15 +93,19 @@ async function fetchHistoricalCloses(ticker: string, timeframe: 'daily' | 'weekl
   try {
     const interval = timeframe === 'weekly' ? '1wk' : '1d';
     const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(ticker)}?range=6mo&interval=${interval}&includePrePost=false`;
-    const response = await axios.get(url, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
-        'Accept': 'application/json',
-      },
-      timeout: 8000,
-    });
+    const response: any = await timeoutPromise(
+      axios.get(url, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+          'Accept': 'application/json',
+        },
+        timeout: 3000,
+      }),
+      3200,
+      null
+    );
 
-    const result = response.data?.chart?.result?.[0];
+    const result = response?.data?.chart?.result?.[0];
     if (!result) return null;
 
     const timestamps: number[] = result.timestamp || [];

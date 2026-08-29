@@ -89,24 +89,24 @@ export const MinimalHeader: React.FC<MinimalHeaderProps> = ({
     return (
       <div
         key={`${prefix}-${item.symbol}-${idx}`}
-        className="inline-flex items-center gap-2 px-4 py-0.5 border-r border-[#1a1a24]/60 whitespace-nowrap group cursor-default"
+        className="inline-flex items-center gap-2 px-4 py-0.5 border-r border-slate-200 whitespace-nowrap group cursor-default"
       >
-        <span className="font-pixel text-[8px] sm:text-[9px] text-slate-300 tracking-wider">
+        <span className="font-pixel text-[8px] sm:text-[9px] text-slate-700 font-bold tracking-wider">
           {item.symbol}
         </span>
-        <span className="font-mono text-[11px] sm:text-xs text-white font-bold tabular-nums">
+        <span className="font-mono text-[11px] sm:text-xs text-black font-bold tabular-nums">
           {isVix
             ? item.price.toFixed(2)
             : `₹${item.price.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
         </span>
         <span
-          className={`inline-flex items-center gap-0.5 font-pixel text-[8px] sm:text-[9px] tabular-nums px-1.5 py-0.5 rounded ${
+          className={`inline-flex items-center gap-0.5 font-pixel text-[8px] sm:text-[9px] tabular-nums px-1.5 py-0.5 rounded font-semibold ${
             isPos
-              ? 'bg-emerald-950/80 text-emerald-400 border border-emerald-800/50'
-              : 'bg-rose-950/80 text-rose-400 border border-rose-800/50'
+              ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+              : 'bg-rose-100 text-rose-800 border border-rose-300'
           }`}
         >
-          {isPos ? <TrendingUp className="w-2.5 h-2.5" /> : <TrendingDown className="w-2.5 h-2.5" />}
+          {isPos ? <TrendingUp className="w-2.5 h-2.5 text-emerald-700" /> : <TrendingDown className="w-2.5 h-2.5 text-rose-700" />}
           {isPos ? '+' : ''}
           {item.changePercent.toFixed(2)}%
         </span>
@@ -120,15 +120,15 @@ export const MinimalHeader: React.FC<MinimalHeaderProps> = ({
       <header className="border-b border-[#14141d] bg-[#000000] px-3 sm:px-6 py-2.5">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
           
-          {/* Left Side: Brand Logo 'praxeo' (Clean brand name with no extra sub-text) */}
+          {/* Left Side: Brand Logo 'Prexios' (Clean brand name with no extra sub-text) */}
           <button
             onClick={onNavigateHome}
             id="btn-brand-home"
             className="flex items-center gap-2 text-left cursor-pointer group focus:outline-none"
-            title="praxeo - Home"
+            title="Prexios - Home"
           >
             <span className="font-pixel text-[#bef264] text-lg sm:text-xl tracking-wider group-hover:brightness-125 transition-all">
-              praxeo
+              Prexios
             </span>
           </button>
 
@@ -150,14 +150,14 @@ export const MinimalHeader: React.FC<MinimalHeaderProps> = ({
         </div>
       </header>
 
-      {/* 2. RUNNING TICKER TAPE (Continuous infinite scroll for Nifty, Nifty Bank, Sensex, and India VIX) */}
-      <div className="border-b border-[#12121c] bg-[#040407] overflow-hidden relative py-1 text-xs">
-        <div className="flex items-center">
+      {/* 2. RUNNING TICKER TAPE (Continuous infinite scroll on high-contrast white background) */}
+      <div className="border-b border-slate-200 bg-white overflow-hidden relative text-xs text-slate-900 shadow-sm h-[26px] flex items-center">
+        <div className="flex items-center w-full h-full">
           
-          {/* Market Status Static Indicator on left of ticker */}
-          <div className="hidden sm:flex items-center gap-1.5 pl-3 sm:pl-6 pr-3 z-10 bg-[#040407] border-r border-[#151520] flex-shrink-0">
-            <span className={`w-1.5 h-1.5 rounded-full ${isMarketOpen ? 'bg-emerald-400 animate-pulse' : 'bg-slate-500'}`} />
-            <span className="font-pixel text-[8px] text-slate-400 whitespace-nowrap">
+          {/* Market Status Static Indicator on left of ticker (Black background contrast box) */}
+          <div className="hidden sm:flex items-center gap-1.5 pl-3 sm:pl-5 pr-3.5 h-full z-10 bg-black border-r border-black flex-shrink-0">
+            <span className={`w-1.5 h-1.5 rounded-full ${isMarketOpen ? 'bg-emerald-400 animate-pulse' : 'bg-rose-500'}`} />
+            <span className="font-pixel text-[8px] text-white font-bold whitespace-nowrap tracking-wider">
               {isMarketOpen ? 'NSE LIVE' : 'NSE CLOSED'}
             </span>
           </div>

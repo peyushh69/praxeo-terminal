@@ -18,23 +18,77 @@ export default function App() {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch breadth data from backend for given index
-  const fetchData = useCallback(async (indexId: string, force = false) => {
+  // Fetch breadth data from backend for given index with automatic retry & client cache
+  const fetchData = useCallback(async (indexId: string, force = false, retryCount = 2) => {
     try {
       setLoading(true);
       setError(null);
+
+      // Check client-side storage cache for instantaneous transition
+      if (!force) {
+        try {
+          const cachedStr = sessionStorage.getItem(`praxeo_breadth_${indexId}`);
+          if (cachedStr) {
+            const cachedObj = JSON.parse(cachedStr);
+            if (cachedObj && cachedObj.stocks?.length > 0) {
+              setData(cachedObj);
+            }
+          }
+        } catch {
+          // ignore session storage error
+        }
+      }
+
       const url = force
         ? `/api/breadth?index=${encodeURIComponent(indexId)}&refresh=true`
         : `/api/breadth?index=${encodeURIComponent(indexId)}`;
-      const response = await axios.get(url);
-      if (response.data?.success && response.data?.data) {
-        setData(response.data.data);
-      } else {
-        throw new Error(response.data?.error || `Failed to fetch breadth data for ${indexId}`);
+      
+      let lastErr: any = null;
+      for (let attempt = 0; attempt <= retryCount; attempt++) {
+        try {
+          const response = await axios.get(url, { timeout: 20000 });
+          if (response.data?.success && response.data?.data) {
+            setData(response.data.data);
+            setError(null);
+            try {
+              sessionStorage.setItem(`praxeo_breadth_${indexId}`, JSON.stringify(response.data.data));
+            } catch {
+              // ignore storage quota error
+            }
+            return;
+          } else {
+            throw new Error(response.data?.error || `Failed to fetch breadth data for ${indexId}`);
+          }
+        } catch (err: any) {
+          lastErr = err;
+          if (attempt < retryCount) {
+            await new Promise(resolve => setTimeout(resolve, 800 * (attempt + 1)));
+          }
+        }
       }
+      throw lastErr;
     } catch (err: any) {
-      console.error('Fetch error:', err);
-      setError(err.message || 'Error communicating with market breadth engine.');
+      // Check if we have cached data before showing any error
+      try {
+        const cachedStr = sessionStorage.getItem(`praxeo_breadth_${indexId}`);
+        if (cachedStr) {
+          const cachedObj = JSON.parse(cachedStr);
+          if (cachedObj && cachedObj.stocks?.length > 0) {
+            setData(cachedObj);
+            setError(null);
+            return;
+          }
+        }
+      } catch {
+        // ignore
+      }
+
+      setData(prevData => {
+        if (!prevData) {
+          setError(err.message || 'Connecting to market telemetry...');
+        }
+        return prevData;
+      });
     } finally {
       setLoading(false);
     }
@@ -192,12 +246,12 @@ export default function App() {
       <footer className="border-t border-[#12121c] py-4 bg-[#000000] text-[11px] text-slate-500 select-none">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-center sm:text-left">
           <div className="flex items-center gap-2">
-            <span className="font-pixel text-[#bef264] text-[10px]">praxeo</span>
+            <span className="font-pixel text-[#bef264] text-[10px]">Prexios</span>
             <span className="text-slate-700">•</span>
-            <span className="font-mono text-slate-400 text-xs">QUANTITATIVE SUITE</span>
+            <span className="font-mono text-slate-400 text-[11px]">By zero-sum Commune</span>
           </div>
           <div className="text-slate-500 font-mono text-[11px]">
-            MARKET BREADTH MATRIX • SECTOR ROTATION MATRIX • RELATIVE STRENGTH &amp; MOMENTUM
+            Created by peyush!
           </div>
         </div>
       </footer>

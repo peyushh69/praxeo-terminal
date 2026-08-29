@@ -58,26 +58,82 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
   const [hoveredSector, setHoveredSector] = useState<RRGSectorItem | null>(null);
   const [tooltipPos, setTooltipPos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
 
-  // Fetch RRG data
-  const fetchRRGData = async (force = false) => {
+  // Fetch RRG data with retry
+  const fetchRRGData = async (force = false, retryCount = 2) => {
     try {
       setLoading(true);
       setError(null);
-      const url = `/api/rrg?benchmark=${encodeURIComponent(benchmark)}&timeframe=${timeframe}&trail=${trailLength}${force ? '&refresh=true' : ''}`;
-      const res = await axios.get(url);
-      if (res.data?.success && res.data?.data) {
-        setData(res.data.data);
-        // Initialize all selected
-        const allIds = new Set(res.data.data.sectors.map((s: RRGSectorItem) => s.id));
-        setSelectedSectorIds(allIds);
-        setPlaybackIndex(null);
-        setIsPlaying(false);
-      } else {
-        throw new Error(res.data?.error || 'Failed to load RRG matrix');
+      const cacheKey = `praxeo_rrg_${benchmark}_${timeframe}_${trailLength}`;
+
+      if (!force) {
+        try {
+          const cachedStr = sessionStorage.getItem(cacheKey);
+          if (cachedStr) {
+            const cachedObj = JSON.parse(cachedStr);
+            if (cachedObj && cachedObj.sectors?.length > 0) {
+              setData(cachedObj);
+              const allIds = new Set(cachedObj.sectors.map((s: RRGSectorItem) => s.id));
+              setSelectedSectorIds(allIds);
+            }
+          }
+        } catch {
+          // ignore
+        }
       }
+
+      const url = `/api/rrg?benchmark=${encodeURIComponent(benchmark)}&timeframe=${timeframe}&trail=${trailLength}${force ? '&refresh=true' : ''}`;
+      
+      let lastErr: any = null;
+      for (let attempt = 0; attempt <= retryCount; attempt++) {
+        try {
+          const res = await axios.get(url, { timeout: 20000 });
+          if (res.data?.success && res.data?.data) {
+            setData(res.data.data);
+            setError(null);
+            try {
+              sessionStorage.setItem(cacheKey, JSON.stringify(res.data.data));
+            } catch {
+              // ignore
+            }
+            // Initialize all selected
+            const allIds = new Set(res.data.data.sectors.map((s: RRGSectorItem) => s.id));
+            setSelectedSectorIds(allIds);
+            setPlaybackIndex(null);
+            setIsPlaying(false);
+            return;
+          } else {
+            throw new Error(res.data?.error || 'Failed to load RRG matrix');
+          }
+        } catch (err: any) {
+          lastErr = err;
+          if (attempt < retryCount) {
+            await new Promise(resolve => setTimeout(resolve, 800 * (attempt + 1)));
+          }
+        }
+      }
+      throw lastErr;
     } catch (err: any) {
-      console.error('RRG fetch error:', err);
-      setError(err.message || 'Unable to communicate with RRG engine');
+      try {
+        const cacheKey = `praxeo_rrg_${benchmark}_${timeframe}_${trailLength}`;
+        const cachedStr = sessionStorage.getItem(cacheKey);
+        if (cachedStr) {
+          const cachedObj = JSON.parse(cachedStr);
+          if (cachedObj && cachedObj.sectors?.length > 0) {
+            setData(cachedObj);
+            setError(null);
+            return;
+          }
+        }
+      } catch {
+        // ignore
+      }
+
+      setData(prev => {
+        if (!prev) {
+          setError(err.message || 'Connecting to RRG engine...');
+        }
+        return prev;
+      });
     } finally {
       setLoading(false);
     }

@@ -17,7 +17,9 @@ interface CachedBreadth {
 }
 
 const indexCacheMap = new Map<string, CachedBreadth>();
-const CACHE_TTL_MS = 2 * 60 * 1000; // 2 minutes fast in-memory cache
+const symbolCacheMap = new Map<string, { data: RawCandleData; timestamp: number }>();
+const CACHE_TTL_MS = 3 * 60 * 1000; // 3 minutes fast in-memory cache
+const SYMBOL_CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutes cache per stock
 
 interface RawCandleData {
   dates: string[];
@@ -34,17 +36,34 @@ interface RawCandleData {
   week52Low: number;
 }
 
+// Timeout helper to avoid any hanging external requests
+function timeoutPromise<T>(promise: Promise<T>, ms: number, fallbackValue: T): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<T>((resolve) => setTimeout(() => resolve(fallbackValue), ms)),
+  ]);
+}
+
 async function fetchYahooDailyChart(ticker: string): Promise<RawCandleData | null> {
-  // 1. Try yahoo-finance2 client first (handles cookies, crumb, user agents, live prices)
+  const cachedSymbol = symbolCacheMap.get(ticker);
+  if (cachedSymbol && Date.now() - cachedSymbol.timestamp < SYMBOL_CACHE_TTL_MS) {
+    return cachedSymbol.data;
+  }
+
+  // 1. Try yahoo-finance2 client first with 3s timeout
   try {
     const oneYearAgo = new Date();
     oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
     const period1 = oneYearAgo.toISOString().split('T')[0];
 
-    const chartRes: any = await yfClient.chart(ticker, {
-      period1,
-      interval: '1d',
-    });
+    const chartRes: any = await timeoutPromise(
+      yfClient.chart(ticker, {
+        period1,
+        interval: '1d',
+      }),
+      3500,
+      null
+    );
 
     if (chartRes && Array.isArray(chartRes.quotes) && chartRes.quotes.length >= 20) {
       const meta = chartRes.meta || {};
@@ -83,7 +102,7 @@ async function fetchYahooDailyChart(ticker: string): Promise<RawCandleData | nul
         const week52High = meta.fiftyTwoWeekHigh || Math.max(...validHighs.slice(-252));
         const week52Low = meta.fiftyTwoWeekLow || Math.min(...validLows.slice(-252));
 
-        return {
+        const result: RawCandleData = {
           dates: validDates,
           closes: validCloses,
           highs: validHighs,
@@ -97,24 +116,31 @@ async function fetchYahooDailyChart(ticker: string): Promise<RawCandleData | nul
           week52High: Number(week52High.toFixed(2)),
           week52Low: Number(week52Low.toFixed(2)),
         };
+
+        symbolCacheMap.set(ticker, { data: result, timestamp: Date.now() });
+        return result;
       }
     }
-  } catch (err: any) {
+  } catch {
     // Silently fall through to secondary direct query
   }
 
-  // 2. Secondary fallback via direct endpoint
+  // 2. Secondary fallback via direct endpoint with 3s timeout
   try {
     const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(ticker)}?range=1y&interval=1d&includePrePost=false`;
-    const response = await axios.get(url, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
-        'Accept': 'application/json',
-      },
-      timeout: 7000,
-    });
+    const response: any = await timeoutPromise(
+      axios.get(url, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+          'Accept': 'application/json',
+        },
+        timeout: 3000,
+      }),
+      3200,
+      null
+    );
 
-    const result = response.data?.chart?.result?.[0];
+    const result = response?.data?.chart?.result?.[0];
     if (!result) return null;
 
     const timestamps: number[] = result.timestamp || [];
