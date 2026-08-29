@@ -31,10 +31,4 @@ A gamified Relative Rotation Graph (RRG) logic system that identifies sector shi
 
 ---
 
-## 💻 Local Installation (Terminal Access)
 
-To run the Praxeo Terminal locally on your machine:
-
-1. **Clone the repository:**
-   ```bash
-   git clone [https://github.com/your-username/praxeo-terminal.git](https://github.com/your-username/praxeo-terminal.git)
