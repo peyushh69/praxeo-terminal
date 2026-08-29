@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { 
   RefreshCw, 
   ExternalLink, 
@@ -12,13 +12,43 @@ import {
   Tag, 
   Radio,
   Building2,
-  AlertCircle
+  AlertCircle,
+  Zap
 } from 'lucide-react';
 import type { MarketNewsItem } from '../types';
 import { INITIAL_FALLBACK_NEWS } from '../data/fallbackNews';
 
 interface LiveMarketNewsTerminalProps {
   onSelectStock?: (ticker: string) => void;
+}
+
+function getLiveTimeAgo(pubDateStr: string, fallback = 'Recently'): string {
+  try {
+    const d = new Date(pubDateStr);
+    if (isNaN(d.getTime())) return fallback;
+    const diffMs = Date.now() - d.getTime();
+    if (diffMs < 0) return 'Just now';
+    const diffMins = Math.floor(diffMs / (1000 * 60));
+    if (diffMins < 1) return 'Just now';
+    if (diffMins < 60) return `${diffMins}m ago`;
+    const diffHours = Math.floor(diffMins / 60);
+    if (diffHours < 24) return `${diffHours}h ago`;
+    const diffDays = Math.floor(diffHours / 24);
+    return `${diffDays}d ago`;
+  } catch {
+    return fallback;
+  }
+}
+
+function isRecentBreaking(pubDateStr: string): boolean {
+  try {
+    const d = new Date(pubDateStr);
+    if (isNaN(d.getTime())) return false;
+    const diffMs = Date.now() - d.getTime();
+    return diffMs >= 0 && diffMs <= 45 * 60 * 1000; // Under 45 mins
+  } catch {
+    return false;
+  }
 }
 
 export const LiveMarketNewsTerminal: React.FC<LiveMarketNewsTerminalProps> = ({ onSelectStock }) => {
@@ -29,10 +59,13 @@ export const LiveMarketNewsTerminal: React.FC<LiveMarketNewsTerminalProps> = ({ 
   const [selectedFilter, setSelectedFilter] = useState<'ALL' | 'CORPORATE' | 'MARKET' | 'ECONOMY'>('ALL');
   const [lastFetchedTime, setLastFetchedTime] = useState<string>('');
   const [fetchError, setFetchError] = useState<boolean>(false);
+  const [flashNewTop, setFlashNewTop] = useState<boolean>(false);
+  const [, setTick] = useState<number>(0);
+
+  const prevTopIdRef = useRef<string | null>(null);
 
   const fetchNews = async (force = false) => {
     if (force) setRefreshing(true);
-    else setLoading(true);
     setFetchError(false);
 
     try {
@@ -42,7 +75,22 @@ export const LiveMarketNewsTerminal: React.FC<LiveMarketNewsTerminalProps> = ({ 
       }
       const json = await res.json();
       if (json.success && Array.isArray(json.data) && json.data.length > 0) {
-        setNews(json.data);
+        const sorted = [...json.data].sort((a, b) => {
+          const timeA = new Date(a.pubDate).getTime() || 0;
+          const timeB = new Date(b.pubDate).getTime() || 0;
+          return timeB - timeA;
+        });
+
+        // Detect if a new #1 latest story arrived
+        if (prevTopIdRef.current && sorted.length > 0 && sorted[0].id !== prevTopIdRef.current) {
+          setFlashNewTop(true);
+          setTimeout(() => setFlashNewTop(false), 4000);
+        }
+        if (sorted.length > 0) {
+          prevTopIdRef.current = sorted[0].id;
+        }
+
+        setNews(sorted);
         const now = new Date();
         setLastFetchedTime(now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
       } else if (news.length === 0) {
@@ -51,7 +99,6 @@ export const LiveMarketNewsTerminal: React.FC<LiveMarketNewsTerminalProps> = ({ 
     } catch (e) {
       console.warn('Backend news wire sync notice (using cached/fallback feeds):', e);
       setFetchError(true);
-      // Ensure headlines are always populated with quality market news
       setNews((prev) => (prev.length > 0 ? prev : INITIAL_FALLBACK_NEWS));
     } finally {
       setLoading(false);
@@ -64,23 +111,41 @@ export const LiveMarketNewsTerminal: React.FC<LiveMarketNewsTerminalProps> = ({ 
     const now = new Date();
     setLastFetchedTime(now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
     
-    // Auto-refresh news every 60 seconds
-    const interval = setInterval(() => {
+    // Auto-refresh news every 30 seconds for real-time live feed
+    const refreshInterval = setInterval(() => {
       fetchNews(true);
-    }, 60000);
-    return () => clearInterval(interval);
+    }, 30000);
+
+    // Live clock ticker to update relative 'Xm ago' tags every 15 seconds
+    const tickInterval = setInterval(() => {
+      setTick(t => t + 1);
+    }, 15000);
+
+    return () => {
+      clearInterval(refreshInterval);
+      clearInterval(tickInterval);
+    };
   }, []);
 
-  const filteredNews = news.filter((item) => {
-    const matchesFilter = selectedFilter === 'ALL' || item.category === selectedFilter;
-    const matchesSearch =
-      searchQuery.trim() === '' ||
-      item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.source.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.relatedStock?.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.relatedStock?.ticker.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesFilter && matchesSearch;
-  });
+  const filteredNews = useMemo(() => {
+    const filtered = news.filter((item) => {
+      const matchesFilter = selectedFilter === 'ALL' || item.category === selectedFilter;
+      const matchesSearch =
+        searchQuery.trim() === '' ||
+        item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.source.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.relatedStock?.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.relatedStock?.ticker.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchesFilter && matchesSearch;
+    });
+
+    // Guarantee latest timestamp is ALWAYS at index 0 (#1 rank)
+    return filtered.sort((a, b) => {
+      const timeA = new Date(a.pubDate).getTime() || 0;
+      const timeB = new Date(b.pubDate).getTime() || 0;
+      return timeB - timeA;
+    });
+  }, [news, selectedFilter, searchQuery]);
 
   return (
     <div className="w-full bg-[#05050a] border-2 border-[#ff3b00]/70 rounded-xl overflow-hidden shadow-2xl flex flex-col font-mono text-left select-none">
@@ -182,29 +247,51 @@ export const LiveMarketNewsTerminal: React.FC<LiveMarketNewsTerminalProps> = ({ 
           filteredNews.map((item, index) => {
             const isBullish = item.sentiment === 'BULLISH';
             const isBearish = item.sentiment === 'BEARISH';
+            const liveTime = getLiveTimeAgo(item.pubDate, item.timeAgo);
+            const isBreaking = isRecentBreaking(item.pubDate);
+            const isTopStory = index === 0;
 
             return (
               <div
                 key={item.id || index}
-                className="p-2.5 sm:p-3 hover:bg-[#0c0c18] transition-colors group flex items-start gap-2.5"
+                className={`p-2.5 sm:p-3 transition-all duration-300 group flex items-start gap-2.5 ${
+                  isTopStory && flashNewTop
+                    ? 'bg-[#2e1505] ring-1 ring-[#ff8800] shadow-[0_0_15px_rgba(255,136,0,0.3)] animate-pulse'
+                    : isTopStory
+                    ? 'bg-[#090914] hover:bg-[#0f0f20]'
+                    : 'hover:bg-[#0c0c18]'
+                }`}
               >
                 {/* Index Number (Terminal sequence 1), 2), 3)...) */}
-                <span className="text-[10px] font-pixel text-[#ff8800] shrink-0 pt-0.5 tabular-nums w-5 text-right opacity-80">
-                  {index + 1})
-                </span>
+                <div className="flex flex-col items-end shrink-0 pt-0.5 w-6">
+                  <span className={`text-[10px] font-pixel tabular-nums ${isTopStory ? 'text-[#bef264] font-bold' : 'text-[#ff8800] opacity-80'}`}>
+                    {index + 1})
+                  </span>
+                  {isTopStory && (
+                    <span className="text-[7px] font-pixel text-[#bef264] leading-tight">TOP</span>
+                  )}
+                </div>
 
                 {/* Main Content */}
                 <div className="flex-1 min-w-0 space-y-1.5">
-                  {/* Single Line Headline */}
+                  {/* Single Line Headline + Breaking indicator */}
                   <div className="flex items-start justify-between gap-2">
-                    <a
-                      href={item.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-slate-100 group-hover:text-white font-mono text-[11px] sm:text-xs leading-snug font-medium line-clamp-2 hover:underline flex-1"
-                    >
-                      {item.title}
-                    </a>
+                    <div className="flex items-start gap-1.5 flex-1">
+                      {isBreaking && (
+                        <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[7px] font-pixel font-bold bg-[#ff3b00] text-black rounded shrink-0 mt-0.5 animate-pulse">
+                          <Zap className="w-2 h-2 fill-current" />
+                          <span>NEW</span>
+                        </span>
+                      )}
+                      <a
+                        href={item.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-slate-100 group-hover:text-white font-mono text-[11px] sm:text-xs leading-snug font-medium line-clamp-2 hover:underline flex-1"
+                      >
+                        {item.title}
+                      </a>
+                    </div>
                     <a
                       href={item.link}
                       target="_blank"
@@ -259,7 +346,7 @@ export const LiveMarketNewsTerminal: React.FC<LiveMarketNewsTerminalProps> = ({ 
                     {/* Time Ago */}
                     <div className="flex items-center gap-1 text-slate-500 ml-auto">
                       <Clock className="w-2.5 h-2.5 text-slate-500" />
-                      <span className="text-slate-400 tabular-nums">{item.timeAgo}</span>
+                      <span className="text-slate-300 font-bold tabular-nums">{liveTime}</span>
                     </div>
 
                   </div>

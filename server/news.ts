@@ -122,7 +122,7 @@ function formatTimeAgo(dateString: string): string {
 
 // In-memory cache
 let cachedNews: { items: MarketNewsItem[]; timestamp: number } | null = null;
-const CACHE_TTL_MS = 90 * 1000; // 90 seconds live cache
+const CACHE_TTL_MS = 30 * 1000; // 30 seconds live cache for fresh breaking bulletins
 
 export async function fetchLiveMarketNews(forceRefresh = false): Promise<MarketNewsItem[]> {
   const now = Date.now();
@@ -132,25 +132,35 @@ export async function fetchLiveMarketNews(forceRefresh = false): Promise<MarketN
 
   const rawItems: MarketNewsItem[] = [];
 
-  // 1. Google News RSS Feeds for Indian Financial Markets & Economy
+  // 1. Live Google News Topic & Real-Time Feeds for Indian Financial Markets
   const googleNewsFeeds = [
     {
-      url: 'https://news.google.com/rss/search?q=Indian+Stock+Market+NSE+NIFTY+when:1d&hl=en-IN&gl=IN&ceid=IN:en',
+      // Google News Official India Business & Economy Live Topic (Updated continuously)
+      url: 'https://news.google.com/rss/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRGx6TVd4MUVnVndkQzFDVWhvQ0FDIExqbw?hl=en-IN&gl=IN&ceid=IN:en',
+      source: 'Google News (Business)',
+      code: 'GN-BIZ',
+      category: 'MARKET' as const,
+    },
+    {
+      // Breaking recent market headlines
+      url: 'https://news.google.com/rss/search?q=when:4h+NIFTY+OR+Sensex+OR+SEBI+OR+RBI+OR+stocks+India&hl=en-IN&gl=IN&ceid=IN:en',
       source: 'Google News (Markets)',
       code: 'GN-MKT',
       category: 'MARKET' as const,
     },
     {
-      url: 'https://news.google.com/rss/search?q=Indian+Economy+RBI+inflation+GDP+when:1d&hl=en-IN&gl=IN&ceid=IN:en',
-      source: 'Google News (Economy)',
-      code: 'GN-ECO',
-      category: 'ECONOMY' as const,
-    },
-    {
-      url: 'https://news.google.com/rss/search?q=Tata+Motors+Reliance+HDFC+Infosys+TCS+stocks+when:1d&hl=en-IN&gl=IN&ceid=IN:en',
+      // Bluechip corporate announcements & earnings
+      url: 'https://news.google.com/rss/search?q=when:8h+Tata+Motors+OR+Reliance+OR+HDFC+Bank+OR+Infosys+OR+TCS+stocks&hl=en-IN&gl=IN&ceid=IN:en',
       source: 'Google News (Corporate)',
       code: 'GN-CORP',
       category: 'CORPORATE' as const,
+    },
+    {
+      // Macro Economy & Policy Wire
+      url: 'https://news.google.com/rss/search?q=when:12h+Indian+Economy+RBI+inflation+GDP+forex&hl=en-IN&gl=IN&ceid=IN:en',
+      source: 'Google News (Economy)',
+      code: 'GN-ECO',
+      category: 'ECONOMY' as const,
     },
   ];
 
@@ -163,10 +173,22 @@ export async function fetchLiveMarketNews(forceRefresh = false): Promise<MarketN
       category: 'MARKET' as const,
     },
     {
+      url: 'https://www.moneycontrol.com/rss/business.xml',
+      source: 'Moneycontrol',
+      code: 'MC',
+      category: 'CORPORATE' as const,
+    },
+    {
       url: 'https://economictimes.indiatimes.com/markets/rssfeeds/1977021501.cms',
       source: 'The Economic Times',
       code: 'ET',
       category: 'MARKET' as const,
+    },
+    {
+      url: 'https://economictimes.indiatimes.com/markets/stocks/news/rssfeeds/2146842.cms',
+      source: 'The Economic Times',
+      code: 'ET',
+      category: 'CORPORATE' as const,
     },
     {
       url: 'https://www.livemint.com/rss/markets',
@@ -200,9 +222,9 @@ export async function fetchLiveMarketNews(forceRefresh = false): Promise<MarketN
     try {
       // Fetch XML string using axios with custom user-agent and timeout, then parse
       const res = await axios.get(f.url, {
-        timeout: 3500,
+        timeout: 3000,
         headers: {
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
           'Accept': 'application/rss+xml, application/xml, text/xml, */*',
         },
       });
@@ -242,16 +264,25 @@ export async function fetchLiveMarketNews(forceRefresh = false): Promise<MarketN
 
         const relatedStock = detectStock(cleanTitle);
         const sentiment = analyzeSentiment(cleanTitle);
-        const pubDate = item.pubDate || new Date().toISOString();
+        
+        let pubDateIso = new Date().toISOString();
+        if (item.isoDate) {
+          pubDateIso = item.isoDate;
+        } else if (item.pubDate) {
+          const d = new Date(item.pubDate);
+          if (!isNaN(d.getTime())) {
+            pubDateIso = d.toISOString();
+          }
+        }
 
         return {
-          id: item.guid || item.link || `${sourceCode}-${idx}-${Date.now()}`,
+          id: item.guid || item.link || `${sourceCode}-${idx}-${cleanTitle.substring(0, 20)}`,
           title: cleanTitle,
           link: item.link || '#',
           source: extractedSource,
           sourceCode,
-          pubDate,
-          timeAgo: formatTimeAgo(pubDate),
+          pubDate: pubDateIso,
+          timeAgo: formatTimeAgo(pubDateIso),
           relatedStock,
           sentiment,
           category: f.category,
@@ -264,14 +295,24 @@ export async function fetchLiveMarketNews(forceRefresh = false): Promise<MarketN
         if (!feed || !feed.items) return [];
         return feed.items.slice(0, 10).map((item, idx) => {
           const cleanTitle = item.title || '';
+          let pubDateIso = new Date().toISOString();
+          if (item.isoDate) {
+            pubDateIso = item.isoDate;
+          } else if (item.pubDate) {
+            const d = new Date(item.pubDate);
+            if (!isNaN(d.getTime())) {
+              pubDateIso = d.toISOString();
+            }
+          }
+
           return {
-            id: item.guid || item.link || `${f.code}-${idx}-${Date.now()}`,
+            id: item.guid || item.link || `${f.code}-${idx}-${cleanTitle.substring(0, 20)}`,
             title: cleanTitle,
             link: item.link || '#',
             source: f.source,
             sourceCode: f.code,
-            pubDate: item.pubDate || new Date().toISOString(),
-            timeAgo: formatTimeAgo(item.pubDate || ''),
+            pubDate: pubDateIso,
+            timeAgo: formatTimeAgo(pubDateIso),
             relatedStock: detectStock(cleanTitle),
             sentiment: analyzeSentiment(cleanTitle),
             category: f.category,

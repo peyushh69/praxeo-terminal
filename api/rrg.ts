@@ -4,7 +4,7 @@ import { computeRRG } from '../server/rrg.js';
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     const benchmark = (req.query.benchmark as string) || '^NSEI';
-    const timeframe = (req.query.timeframe as 'daily' | 'weekly') || 'daily';
+    const timeframe = (req.query.timeframe as string) || 'daily';
     const trailLength = parseInt(req.query.trail as string, 10) || 8;
     const forceRefresh = req.query.refresh === 'true';
 

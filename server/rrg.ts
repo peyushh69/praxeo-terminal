@@ -12,11 +12,11 @@ interface RawCandleData {
   previousClose: number;
 }
 
-// In-memory cache for RRG results (3 min TTL)
-let cachedRRG: { key: string; timestamp: number; data: RRGResponse } | null = null;
-const CACHE_TTL_MS = 3 * 60 * 1000;
+// In-memory multi-key cache for RRG results (15 min TTL)
+const rrgResponseCache = new Map<string, { data: RRGResponse; timestamp: number }>();
+const CACHE_TTL_MS = 15 * 60 * 1000;
 const rrgSymbolCache = new Map<string, { data: RawCandleData; timestamp: number }>();
-const SYMBOL_CACHE_TTL = 10 * 60 * 1000;
+const SYMBOL_CACHE_TTL = 30 * 60 * 1000; // 30 min symbol candle cache
 
 function timeoutPromise<T>(promise: Promise<T>, ms: number, fallbackValue: T): Promise<T> {
   return Promise.race([
@@ -26,7 +26,7 @@ function timeoutPromise<T>(promise: Promise<T>, ms: number, fallbackValue: T): P
 }
 
 async function fetchHistoricalCloses(ticker: string, isWeekly = false): Promise<RawCandleData | null> {
-  const timeframeKey = isWeekly ? 'weekly' : 'daily';
+  const timeframeKey = isWeekly ? 'weekly_5y' : 'daily_1y';
   const cacheKey = `${ticker}_${timeframeKey}`;
   const cached = rrgSymbolCache.get(cacheKey);
   if (cached && Date.now() - cached.timestamp < SYMBOL_CACHE_TTL) {
@@ -35,7 +35,7 @@ async function fetchHistoricalCloses(ticker: string, isWeekly = false): Promise<
 
   // 1. Try yahoo-finance2 client
   try {
-    const lookbackYears = isWeekly ? 2 : 1;
+    const lookbackYears = isWeekly ? 5 : 1;
     const pastDate = new Date();
     pastDate.setFullYear(pastDate.getFullYear() - lookbackYears);
     const period1 = pastDate.toISOString().split('T')[0];
@@ -94,7 +94,7 @@ async function fetchHistoricalCloses(ticker: string, isWeekly = false): Promise<
   // 2. Secondary fallback via direct endpoint
   try {
     const interval = isWeekly ? '1wk' : '1d';
-    const range = isWeekly ? '2y' : '1y';
+    const range = isWeekly ? '5y' : '1y';
     const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(ticker)}?range=${range}&interval=${interval}&includePrePost=false`;
     const response: any = await timeoutPromise(
       axios.get(url, {
@@ -133,12 +133,14 @@ async function fetchHistoricalCloses(ticker: string, isWeekly = false): Promise<
     const currentPrice = meta.regularMarketPrice || validCloses[validCloses.length - 1];
     const previousClose = meta.chartPreviousClose || (validCloses.length > 1 ? validCloses[validCloses.length - 2] : currentPrice);
 
-    return {
+    const dataObj = {
       dates: validDates,
       closes: validCloses,
       currentPrice,
       previousClose,
     };
+    rrgSymbolCache.set(cacheKey, { data: dataObj, timestamp: Date.now() });
+    return dataObj;
   } catch (err) {
     return null;
   }
@@ -251,8 +253,9 @@ export async function computeRRG(
   const cacheKey = `${benchmarkTicker}_${normTf}_${effectiveTrail}`;
   const now = Date.now();
 
-  if (!forceRefresh && cachedRRG && cachedRRG.key === cacheKey && now - cachedRRG.timestamp < CACHE_TTL_MS) {
-    return cachedRRG.data;
+  const cached = rrgResponseCache.get(cacheKey);
+  if (!forceRefresh && cached && now - cached.timestamp < CACHE_TTL_MS) {
+    return cached.data;
   }
 
   // 1. Fetch Benchmark (Default: NIFTY 50)
@@ -445,11 +448,10 @@ export async function computeRRG(
     lastUpdated: new Date().toISOString(),
   };
 
-  cachedRRG = {
-    key: cacheKey,
+  rrgResponseCache.set(cacheKey, {
     timestamp: now,
     data: response,
-  };
+  });
 
   return response;
 }

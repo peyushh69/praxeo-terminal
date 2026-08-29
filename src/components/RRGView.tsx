@@ -143,6 +143,10 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
   const [hoveredSector, setHoveredSector] = useState<RRGSectorItem | null>(null);
   const [tooltipPos, setTooltipPos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
 
+  // In-memory cache for instant switching between timeframes
+  const memoryCacheRef = useRef<Map<string, RRGResponse>>(new Map());
+  const [isRevalidating, setIsRevalidating] = useState<boolean>(false);
+
   // Close dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -154,17 +158,28 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Handle switching timeframe with adaptive trail default
+  // Handle switching timeframe with adaptive trail default and instant cache application
   const handleSelectTimeframe = (newTf: RRGTimeframeOption) => {
-    setTimeframe(newTf);
+    let nextTrail = 8;
     if (newTf === 'daily') {
-      setTrailLength(8);
+      nextTrail = 8;
     } else {
       const match = HISTORICAL_TIMEFRAME_OPTIONS.find(opt => opt.id === newTf);
       if (match) {
-        setTrailLength(match.defaultTrail);
+        nextTrail = match.defaultTrail;
       }
     }
+
+    // Instant local memory check for instant zero-latency switch
+    const nextCacheKey = `praxeo_rrg_${benchmark}_${newTf}_${nextTrail}`;
+    const cachedData = memoryCacheRef.current.get(nextCacheKey);
+    if (cachedData && cachedData.sectors?.length > 0) {
+      setData(cachedData);
+      setSelectedSectorIds(new Set(cachedData.sectors.map((s: RRGSectorItem) => s.id)));
+    }
+
+    setTimeframe(newTf);
+    setTrailLength(nextTrail);
     setPlaybackIndex(null);
     setIsPlaying(false);
     setShowTimeframeDropdown(false);
@@ -185,28 +200,70 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
     return activeHistoricalOption.trailOptions;
   }, [timeframe, activeHistoricalOption]);
 
-  // Fetch RRG data with retry
-  const fetchRRGData = async (force = false, retryCount = 2) => {
-    try {
-      setLoading(true);
-      setError(null);
-      const cacheKey = `praxeo_rrg_${benchmark}_${timeframe}_${trailLength}`;
-
-      if (!force) {
+  // Background pre-fetcher for all timeframes
+  const prefetchOtherTimeframes = async () => {
+    const targets = ['3m', '6m', '1y', '1m', '1w', 'daily'];
+    for (const tf of targets) {
+      if (tf === timeframe) continue;
+      const match = HISTORICAL_TIMEFRAME_OPTIONS.find(opt => opt.id === tf);
+      const trail = tf === 'daily' ? 8 : (match ? match.defaultTrail : 8);
+      const key = `praxeo_rrg_${benchmark}_${tf}_${trail}`;
+      if (!memoryCacheRef.current.has(key)) {
         try {
-          const cachedStr = sessionStorage.getItem(cacheKey);
-          if (cachedStr) {
-            const cachedObj = JSON.parse(cachedStr);
-            if (cachedObj && cachedObj.sectors?.length > 0) {
-              setData(cachedObj);
-              const allIds = new Set(cachedObj.sectors.map((s: RRGSectorItem) => s.id));
-              setSelectedSectorIds(allIds);
-            }
+          const res = await axios.get(`/api/rrg?benchmark=${encodeURIComponent(benchmark)}&timeframe=${tf}&trail=${trail}`, { timeout: 15000 });
+          if (res.data?.success && res.data?.data) {
+            memoryCacheRef.current.set(key, res.data.data);
+            try {
+              sessionStorage.setItem(key, JSON.stringify(res.data.data));
+            } catch {}
           }
         } catch {
-          // ignore
+          // silently ignore background prefetch error
         }
       }
+    }
+  };
+
+  // Fetch RRG data with retry
+  const fetchRRGData = async (force = false, retryCount = 2) => {
+    const cacheKey = `praxeo_rrg_${benchmark}_${timeframe}_${trailLength}`;
+
+    // 1. Instant check in memory cache
+    const memCached = memoryCacheRef.current.get(cacheKey);
+    if (!force && memCached && memCached.sectors?.length > 0) {
+      setData(memCached);
+      setSelectedSectorIds(new Set(memCached.sectors.map((s: RRGSectorItem) => s.id)));
+      setLoading(false);
+      return;
+    }
+
+    // 2. Instant check in sessionStorage
+    if (!force) {
+      try {
+        const cachedStr = sessionStorage.getItem(cacheKey);
+        if (cachedStr) {
+          const cachedObj = JSON.parse(cachedStr);
+          if (cachedObj && cachedObj.sectors?.length > 0) {
+            memoryCacheRef.current.set(cacheKey, cachedObj);
+            setData(cachedObj);
+            setSelectedSectorIds(new Set(cachedObj.sectors.map((s: RRGSectorItem) => s.id)));
+            setLoading(false);
+            return;
+          }
+        }
+      } catch {
+        // ignore
+      }
+    }
+
+    try {
+      // If we already have some data displayed, don't show full blank loading screen
+      setData(prev => {
+        if (!prev) setLoading(true);
+        else setIsRevalidating(true);
+        return prev;
+      });
+      setError(null);
 
       const url = `/api/rrg?benchmark=${encodeURIComponent(benchmark)}&timeframe=${timeframe}&trail=${trailLength}${force ? '&refresh=true' : ''}`;
       
@@ -215,18 +272,26 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
         try {
           const res = await axios.get(url, { timeout: 20000 });
           if (res.data?.success && res.data?.data) {
-            setData(res.data.data);
+            const resultData = res.data.data;
+            memoryCacheRef.current.set(cacheKey, resultData);
+            setData(resultData);
             setError(null);
             try {
-              sessionStorage.setItem(cacheKey, JSON.stringify(res.data.data));
+              sessionStorage.setItem(cacheKey, JSON.stringify(resultData));
             } catch {
               // ignore
             }
             // Initialize all selected
-            const allIds = new Set(res.data.data.sectors.map((s: RRGSectorItem) => s.id));
+            const allIds = new Set(resultData.sectors.map((s: RRGSectorItem) => s.id));
             setSelectedSectorIds(allIds);
             setPlaybackIndex(null);
             setIsPlaying(false);
+
+            // Trigger background prefetch for sibling timeframes after 1.5s
+            setTimeout(() => {
+              prefetchOtherTimeframes();
+            }, 1500);
+
             return;
           } else {
             throw new Error(res.data?.error || 'Failed to load RRG matrix');
@@ -234,18 +299,18 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
         } catch (err: any) {
           lastErr = err;
           if (attempt < retryCount) {
-            await new Promise(resolve => setTimeout(resolve, 800 * (attempt + 1)));
+            await new Promise(resolve => setTimeout(resolve, 600 * (attempt + 1)));
           }
         }
       }
       throw lastErr;
     } catch (err: any) {
       try {
-        const cacheKey = `praxeo_rrg_${benchmark}_${timeframe}_${trailLength}`;
         const cachedStr = sessionStorage.getItem(cacheKey);
         if (cachedStr) {
           const cachedObj = JSON.parse(cachedStr);
           if (cachedObj && cachedObj.sectors?.length > 0) {
+            memoryCacheRef.current.set(cacheKey, cachedObj);
             setData(cachedObj);
             setError(null);
             return;
@@ -263,6 +328,7 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
       });
     } finally {
       setLoading(false);
+      setIsRevalidating(false);
     }
   };
 
@@ -446,11 +512,11 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
           {/* Refresh */}
           <button
             onClick={() => fetchRRGData(true)}
-            disabled={loading}
+            disabled={loading || isRevalidating}
             className="p-1.5 rounded-lg bg-[#0e0e16] border border-[#222232] hover:border-[#bef264] text-slate-300 hover:text-[#bef264] transition-all disabled:opacity-50 cursor-pointer"
             title="Refresh Rotation Matrix"
           >
-            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
+            <RefreshCw className={`w-3.5 h-3.5 ${loading || isRevalidating ? 'animate-spin text-[#bef264]' : ''}`} />
           </button>
         </div>
 
