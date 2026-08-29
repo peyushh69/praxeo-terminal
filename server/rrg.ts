@@ -1,6 +1,9 @@
 import axios from 'axios';
+import YahooFinance from 'yahoo-finance2';
 import { SECTORAL_INDICES } from '../src/data/sectoralIndices.js';
 import type { RRGResponse, RRGSectorItem, RRGDataPoint, RRGQuadrant } from '../src/types.js';
+
+const yfClient = new YahooFinance({ suppressNotices: ['yahooSurvey'] });
 
 interface RawCandleData {
   dates: string[];
@@ -13,9 +16,62 @@ interface RawCandleData {
 let cachedRRG: { key: string; timestamp: number; data: RRGResponse } | null = null;
 const CACHE_TTL_MS = 2 * 60 * 1000;
 
-async function fetchHistoricalCloses(ticker: string): Promise<RawCandleData | null> {
+async function fetchHistoricalCloses(ticker: string, timeframe: 'daily' | 'weekly' = 'daily'): Promise<RawCandleData | null> {
+  // 1. Try yahoo-finance2 client
   try {
-    const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(ticker)}?range=6mo&interval=1d&includePrePost=false`;
+    const oneYearAgo = new Date();
+    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+    const period1 = oneYearAgo.toISOString().split('T')[0];
+
+    const chartRes: any = await yfClient.chart(ticker, {
+      period1,
+      interval: timeframe === 'weekly' ? '1wk' : '1d',
+    });
+
+    if (chartRes && Array.isArray(chartRes.quotes) && chartRes.quotes.length >= 15) {
+      const meta = chartRes.meta || {};
+      const regularMarketPrice = meta.regularMarketPrice || 0;
+      const chartPrevClose = meta.chartPreviousClose || meta.previousClose || 0;
+
+      const validCloses: number[] = [];
+      const validDates: string[] = [];
+
+      for (let i = 0; i < chartRes.quotes.length; i++) {
+        const q = chartRes.quotes[i];
+        const isLast = i === chartRes.quotes.length - 1;
+        let c = q.adjclose ?? q.close;
+        if ((c === null || c === undefined || isNaN(c) || c <= 0) && isLast) {
+          c = regularMarketPrice || q.open || ((q.high + q.low) / 2);
+        }
+
+        if (typeof c === 'number' && !isNaN(c) && c > 0) {
+          validCloses.push(Number(c.toFixed(2)));
+          const d = q.date instanceof Date ? q.date.toISOString().split('T')[0] : new Date(q.date).toISOString().split('T')[0];
+          validDates.push(d);
+        }
+      }
+
+      if (validCloses.length >= 15) {
+        const lastIdx = validCloses.length - 1;
+        const currentPrice = regularMarketPrice || validCloses[lastIdx];
+        const previousClose = chartPrevClose || (validCloses.length > 1 ? validCloses[lastIdx - 1] : currentPrice);
+
+        return {
+          dates: validDates,
+          closes: validCloses,
+          currentPrice: Number(currentPrice.toFixed(2)),
+          previousClose: Number(previousClose.toFixed(2)),
+        };
+      }
+    }
+  } catch {
+    // Fall through to secondary direct query
+  }
+
+  // 2. Secondary fallback via direct endpoint
+  try {
+    const interval = timeframe === 'weekly' ? '1wk' : '1d';
+    const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(ticker)}?range=6mo&interval=${interval}&includePrePost=false`;
     const response = await axios.get(url, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
@@ -143,7 +199,7 @@ export async function computeRRG(
   }
 
   // 1. Fetch Benchmark (Default: NIFTY 50)
-  let benchData = await fetchHistoricalCloses(benchmarkTicker);
+  let benchData = await fetchHistoricalCloses(benchmarkTicker, timeframe);
   if (!benchData || benchData.closes.length < 30) {
     // Synthetic fallback benchmark series
     const dates: string[] = [];
@@ -178,7 +234,7 @@ export async function computeRRG(
 
   // 3. Fetch data for all sectors in parallel
   const sectorDataPromises = targetSectors.map(async (sec) => {
-    let data = await fetchHistoricalCloses(sec.ticker);
+    let data = await fetchHistoricalCloses(sec.ticker, timeframe);
     if (!data || data.closes.length < 30) {
       const syntheticCloses = generateFallbackSectorSeries(sec.id, benchCloses);
       data = {

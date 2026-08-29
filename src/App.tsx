@@ -63,6 +63,15 @@ export default function App() {
     return () => window.removeEventListener('popstate', handleHashChange);
   }, [fetchData]);
 
+  // Automated background polling: keep breadth data continuously fresh without manual intervention
+  useEffect(() => {
+    if (view !== 'breadth') return;
+    const interval = setInterval(() => {
+      fetchData(currentIndexId, false);
+    }, 45000); // 45 seconds seamless auto-update
+    return () => clearInterval(interval);
+  }, [view, currentIndexId, fetchData]);
+
   // Direct Transition to NIFTY 50 on Enter Market Breadth
   const handleEnterBreadth = () => {
     const targetId = 'NIFTY_50';

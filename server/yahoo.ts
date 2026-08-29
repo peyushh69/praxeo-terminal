@@ -35,6 +35,75 @@ interface RawCandleData {
 }
 
 async function fetchYahooDailyChart(ticker: string): Promise<RawCandleData | null> {
+  // 1. Try yahoo-finance2 client first (handles cookies, crumb, user agents, live prices)
+  try {
+    const oneYearAgo = new Date();
+    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+    const period1 = oneYearAgo.toISOString().split('T')[0];
+
+    const chartRes: any = await yfClient.chart(ticker, {
+      period1,
+      interval: '1d',
+    });
+
+    if (chartRes && Array.isArray(chartRes.quotes) && chartRes.quotes.length >= 20) {
+      const meta = chartRes.meta || {};
+      const regularMarketPrice = meta.regularMarketPrice || 0;
+      const chartPrevClose = meta.chartPreviousClose || meta.previousClose || 0;
+
+      const validDates: string[] = [];
+      const validCloses: number[] = [];
+      const validHighs: number[] = [];
+      const validLows: number[] = [];
+      const validVolumes: number[] = [];
+
+      for (let i = 0; i < chartRes.quotes.length; i++) {
+        const q = chartRes.quotes[i];
+        const isLast = i === chartRes.quotes.length - 1;
+        let c = q.adjclose ?? q.close;
+        if ((c === null || c === undefined || isNaN(c) || c <= 0) && isLast) {
+          c = regularMarketPrice || q.open || ((q.high + q.low) / 2);
+        }
+
+        if (typeof c === 'number' && !isNaN(c) && c > 0) {
+          const d = q.date instanceof Date ? q.date.toISOString().split('T')[0] : new Date(q.date).toISOString().split('T')[0];
+          validDates.push(d);
+          validCloses.push(Number(c.toFixed(2)));
+          validHighs.push(Number((q.high || c).toFixed(2)));
+          validLows.push(Number((q.low || c).toFixed(2)));
+          validVolumes.push(q.volume || 0);
+        }
+      }
+
+      if (validCloses.length >= 20) {
+        const lastIdx = validCloses.length - 1;
+        const currentPrice = regularMarketPrice || validCloses[lastIdx];
+        const previousClose = chartPrevClose || (validCloses.length > 1 ? validCloses[lastIdx - 1] : currentPrice);
+
+        const week52High = meta.fiftyTwoWeekHigh || Math.max(...validHighs.slice(-252));
+        const week52Low = meta.fiftyTwoWeekLow || Math.min(...validLows.slice(-252));
+
+        return {
+          dates: validDates,
+          closes: validCloses,
+          highs: validHighs,
+          lows: validLows,
+          volumes: validVolumes,
+          currentPrice: Number(currentPrice.toFixed(2)),
+          previousClose: Number(previousClose.toFixed(2)),
+          dayHigh: Number((meta.regularMarketDayHigh || validHighs[lastIdx] || currentPrice).toFixed(2)),
+          dayLow: Number((meta.regularMarketDayLow || validLows[lastIdx] || currentPrice).toFixed(2)),
+          volume: meta.regularMarketVolume || validVolumes[lastIdx] || 0,
+          week52High: Number(week52High.toFixed(2)),
+          week52Low: Number(week52Low.toFixed(2)),
+        };
+      }
+    }
+  } catch (err: any) {
+    // Silently fall through to secondary direct query
+  }
+
+  // 2. Secondary fallback via direct endpoint
   try {
     const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(ticker)}?range=1y&interval=1d&includePrePost=false`;
     const response = await axios.get(url, {

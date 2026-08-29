@@ -85,6 +85,11 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
 
   useEffect(() => {
     fetchRRGData();
+    // Auto-update sector rotation matrix in background every 60 seconds
+    const interval = setInterval(() => {
+      fetchRRGData(false);
+    }, 60000);
+    return () => clearInterval(interval);
   }, [benchmark, timeframe, trailLength]);
 
   // Handle ResizeObserver for responsive SVG

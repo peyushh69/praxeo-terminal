@@ -155,15 +155,6 @@ export const Level3IndexDetail: React.FC<Level3IndexDetailProps> = ({
                 </select>
                 <ChevronDown className="w-3 h-3 text-slate-400 absolute right-1.5 sm:right-2 top-2 pointer-events-none" />
               </div>
-
-              <button
-                onClick={onRefresh}
-                disabled={loading}
-                className="p-1 sm:p-1.5 rounded-lg bg-[#0a0a10] border border-[#20202e] hover:border-[#bef264] text-slate-400 hover:text-[#bef264] transition-colors disabled:opacity-50 cursor-pointer"
-                title="Refresh Index Telemetry"
-              >
-                <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-[#bef264]' : ''}`} />
-              </button>
             </div>
           </div>
 

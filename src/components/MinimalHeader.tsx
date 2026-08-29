@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { RefreshCw, ArrowLeft, TrendingUp, TrendingDown, Clock } from 'lucide-react';
+import { ArrowLeft, TrendingUp, TrendingDown } from 'lucide-react';
 import type { MarketTickerResponse, IndexTickerItem } from '../types';
 
 interface MinimalHeaderProps {
@@ -14,30 +14,8 @@ interface MinimalHeaderProps {
 export const MinimalHeader: React.FC<MinimalHeaderProps> = ({
   level,
   onNavigateHome,
-  onRefresh,
-  loading = false,
 }) => {
-  const [time, setTime] = useState<string>('');
   const [tickerData, setTickerData] = useState<MarketTickerResponse | null>(null);
-
-  // Live IST Clock
-  useEffect(() => {
-    const updateTime = () => {
-      const now = new Date();
-      setTime(
-        now.toLocaleTimeString('en-US', {
-          timeZone: 'Asia/Kolkata',
-          hour12: false,
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit',
-        })
-      );
-    };
-    updateTime();
-    const interval = setInterval(updateTime, 1000);
-    return () => clearInterval(interval);
-  }, []);
 
   // Fetch Live Tickers (Nifty 50, Bank Nifty, Sensex, India VIX) from server
   useEffect(() => {
@@ -154,49 +132,17 @@ export const MinimalHeader: React.FC<MinimalHeaderProps> = ({
             </span>
           </button>
 
-          {/* Right Side: TIME BOX (White background, cross/angled box, black text) & Navigation Controls */}
-          <div className="flex items-center gap-3 sm:gap-4">
-            
-            {/* Time Box: Cross/Slanted Box with Pure White Background and Pure Black Text */}
-            <div
-              id="header-time-box"
-              className="transform -skew-x-12 px-3 py-1 bg-white border border-white rounded-[2px] shadow-sm flex items-center justify-center"
-              title="Current Indian Standard Time (IST)"
-            >
-              <div className="transform skew-x-12 flex items-center gap-1.5 text-black">
-                <Clock className="w-3.5 h-3.5 text-black stroke-[2.5]" />
-                <span className="font-pixel text-[9px] sm:text-[10px] font-bold tracking-wider text-black tabular-nums">
-                  {time || '--:--:--'}
-                </span>
-                <span className="font-pixel text-[8px] font-bold text-slate-800 hidden xs:inline">
-                  IST
-                </span>
-              </div>
-            </div>
-
-            {/* Sub-page Navigation & Refresh Controls */}
+          {/* Right Side: Professional HOME Navigation Button on Subpages */}
+          <div className="flex items-center">
             {level > 1 && (
               <button
                 onClick={onNavigateHome}
                 id="btn-header-home"
-                className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#0a0a10] border border-[#222230] hover:border-[#ff3b00] text-slate-300 hover:text-white font-pixel text-[8px] sm:text-[9px] transition-all cursor-pointer group shadow-sm"
+                className="flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#0d0d15] border border-[#222234] hover:border-[#bef264] text-slate-300 hover:text-white font-pixel text-[9px] sm:text-[10px] tracking-wider transition-all cursor-pointer group shadow-sm"
                 title="Return to Home"
               >
-                <ArrowLeft className="w-3 h-3 text-[#ff3b00] group-hover:-translate-x-0.5 transition-transform" />
+                <ArrowLeft className="w-3.5 h-3.5 text-[#bef264] group-hover:-translate-x-0.5 transition-transform" />
                 <span>HOME</span>
-              </button>
-            )}
-
-            {onRefresh && level === 3 && (
-              <button
-                onClick={onRefresh}
-                disabled={loading}
-                id="btn-header-sync"
-                className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#0a0a10] border border-[#222230] hover:border-[#bef264] text-slate-300 hover:text-[#bef264] font-pixel text-[8px] sm:text-[9px] transition-all disabled:opacity-50 cursor-pointer"
-                title="Refresh Market Data"
-              >
-                <RefreshCw className={`w-3 h-3 text-[#bef264] ${loading ? 'animate-spin' : ''}`} />
-                <span className="hidden xs:inline">SYNC</span>
               </button>
             )}
           </div>
