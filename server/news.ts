@@ -154,7 +154,7 @@ export async function fetchLiveMarketNews(forceRefresh = false): Promise<MarketN
     },
   ];
 
-  // 2. Additional Indian Financial Feeds (Moneycontrol, Economic Times, Livemint)
+  // 2. Direct Indian Financial Feeds (Moneycontrol, Economic Times, Livemint, Business Standard, The Hindu BusinessLine, Financial Express)
   const directRssFeeds = [
     {
       url: 'https://www.moneycontrol.com/rss/marketreports.xml',
@@ -164,7 +164,7 @@ export async function fetchLiveMarketNews(forceRefresh = false): Promise<MarketN
     },
     {
       url: 'https://economictimes.indiatimes.com/markets/rssfeeds/1977021501.cms',
-      source: 'Economic Times',
+      source: 'The Economic Times',
       code: 'ET',
       category: 'MARKET' as const,
     },
@@ -174,13 +174,41 @@ export async function fetchLiveMarketNews(forceRefresh = false): Promise<MarketN
       code: 'MINT',
       category: 'MARKET' as const,
     },
+    {
+      url: 'https://www.business-standard.com/rss/markets-106.rss',
+      source: 'Business Standard',
+      code: 'BS',
+      category: 'MARKET' as const,
+    },
+    {
+      url: 'https://www.thehindubusinessline.com/markets/feeder/default.rss',
+      source: 'The Hindu BusinessLine',
+      code: 'BL',
+      category: 'MARKET' as const,
+    },
+    {
+      url: 'https://www.financialexpress.com/market/feed/',
+      source: 'Financial Express',
+      code: 'FE',
+      category: 'MARKET' as const,
+    },
   ];
 
   const allFeeds = [...googleNewsFeeds, ...directRssFeeds];
 
   const feedPromises = allFeeds.map(async (f) => {
     try {
-      const feed = await parser.parseURL(f.url);
+      // Fetch XML string using axios with custom user-agent and timeout, then parse
+      const res = await axios.get(f.url, {
+        timeout: 3500,
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+          'Accept': 'application/rss+xml, application/xml, text/xml, */*',
+        },
+      });
+
+      if (!res.data) return [];
+      const feed = await parser.parseString(res.data);
       if (!feed || !feed.items) return [];
 
       return feed.items.slice(0, 10).map((item, idx) => {
@@ -192,15 +220,20 @@ export async function fetchLiveMarketNews(forceRefresh = false): Promise<MarketN
         if (cleanTitle.includes(' - ')) {
           const parts = cleanTitle.split(' - ');
           const potentialSource = parts[parts.length - 1].trim();
-          if (potentialSource.length < 30) {
+          if (potentialSource.length < 35) {
             extractedSource = potentialSource;
-            if (potentialSource.toLowerCase().includes('economic times')) sourceCode = 'ET';
-            else if (potentialSource.toLowerCase().includes('moneycontrol')) sourceCode = 'MC';
-            else if (potentialSource.toLowerCase().includes('livemint') || potentialSource.toLowerCase().includes('mint')) sourceCode = 'MINT';
-            else if (potentialSource.toLowerCase().includes('reuters')) sourceCode = 'RT';
-            else if (potentialSource.toLowerCase().includes('bloomberg')) sourceCode = 'BBG';
-            else if (potentialSource.toLowerCase().includes('business standard')) sourceCode = 'BS';
-            else if (potentialSource.toLowerCase().includes('cnbc')) sourceCode = 'CNBC';
+            const lowerSrc = potentialSource.toLowerCase();
+            if (lowerSrc.includes('economic times')) sourceCode = 'ET';
+            else if (lowerSrc.includes('moneycontrol')) sourceCode = 'MC';
+            else if (lowerSrc.includes('livemint') || lowerSrc.includes('mint')) sourceCode = 'MINT';
+            else if (lowerSrc.includes('business standard')) sourceCode = 'BS';
+            else if (lowerSrc.includes('businessline') || lowerSrc.includes('business line') || lowerSrc.includes('the hindu')) sourceCode = 'BL';
+            else if (lowerSrc.includes('financial express')) sourceCode = 'FE';
+            else if (lowerSrc.includes('reuters')) sourceCode = 'RT';
+            else if (lowerSrc.includes('bloomberg') || lowerSrc.includes('bq prime')) sourceCode = 'BBG';
+            else if (lowerSrc.includes('cnbc')) sourceCode = 'CNBC';
+            else if (lowerSrc.includes('ndtv')) sourceCode = 'NDTV';
+            else if (lowerSrc.includes('zee')) sourceCode = 'ZEE';
             else sourceCode = potentialSource.substring(0, 4).toUpperCase();
             
             cleanTitle = parts.slice(0, parts.length - 1).join(' - ').trim();
@@ -225,8 +258,28 @@ export async function fetchLiveMarketNews(forceRefresh = false): Promise<MarketN
         } as MarketNewsItem;
       });
     } catch (e) {
-      // Ignore individual feed network failure
-      return [];
+      // Fallback to parser.parseURL if axios direct parse had issue
+      try {
+        const feed = await parser.parseURL(f.url);
+        if (!feed || !feed.items) return [];
+        return feed.items.slice(0, 10).map((item, idx) => {
+          const cleanTitle = item.title || '';
+          return {
+            id: item.guid || item.link || `${f.code}-${idx}-${Date.now()}`,
+            title: cleanTitle,
+            link: item.link || '#',
+            source: f.source,
+            sourceCode: f.code,
+            pubDate: item.pubDate || new Date().toISOString(),
+            timeAgo: formatTimeAgo(item.pubDate || ''),
+            relatedStock: detectStock(cleanTitle),
+            sentiment: analyzeSentiment(cleanTitle),
+            category: f.category,
+          } as MarketNewsItem;
+        });
+      } catch {
+        return [];
+      }
     }
   });
 
