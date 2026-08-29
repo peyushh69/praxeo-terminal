@@ -298,17 +298,9 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
             <Compass className="w-5 h-5 text-[#ff3b00]" />
           </div>
           <div>
-            <div className="flex items-center gap-2 flex-wrap">
-              <h2 className="font-pixel text-sm sm:text-base text-white tracking-wide">
-                SECTOR ROTATION MATRIX
-              </h2>
-              <span className="px-1.5 py-0.5 rounded text-[8px] font-pixel bg-[#161622] text-[#bef264] border border-[#262638]">
-                OMNIS MOMENTUM MODEL
-              </span>
-            </div>
-            <p className="text-slate-400 text-xs mt-0.5 font-mono">
-              Sector momentum vs Benchmark ({data?.benchmark.name || 'NIFTY 50'} • RS-Ratio vs RS-Momentum)
-            </p>
+            <h2 className="font-pixel text-sm sm:text-base text-white tracking-wide">
+              SECTOR ROTATION MATRIX
+            </h2>
           </div>
         </div>
 
