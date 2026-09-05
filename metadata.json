@@ -1,6 +1,6 @@
 {
   "name": "Praxeo",
-  "description": "Praxeo - Institutional Market Breadth & Sector Rotation Terminal tracking Nifty 50 and Sectoral Indices in real-time.",
+  "description": "Praxeo - Institutional Market Breadth, Sector Rotation Matrix & Multi-Index Cross-Sectional Return Scatter Terminal (Nifty 50, 500, Next 50, Midcap, Smallcap).",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

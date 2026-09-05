@@ -762,8 +762,57 @@ export async function fetchMarketTickers() {
     dayLow: 10.53,
   };
 
+  let niftyNext50 = {
+    symbol: 'NIFTY NEXT 50',
+    name: 'NIFTY NEXT 50',
+    price: 72880.90,
+    change: 114.50,
+    changePercent: 0.16,
+    dayHigh: 73120.00,
+    dayLow: 72650.00,
+  };
+
+  let niftyMidcap = {
+    symbol: 'NIFTY MIDCAP',
+    name: 'NIFTY MIDCAP 100',
+    price: 20197.30,
+    change: 48.20,
+    changePercent: 0.24,
+    dayHigh: 20280.00,
+    dayLow: 20110.00,
+  };
+
+  let niftySmallcap = {
+    symbol: 'NIFTY SMALLCAP',
+    name: 'NIFTY SMALLCAP 100',
+    price: 20095.45,
+    change: -18.70,
+    changePercent: -0.09,
+    dayHigh: 20180.00,
+    dayLow: 20020.00,
+  };
+
+  let nifty500 = {
+    symbol: 'NIFTY 500',
+    name: 'NIFTY 500',
+    price: 23254.15,
+    change: 65.40,
+    changePercent: 0.28,
+    dayHigh: 23320.00,
+    dayLow: 23190.00,
+  };
+
   try {
-    const quotes: any = await yfClient.quote(['^NSEI', '^NSEBANK', '^BSESN', '^INDIAVIX']);
+    const quotes: any = await yfClient.quote([
+      '^NSEI',
+      '^NSEBANK',
+      '^BSESN',
+      '^INDIAVIX',
+      '^NSMIDCP',
+      '^CRSMID',
+      '^CNXSC',
+      '^CRSLDX',
+    ]);
     if (Array.isArray(quotes)) {
       for (const q of quotes) {
         if (!q || !q.symbol) continue;
@@ -782,6 +831,14 @@ export async function fetchMarketTickers() {
             sensex = { symbol: 'SENSEX', name: 'BSE SENSEX', price: currentPrice, change, changePercent, dayHigh, dayLow };
           } else if (q.symbol === '^INDIAVIX') {
             indiaVix = { symbol: 'INDIA VIX', name: 'INDIA VIX', price: currentPrice, change, changePercent, dayHigh, dayLow };
+          } else if (q.symbol === '^NSMIDCP') {
+            niftyNext50 = { symbol: 'NIFTY NEXT 50', name: 'NIFTY NEXT 50', price: currentPrice, change, changePercent, dayHigh, dayLow };
+          } else if (q.symbol === '^CRSMID') {
+            niftyMidcap = { symbol: 'NIFTY MIDCAP', name: 'NIFTY MIDCAP 100', price: currentPrice, change, changePercent, dayHigh, dayLow };
+          } else if (q.symbol === '^CNXSC') {
+            niftySmallcap = { symbol: 'NIFTY SMALLCAP', name: 'NIFTY SMALLCAP 100', price: currentPrice, change, changePercent, dayHigh, dayLow };
+          } else if (q.symbol === '^CRSLDX') {
+            nifty500 = { symbol: 'NIFTY 500', name: 'NIFTY 500', price: currentPrice, change, changePercent, dayHigh, dayLow };
           }
         }
       }
@@ -790,13 +847,26 @@ export async function fetchMarketTickers() {
     console.warn('Ticker fetch fallback using baseline quotes');
   }
 
-  const tickersList = [nifty, bankNifty, sensex, indiaVix];
+  const tickersList = [
+    nifty,
+    niftyNext50,
+    niftyMidcap,
+    niftySmallcap,
+    nifty500,
+    bankNifty,
+    sensex,
+    indiaVix,
+  ];
 
   const result = {
     nifty,
     bankNifty,
     sensex,
     indiaVix,
+    nifty500,
+    niftyNext50,
+    niftyMidcap,
+    niftySmallcap,
     tickersList,
     isMarketOpen,
     marketStatusText: isMarketOpen ? 'NSE LIVE' : 'NSE CLOSED',

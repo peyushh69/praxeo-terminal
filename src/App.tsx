@@ -4,13 +4,14 @@ import { MinimalHeader } from './components/MinimalHeader';
 import { Level1Homepage } from './components/Level1Homepage';
 import { Level3IndexDetail } from './components/Level3IndexDetail';
 import { RRGView } from './components/RRGView';
+import { NiftyReturnScatterView } from './components/NiftyReturnScatterView';
 import { SECTORAL_INDICES } from './data/sectoralIndices';
 import type { MarketBreadthResponse } from './types';
 import { AlertCircle, RefreshCw } from 'lucide-react';
 
 export default function App() {
-  // Navigation view: 'home' | 'breadth' | 'rotation'
-  const [view, setView] = useState<'home' | 'breadth' | 'rotation'>('home');
+  // Navigation view: 'home' | 'breadth' | 'rotation' | 'scatter'
+  const [view, setView] = useState<'home' | 'breadth' | 'rotation' | 'scatter'>('home');
   const [currentIndexId, setCurrentIndexId] = useState<string>('NIFTY_50');
 
   // Breadth Data State
@@ -98,7 +99,9 @@ export default function App() {
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash;
-      if (hash.startsWith('#rotation') || hash.startsWith('#rrg')) {
+      if (hash.startsWith('#scatter')) {
+        setView('scatter');
+      } else if (hash.startsWith('#rotation') || hash.startsWith('#rrg')) {
         setView('rotation');
       } else if (hash.startsWith('#breadth')) {
         setView('breadth');
@@ -143,6 +146,13 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // Direct Transition to Nifty 50 Cross-Sectional Return Scatter Plot
+  const handleEnterScatter = () => {
+    setView('scatter');
+    window.location.hash = '#scatter';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   // Switch Sector Index directly in Breadth
   const handleSelectIndex = (indexId: string) => {
     setCurrentIndexId(indexId);
@@ -175,11 +185,19 @@ export default function App() {
 
       {/* Main Screen Router */}
       <main className="flex-1 flex flex-col">
-        {/* HOMEPAGE: 2 Quantitative Indicators (Market Breadth + Sector Rotation Matrix) */}
+        {/* HOMEPAGE: 3 Quantitative Indicators (Market Breadth + Sector Rotation Matrix + Return Scatter) */}
         {view === 'home' && (
           <Level1Homepage
             onEnterBreadth={handleEnterBreadth}
             onEnterRotation={handleEnterRotation}
+            onEnterScatter={handleEnterScatter}
+          />
+        )}
+
+        {/* INDICATOR 3: NIFTY 50 CROSS-SECTIONAL RETURN SCATTER PLOT */}
+        {view === 'scatter' && (
+          <NiftyReturnScatterView
+            onBackToHome={handleNavigateHome}
           />
         )}
 

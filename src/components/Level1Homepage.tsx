@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowRight, Compass, Layers, Quote, Sparkles } from 'lucide-react';
+import { ArrowRight, Compass, Layers, Quote, Sparkles, Sliders } from 'lucide-react';
 import { LiveMarketNewsTerminal } from './LiveMarketNewsTerminal';
+import { SECTORAL_INDICES } from '../data/sectoralIndices';
 
 interface Level1HomepageProps {
   onEnterBreadth: () => void;
   onEnterRotation: () => void;
+  onEnterScatter: () => void;
 }
 
 interface MarketQuote {
@@ -95,7 +97,11 @@ const MARKET_QUOTES: MarketQuote[] = [
   },
 ];
 
-export const Level1Homepage: React.FC<Level1HomepageProps> = ({ onEnterBreadth, onEnterRotation }) => {
+export const Level1Homepage: React.FC<Level1HomepageProps> = ({
+  onEnterBreadth,
+  onEnterRotation,
+  onEnterScatter,
+}) => {
   const [quoteIndex, setQuoteIndex] = useState<number>(0);
 
   // Initialize and increment loop on every visit/reload (1 -> 2 -> ... -> 20 -> 1)
@@ -139,27 +145,27 @@ export const Level1Homepage: React.FC<Level1HomepageProps> = ({ onEnterBreadth, 
       {/* 2. MAIN 2-COLUMN SPLIT DASHBOARD */}
       <div className="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         
-        {/* LEFT COLUMN: 2 Primary Launch Cards (Market Breadth & Rotation Matrix) */}
-        <div className="lg:col-span-5 flex flex-col space-y-4">
+        {/* LEFT COLUMN: 3 Primary Launch Cards (Market Breadth, Rotation Matrix & Return Scatter) */}
+        <div className="lg:col-span-5 flex flex-col space-y-3.5">
           
           <div className="flex items-center justify-between px-1">
             <span className="font-pixel text-[10px] text-[#ff8800] tracking-wider">
               PRIMARY SUITE MODULES
             </span>
             <span className="text-slate-500 font-mono text-[10px]">
-              2 ACTIVE ENGINES
+              3 ACTIVE ENGINES
             </span>
           </div>
 
           {/* OPTION 01: MARKET BREADTH */}
-          <div className="w-full bg-[#050508] border-2 border-[#ff3b00]/50 hover:border-[#ff3b00] rounded-xl p-5 text-left space-y-4 transition-all duration-150 shadow-lg group">
+          <div className="w-full bg-[#050508] border-2 border-[#ff3b00]/50 hover:border-[#ff3b00] rounded-xl p-4 sm:p-4.5 text-left space-y-3 transition-all duration-150 shadow-lg group">
             <div className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-[#ff3b00]/10 border border-[#ff3b00]/40 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                  <Layers className="w-5 h-5 text-[#ff3b00]" />
+                <div className="w-9 h-9 rounded-lg bg-[#ff3b00]/10 border border-[#ff3b00]/40 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                  <Layers className="w-4.5 h-4.5 text-[#ff3b00]" />
                 </div>
                 <div>
-                  <h2 className="font-pixel text-sm sm:text-base text-white tracking-wide">
+                  <h2 className="font-pixel text-xs sm:text-sm text-white tracking-wide">
                     MARKET BREADTH
                   </h2>
                   <p className="text-[10px] text-slate-400 font-mono">
@@ -168,29 +174,29 @@ export const Level1Homepage: React.FC<Level1HomepageProps> = ({ onEnterBreadth, 
                 </div>
               </div>
               <span className="px-2 py-0.5 rounded text-[8px] font-pixel bg-[#160808] text-[#ff3b00] border border-[#ff3b00]/40">
-                15 SECTORS
+                {SECTORAL_INDICES.length} INDICES
               </span>
             </div>
 
             <button
               id="btn-market-breadth-launch"
               onClick={onEnterBreadth}
-              className="w-full py-3.5 bg-[#ff3b00] hover:bg-[#ff4d14] text-black font-pixel text-xs tracking-wider rounded-lg transition-all flex items-center justify-center gap-2 cursor-pointer font-bold shadow-md active:scale-[0.99]"
+              className="w-full py-2.5 sm:py-3 bg-[#ff3b00] hover:bg-[#ff4d14] text-black font-pixel text-[11px] tracking-wider rounded-lg transition-all flex items-center justify-center gap-2 cursor-pointer font-bold shadow-md active:scale-[0.99]"
             >
               <span>LAUNCH MARKET BREADTH</span>
-              <ArrowRight className="w-4 h-4 text-black" />
+              <ArrowRight className="w-3.5 h-3.5 text-black" />
             </button>
           </div>
 
           {/* OPTION 02: SECTOR ROTATION MATRIX */}
-          <div className="w-full bg-[#050508] border-2 border-[#bef264]/50 hover:border-[#bef264] rounded-xl p-5 text-left space-y-4 transition-all duration-150 shadow-lg group">
+          <div className="w-full bg-[#050508] border-2 border-[#bef264]/50 hover:border-[#bef264] rounded-xl p-4 sm:p-4.5 text-left space-y-3 transition-all duration-150 shadow-lg group">
             <div className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-[#bef264]/10 border border-[#bef264]/40 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                  <Compass className="w-5 h-5 text-[#bef264]" />
+                <div className="w-9 h-9 rounded-lg bg-[#bef264]/10 border border-[#bef264]/40 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                  <Compass className="w-4.5 h-4.5 text-[#bef264]" />
                 </div>
                 <div>
-                  <h2 className="font-pixel text-sm sm:text-base text-white tracking-wide">
+                  <h2 className="font-pixel text-xs sm:text-sm text-white tracking-wide">
                     SECTOR ROTATION MATRIX
                   </h2>
                   <p className="text-[10px] text-slate-400 font-mono">
@@ -206,10 +212,45 @@ export const Level1Homepage: React.FC<Level1HomepageProps> = ({ onEnterBreadth, 
             <button
               id="btn-rotation-matrix-launch"
               onClick={onEnterRotation}
-              className="w-full py-3.5 bg-[#bef264] hover:bg-[#cbf77f] text-black font-pixel text-xs tracking-wider rounded-lg transition-all flex items-center justify-center gap-2 cursor-pointer font-bold shadow-md active:scale-[0.99]"
+              className="w-full py-2.5 sm:py-3 bg-[#bef264] hover:bg-[#cbf77f] text-black font-pixel text-[11px] tracking-wider rounded-lg transition-all flex items-center justify-center gap-2 cursor-pointer font-bold shadow-md active:scale-[0.99]"
             >
               <span>LAUNCH ROTATION MATRIX</span>
-              <ArrowRight className="w-4 h-4 text-black" />
+              <ArrowRight className="w-3.5 h-3.5 text-black" />
+            </button>
+          </div>
+
+          {/* OPTION 03: NIFTY 50 CROSS-SECTIONAL RETURN SCATTER (KOYFIN STYLE) */}
+          <div className="w-full bg-[#050508] border-2 border-[#00e5ff]/50 hover:border-[#00e5ff] rounded-xl p-4 sm:p-4.5 text-left space-y-3 transition-all duration-150 shadow-lg group">
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-lg bg-[#00e5ff]/10 border border-[#00e5ff]/40 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                  <Sliders className="w-4.5 h-4.5 text-[#00e5ff]" />
+                </div>
+                <div>
+                  <h2 className="font-pixel text-xs sm:text-sm text-white tracking-wide flex items-center gap-2">
+                    <span>RETURN SCATTER PLOT</span>
+                  </h2>
+                  <p className="text-[10px] text-slate-400 font-mono">
+                    Koyfin-Style Cross-Sectional Alpha & Regression
+                  </p>
+                </div>
+              </div>
+              <span className="px-2 py-0.5 rounded text-[8px] font-pixel bg-[#03141a] text-[#00e5ff] border border-[#00e5ff]/40">
+                5 BENCHMARKS
+              </span>
+            </div>
+
+            <p className="text-[10px] text-slate-400 font-mono">
+              Koyfin-Style Alpha Matrix for Nifty 50, 500, Next 50, Midcap & Smallcap
+            </p>
+
+            <button
+              id="btn-scatter-plot-launch"
+              onClick={onEnterScatter}
+              className="w-full py-2.5 sm:py-3 bg-[#00e5ff] hover:bg-[#38bdf8] text-black font-pixel text-[11px] tracking-wider rounded-lg transition-all flex items-center justify-center gap-2 cursor-pointer font-bold shadow-md active:scale-[0.99]"
+            >
+              <span>LAUNCH SCATTER PLOT</span>
+              <ArrowRight className="w-3.5 h-3.5 text-black" />
             </button>
           </div>
 

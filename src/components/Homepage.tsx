@@ -27,6 +27,8 @@ import {
   ExternalLink,
   Sparkles,
   Search,
+  Compass,
+  Globe,
 } from 'lucide-react';
 import { SECTORAL_INDICES, type SectoralIndexDef } from '../data/sectoralIndices';
 
@@ -38,6 +40,9 @@ interface HomepageProps {
 const getSectorIcon = (iconName: string, className = 'w-4 h-4') => {
   switch (iconName) {
     case 'Activity': return <Activity className={className} />;
+    case 'TrendingUp': return <TrendingUp className={className} />;
+    case 'Compass': return <Compass className={className} />;
+    case 'Globe': return <Globe className={className} />;
     case 'Landmark': return <Landmark className={className} />;
     case 'Car': return <Car className={className} />;
     case 'Cpu': return <Cpu className={className} />;
@@ -191,7 +196,7 @@ export const Homepage: React.FC<HomepageProps> = ({ onSelectModule }) => {
                     </div>
                   </div>
                   <p className="text-xs sm:text-sm text-slate-300 leading-relaxed mt-3 max-w-3xl">
-                    Live quantitative tracking of stocks trading above <span className="text-amber-300 font-bold">EMA 9, 20, 50, 100 & 200</span>, <span className="text-emerald-400 font-bold">RSI(14)</span> momentum strength, <span className="text-cyan-400 font-bold">MACD Crossovers</span>, and <span className="text-[#ff3b00] font-bold">Golden Stack (9&gt;20&gt;50&gt;100&gt;200)</span> setups across Nifty 50 and all 14 NSE Sectoral Indices.
+                    Live quantitative tracking of stocks trading above <span className="text-amber-300 font-bold">EMA 9, 20, 50, 100 & 200</span>, <span className="text-emerald-400 font-bold">RSI(14)</span> momentum strength, <span className="text-cyan-400 font-bold">MACD Crossovers</span>, and <span className="text-[#ff3b00] font-bold">Golden Stack (9&gt;20&gt;50&gt;100&gt;200)</span> setups across Nifty 50, Nifty 500, Nifty Next 50, Midcap, Smallcap, and all 14 NSE Sectoral Indices.
                   </p>
                 </div>
 
@@ -206,7 +211,7 @@ export const Homepage: React.FC<HomepageProps> = ({ onSelectModule }) => {
                     <ArrowRight className="w-5 h-5" />
                   </button>
                   <span className="text-[11px] text-center text-slate-400">
-                    Direct access to Nifty 50 & 14 Sectoral Indices
+                    Direct access to Nifty 50, 500, Next 50, Midcap, Smallcap & Sectors
                   </span>
                 </div>
               </div>
@@ -214,10 +219,10 @@ export const Homepage: React.FC<HomepageProps> = ({ onSelectModule }) => {
               {/* Quick Jump Sector Grid inside the Featured Box */}
               <div className="pt-4 border-t border-[#1c1d24]">
                 <div className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center justify-between">
-                  <span>Quick Sector Launcher:</span>
-                  <span className="text-[11px] text-slate-500">Click any sector to open its breadth tracker</span>
+                  <span>Quick Index & Sector Launcher:</span>
+                  <span className="text-[11px] text-slate-500">Click any index or sector to open its breadth tracker</span>
                 </div>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-8 gap-2">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-7 gap-2">
                   {SECTORAL_INDICES.map(idx => (
                     <button
                       key={idx.id}
@@ -251,10 +256,10 @@ export const Homepage: React.FC<HomepageProps> = ({ onSelectModule }) => {
             <div>
               <h2 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2">
                 <Layers className="w-5 h-5 text-[#ff3b00]" />
-                NSE SECTORAL INDICES SUITE ({SECTORAL_INDICES.length})
+                NSE BROAD MARKET & SECTORAL INDICES SUITE ({SECTORAL_INDICES.length})
               </h2>
               <p className="text-xs text-slate-400">
-                Detailed quantitative participation metrics available for every Indian market sector
+                Detailed quantitative participation metrics available for Indian broad market benchmarks and sectors
               </p>
             </div>
 

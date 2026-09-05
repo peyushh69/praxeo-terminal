@@ -49,6 +49,38 @@ export const MinimalHeader: React.FC<MinimalHeaderProps> = ({
     changePercent: 0.35,
   };
 
+  const niftyNext50: IndexTickerItem = tickerData?.niftyNext50 || {
+    symbol: 'NIFTY NEXT 50',
+    name: 'NIFTY NEXT 50',
+    price: 72880.90,
+    change: 114.50,
+    changePercent: 0.16,
+  };
+
+  const niftyMidcap: IndexTickerItem = tickerData?.niftyMidcap || {
+    symbol: 'NIFTY MIDCAP',
+    name: 'NIFTY MIDCAP 100',
+    price: 20197.30,
+    change: 48.20,
+    changePercent: 0.24,
+  };
+
+  const niftySmallcap: IndexTickerItem = tickerData?.niftySmallcap || {
+    symbol: 'NIFTY SMALLCAP',
+    name: 'NIFTY SMALLCAP 100',
+    price: 20095.45,
+    change: -18.70,
+    changePercent: -0.09,
+  };
+
+  const nifty500: IndexTickerItem = tickerData?.nifty500 || {
+    symbol: 'NIFTY 500',
+    name: 'NIFTY 500',
+    price: 23254.15,
+    change: 65.40,
+    changePercent: 0.28,
+  };
+
   const bankNifty: IndexTickerItem = tickerData?.bankNifty || {
     symbol: 'BANK NIFTY',
     name: 'NIFTY BANK',
@@ -73,8 +105,12 @@ export const MinimalHeader: React.FC<MinimalHeaderProps> = ({
     changePercent: -3.50,
   };
 
-  const tickerItems: IndexTickerItem[] = [
+  const tickerItems: IndexTickerItem[] = tickerData?.tickersList || [
     nifty,
+    niftyNext50,
+    niftyMidcap,
+    niftySmallcap,
+    nifty500,
     bankNifty,
     sensex,
     indiaVix,

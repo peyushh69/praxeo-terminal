@@ -179,6 +179,10 @@ export interface MarketTickerResponse {
   sensex: IndexTickerItem;
   bankNifty: IndexTickerItem;
   indiaVix: IndexTickerItem;
+  nifty500?: IndexTickerItem;
+  niftyNext50?: IndexTickerItem;
+  niftyMidcap?: IndexTickerItem;
+  niftySmallcap?: IndexTickerItem;
   tickersList?: IndexTickerItem[];
   isMarketOpen: boolean;
   marketStatusText: string;
@@ -254,4 +258,57 @@ export interface MarketNewsItem {
   };
   sentiment?: 'BULLISH' | 'BEARISH' | 'NEUTRAL';
   category: 'MARKET' | 'ECONOMY' | 'CORPORATE' | 'COMMODITY' | 'GLOBAL';
+}
+
+export type ScatterTimeframe = '1D' | '1W' | '1M' | '3M' | '6M' | '1Y';
+
+export type ScatterQuadrant = 'leaders' | 'reversals' | 'pullbacks' | 'laggards';
+
+export interface NiftyScatterConstituentItem {
+  symbol: string;
+  ticker: string;
+  name: string;
+  sector: string;
+  weight: number; // e.g. 11.58%
+  currentPrice: number;
+  returns: Record<ScatterTimeframe, number>;
+}
+
+export interface ScatterMatrixBenchmark {
+  symbol: string;
+  name: string;
+  ticker: string;
+  currentPrice: number;
+  returns: Record<ScatterTimeframe, number>;
+}
+
+export interface ScatterMatrixResponse {
+  indexId?: string;
+  indexName?: string;
+  benchmark: ScatterMatrixBenchmark;
+  constituents: NiftyScatterConstituentItem[];
+  lastUpdated: string;
+}
+
+export interface ScatterRegressionMetrics {
+  slope: number;
+  intercept: number;
+  rSquared: number;
+  correlation: number;
+  equation: string;
+}
+
+export interface ScatterDataPoint {
+  symbol: string;
+  name: string;
+  sector: string;
+  weight: number;
+  currentPrice: number;
+  xReturn: number;
+  yReturn: number;
+  xAlpha: number; // vs benchmark
+  yAlpha: number; // vs benchmark
+  weightedContribY: number; // Point_Contribution = (weight / 100) * (yReturn / 100) * Nifty_Start_Price
+  weightedContribX: number; // Point_Contribution = (weight / 100) * (xReturn / 100) * Nifty_Start_Price
+  quadrant: ScatterQuadrant;
 }

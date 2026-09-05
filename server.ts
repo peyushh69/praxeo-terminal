@@ -3,6 +3,7 @@ import path from 'path';
 import { createServer as createViteServer } from 'vite';
 import { fetchMarketBreadth, fetchMarketTickers } from './server/yahoo.js';
 import { computeRRG } from './server/rrg.js';
+import { computeNiftyScatterMatrix } from './server/scatter.js';
 import { fetchLiveMarketNews } from './server/news.js';
 import { SECTORAL_INDICES } from './src/data/sectoralIndices.js';
 
@@ -41,6 +42,19 @@ async function startServer() {
     } catch (error: any) {
       console.error('Error in /api/rrg:', error);
       res.status(500).json({ success: false, error: error.message || 'Failed to compute Relative Rotation Graph' });
+    }
+  });
+
+  // NIFTY & Sector Cross-Sectional Return Scatter & Alpha Matrix
+  app.get('/api/scatter', async (req, res) => {
+    try {
+      const indexId = (req.query.index as string) || 'NIFTY_50';
+      const forceRefresh = req.query.refresh === 'true';
+      const data = await computeNiftyScatterMatrix(indexId, forceRefresh);
+      res.json({ success: true, data });
+    } catch (error: any) {
+      console.error('Error in /api/scatter:', error);
+      res.status(500).json({ success: false, error: error.message || 'Failed to compute Return Scatter Matrix' });
     }
   });
 
