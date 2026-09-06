@@ -43,10 +43,10 @@ export interface BenchmarkChoice {
 
 export const SCATTER_BENCHMARKS: BenchmarkChoice[] = [
   { id: 'NIFTY_50', name: 'NIFTY 50', shortName: 'NIFTY 50', ticker: '^NSEI', count: 50, badge: 'Large Cap', description: '50 Bluechip Leaders' },
-  { id: 'NIFTY_500', name: 'NIFTY 500', shortName: 'NIFTY 500', ticker: '^CRSLDX', count: 50, badge: 'Broad 500', description: 'Broad Market Heavyweights' },
+  { id: 'NIFTY_500', name: 'NIFTY 500', shortName: 'NIFTY 500', ticker: '^CRSLDX', count: 500, badge: 'Broad 500', description: 'Broad Market 500 Constituents' },
   { id: 'NIFTY_NEXT_50', name: 'NIFTY NEXT 50', shortName: 'NEXT 50', ticker: '^NSMIDCP', count: 50, badge: 'Large Cap', description: '50 Next Large-Cap Bluechips' },
-  { id: 'NIFTY_MIDCAP', name: 'NIFTY MIDCAP 100', shortName: 'MIDCAP 100', ticker: '^CRSMID', count: 50, badge: 'Mid Cap', description: '100 Mid-Cap Growth Leaders' },
-  { id: 'NIFTY_SMALLCAP', name: 'NIFTY SMALLCAP 100', shortName: 'SMALLCAP 100', ticker: '^CNXSC', count: 50, badge: 'Small Cap', description: '100 High-Beta Small-Cap Momentum' },
+  { id: 'NIFTY_MIDCAP', name: 'NIFTY MIDCAP 100', shortName: 'MIDCAP 100', ticker: '^CRSMID', count: 100, badge: 'Mid Cap', description: '100 Mid-Cap Growth Leaders' },
+  { id: 'NIFTY_SMALLCAP', name: 'NIFTY SMALLCAP 100', shortName: 'SMALLCAP 100', ticker: '^CNXSC', count: 100, badge: 'Small Cap', description: '100 High-Beta Small-Cap Momentum' },
 ];
 
 interface NiftyReturnScatterViewProps {

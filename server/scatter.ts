@@ -17,7 +17,7 @@ const CACHE_TTL_MS = 4 * 60 * 1000; // 4 minutes cache per index
 
 // Ticker-level closes cache so overlapping stocks across indices (like Reliance in Nifty 50 and Nifty 500) aren't refetched
 const tickerClosesCache = new Map<string, { closes: number[]; currentPrice: number; timestamp: number }>();
-const TICKER_CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutes cache per stock
+const TICKER_CACHE_TTL_MS = 15 * 60 * 1000; // 15 minutes cache per stock
 
 // Trading days corresponding to each timeframe
 const TIMEFRAME_DAYS: Record<ScatterTimeframe, number> = {
@@ -42,7 +42,91 @@ function calculateLookbackReturn(closes: number[], lookbackDays: number): number
   return Number((((currentPx - pastPx) / pastPx) * 100).toFixed(2));
 }
 
-// Fetch 1y daily closes for any ticker from Yahoo Finance with 2.5s timeout and memory cache
+// Multi-symbol Spark Batch fetcher for ultra-fast broad index loading (15-20 symbols per HTTP call)
+async function fetchSparkBatch(tickers: string[]): Promise<Map<string, { closes: number[]; currentPrice: number }>> {
+  const result = new Map<string, { closes: number[]; currentPrice: number }>();
+  if (tickers.length === 0) return result;
+
+  try {
+    const url = `https://query1.finance.yahoo.com/v8/finance/spark?symbols=${tickers.map(encodeURIComponent).join(',')}&range=1y&interval=1d`;
+    const res = await axios.get(url, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+        'Accept': 'application/json',
+      },
+      timeout: 5000,
+    });
+
+    const data = res.data;
+    if (data && typeof data === 'object') {
+      for (const [sym, info] of Object.entries<any>(data)) {
+        if (info && Array.isArray(info.close)) {
+          const validCloses: number[] = [];
+          for (let i = 0; i < info.close.length; i++) {
+            const c = info.close[i];
+            if (typeof c === 'number' && !isNaN(c) && c > 0) {
+              validCloses.push(c);
+            }
+          }
+          if (validCloses.length >= 20) {
+            const currentPrice = validCloses[validCloses.length - 1];
+            const stockData = {
+              closes: validCloses,
+              currentPrice: Number(currentPrice.toFixed(2)),
+            };
+            result.set(sym, stockData);
+            tickerClosesCache.set(sym, { ...stockData, timestamp: Date.now() });
+          }
+        }
+      }
+    }
+  } catch {
+    // If batch error, individual fallback will handle missing symbols
+  }
+  return result;
+}
+
+// Fetch all constituent closes in parallel batches with caching
+async function fetchAllConstituentCloses(
+  tickers: string[]
+): Promise<Map<string, { closes: number[]; currentPrice: number }>> {
+  const resultMap = new Map<string, { closes: number[]; currentPrice: number }>();
+  const neededTickers: string[] = [];
+
+  const now = Date.now();
+  for (const t of tickers) {
+    const cached = tickerClosesCache.get(t);
+    if (cached && now - cached.timestamp < TICKER_CACHE_TTL_MS) {
+      resultMap.set(t, { closes: cached.closes, currentPrice: cached.currentPrice });
+    } else {
+      neededTickers.push(t);
+    }
+  }
+
+  if (neededTickers.length > 0) {
+    const chunkSize = 15;
+    const chunks: string[][] = [];
+    for (let i = 0; i < neededTickers.length; i += chunkSize) {
+      chunks.push(neededTickers.slice(i, i + chunkSize));
+    }
+
+    // Run in parallel groups of 5 chunks
+    const concurrency = 5;
+    for (let i = 0; i < chunks.length; i += concurrency) {
+      const batchChunks = chunks.slice(i, i + concurrency);
+      const batchResults = await Promise.all(batchChunks.map((c) => fetchSparkBatch(c)));
+      for (const res of batchResults) {
+        for (const [k, v] of res.entries()) {
+          resultMap.set(k, v);
+        }
+      }
+    }
+  }
+
+  return resultMap;
+}
+
+// Fetch 1y daily closes for individual ticker from Yahoo Finance with timeout and memory cache
 async function fetchDailyCloses(ticker: string): Promise<{ closes: number[]; currentPrice: number } | null> {
   const cached = tickerClosesCache.get(ticker);
   if (cached && Date.now() - cached.timestamp < TICKER_CACHE_TTL_MS) {
@@ -217,41 +301,40 @@ export async function computeNiftyScatterMatrix(
     hasValidBenchmarkCloses = true;
   }
 
-  // 2. Fetch Constituents concurrently in batches of 10
+  // 2. Fetch all constituents data concurrently via high-speed spark batches
+  const tickersList = rawConstituents.map((item) => item.ticker);
+  const constituentClosesMap = await fetchAllConstituentCloses(tickersList);
+
   const constituents: NiftyScatterConstituentItem[] = [];
-  const batchSize = 10;
 
-  for (let i = 0; i < rawConstituents.length; i += batchSize) {
-    const batch = rawConstituents.slice(i, i + batchSize);
-    const promises = batch.map(async (item) => {
-      let series = await fetchDailyCloses(item.ticker);
-      if (!series || series.closes.length < 20) {
-        const seedBase = 500 + ((item.symbol.charCodeAt(0) * 37) % 3500);
-        series = generateSyntheticCloses(item.symbol, seedBase);
-      }
+  for (const item of rawConstituents) {
+    let series = constituentClosesMap.get(item.ticker);
+    if (!series || series.closes.length < 20) {
+      series = await fetchDailyCloses(item.ticker);
+    }
+    if (!series || series.closes.length < 20) {
+      const seedBase = 500 + ((item.symbol.charCodeAt(0) * 37) % 3500);
+      series = generateSyntheticCloses(item.symbol, seedBase);
+    }
 
-      const returns: Record<ScatterTimeframe, number> = {
-        '1D': calculateLookbackReturn(series.closes, TIMEFRAME_DAYS['1D']),
-        '1W': calculateLookbackReturn(series.closes, TIMEFRAME_DAYS['1W']),
-        '1M': calculateLookbackReturn(series.closes, TIMEFRAME_DAYS['1M']),
-        '3M': calculateLookbackReturn(series.closes, TIMEFRAME_DAYS['3M']),
-        '6M': calculateLookbackReturn(series.closes, TIMEFRAME_DAYS['6M']),
-        '1Y': calculateLookbackReturn(series.closes, TIMEFRAME_DAYS['1Y']),
-      };
+    const returns: Record<ScatterTimeframe, number> = {
+      '1D': calculateLookbackReturn(series.closes, TIMEFRAME_DAYS['1D']),
+      '1W': calculateLookbackReturn(series.closes, TIMEFRAME_DAYS['1W']),
+      '1M': calculateLookbackReturn(series.closes, TIMEFRAME_DAYS['1M']),
+      '3M': calculateLookbackReturn(series.closes, TIMEFRAME_DAYS['3M']),
+      '6M': calculateLookbackReturn(series.closes, TIMEFRAME_DAYS['6M']),
+      '1Y': calculateLookbackReturn(series.closes, TIMEFRAME_DAYS['1Y']),
+    };
 
-      return {
-        symbol: item.symbol,
-        ticker: item.ticker,
-        name: item.name,
-        sector: item.sector,
-        weight: item.weight,
-        currentPrice: series.currentPrice,
-        returns,
-      };
+    constituents.push({
+      symbol: item.symbol,
+      ticker: item.ticker,
+      name: item.name,
+      sector: item.sector,
+      weight: item.weight,
+      currentPrice: series.currentPrice,
+      returns,
     });
-
-    const batchResults = await Promise.all(promises);
-    constituents.push(...batchResults);
   }
 
   // 3. Compute benchmark returns

@@ -133,6 +133,12 @@ async function startServer() {
 
   app.listen(PORT, '0.0.0.0', () => {
     console.log(`Nifty 50 Market Breadth Server listening on http://0.0.0.0:${PORT}`);
+    // Pre-warm caches in background for snappy UI experience
+    setTimeout(() => {
+      computeNiftyScatterMatrix('NIFTY_50', false)
+        .then(() => computeNiftyScatterMatrix('NIFTY_500', false))
+        .catch(() => {});
+    }, 1500);
   });
 }
 
