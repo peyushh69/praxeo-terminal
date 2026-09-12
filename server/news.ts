@@ -214,6 +214,31 @@ export async function fetchLiveMarketNews(forceRefresh = false): Promise<MarketN
       code: 'FE',
       category: 'MARKET' as const,
     },
+    // Adding specific Economy Feeds
+    {
+      url: 'https://economictimes.indiatimes.com/news/economy/rssfeeds/1373380680.cms',
+      source: 'The Economic Times',
+      code: 'ET',
+      category: 'ECONOMY' as const,
+    },
+    {
+      url: 'https://www.moneycontrol.com/rss/economy.xml',
+      source: 'Moneycontrol',
+      code: 'MC',
+      category: 'ECONOMY' as const,
+    },
+    {
+      url: 'https://www.livemint.com/rss/economy',
+      source: 'Livemint',
+      code: 'MINT',
+      category: 'ECONOMY' as const,
+    },
+    {
+      url: 'https://www.business-standard.com/rss/economy-policy-130.rss',
+      source: 'Business Standard',
+      code: 'BS',
+      category: 'ECONOMY' as const,
+    }
   ];
 
   const allFeeds = [...googleNewsFeeds, ...directRssFeeds];
@@ -233,7 +258,7 @@ export async function fetchLiveMarketNews(forceRefresh = false): Promise<MarketN
       const feed = await parser.parseString(res.data);
       if (!feed || !feed.items) return [];
 
-      return feed.items.slice(0, 10).map((item, idx) => {
+      return feed.items.slice(0, 50).map((item, idx) => {
         // Clean Google news title suffix like " - Moneycontrol" or " - The Economic Times"
         let cleanTitle = item.title || '';
         let extractedSource = f.source;
@@ -293,7 +318,7 @@ export async function fetchLiveMarketNews(forceRefresh = false): Promise<MarketN
       try {
         const feed = await parser.parseURL(f.url);
         if (!feed || !feed.items) return [];
-        return feed.items.slice(0, 10).map((item, idx) => {
+        return feed.items.slice(0, 50).map((item, idx) => {
           const cleanTitle = item.title || '';
           let pubDateIso = new Date().toISOString();
           if (item.isoDate) {
@@ -419,14 +444,21 @@ export async function fetchLiveMarketNews(forceRefresh = false): Promise<MarketN
     }
   }
 
-  // Sort latest first
-  deduped.sort((a, b) => {
+  // Filter by last 48 hours and sort latest first
+  const FORTY_EIGHT_HOURS_MS = 48 * 60 * 60 * 1000;
+  
+  const recentItems = deduped.filter(item => {
+    const pubTime = new Date(item.pubDate).getTime();
+    if (isNaN(pubTime)) return false;
+    return (now - pubTime) <= FORTY_EIGHT_HOURS_MS;
+  });
+
+  recentItems.sort((a, b) => {
     const timeA = new Date(a.pubDate).getTime() || 0;
     const timeB = new Date(b.pubDate).getTime() || 0;
     return timeB - timeA;
   });
 
-  const finalItems = deduped.slice(0, 30);
-  cachedNews = { items: finalItems, timestamp: now };
-  return finalItems;
+  cachedNews = { items: recentItems, timestamp: now };
+  return recentItems;
 }
