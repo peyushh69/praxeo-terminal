@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { ArrowLeft, TrendingUp, TrendingDown } from 'lucide-react';
 import type { MarketTickerResponse, IndexTickerItem } from '../types';
-import { PWAInstallButton } from './PWAInstallButton';
 
 interface MinimalHeaderProps {
   level: 1 | 2 | 3;
@@ -169,9 +168,8 @@ export const MinimalHeader: React.FC<MinimalHeaderProps> = ({
             </span>
           </button>
 
-          {/* Right Side: PWA Install & Professional HOME Navigation Button on Subpages */}
-          <div className="flex items-center gap-3">
-            <PWAInstallButton />
+          {/* Right Side: Professional HOME Navigation Button on Subpages */}
+          <div className="flex items-center">
             {level > 1 && (
               <button
                 onClick={onNavigateHome}
