@@ -186,7 +186,7 @@ export const Header: React.FC<HeaderProps> = ({
             id="btn-sync-action"
             onClick={onRefresh}
             disabled={loading}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#08080c] border border-white/20 text-white hover:bg-neutral-800 hover:text-white rounded-lg transition-all cursor-pointer shadow-pixel-orange text-[11px] font-bold"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#08080c] border border-white/20 text-white hover:bg-neutral-800 hover:text-white rounded-lg transition-all cursor-pointer  text-[11px] font-bold"
             title="Refresh live breadth data"
           >
             <RefreshCw className={`w-3 h-3 ${loading ? 'animate-spin' : ''}`} />

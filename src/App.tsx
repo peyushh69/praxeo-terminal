@@ -172,7 +172,7 @@ export default function App() {
   const activeIndexDef = SECTORAL_INDICES.find(s => s.id === currentIndexId) || SECTORAL_INDICES[0];
 
   return (
-    <div className="min-h-screen bg-[#000000] text-white flex flex-col font-mono selection:bg-[#ff8800] selection:text-white">
+    <div className="min-h-screen bg-[#000000] text-white flex flex-col font-mono selection:bg-neutral-800 selection:text-white">
       
       {/* Retro Minimal Header */}
       <MinimalHeader

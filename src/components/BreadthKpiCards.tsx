@@ -338,7 +338,7 @@ export const BreadthKpiCards: React.FC<BreadthKpiCardsProps> = ({
         </div>
 
         {/* Giant Bright Orange Focus Card */}
-        <div className="mt-4 praxis-card-orange p-5 sm:p-6 ">
+        <div className="mt-4 praxis-card p-5 sm:p-6 ">
           <div className="flex items-center justify-between font-pixel text-[10px] text-black border-b border-black/20 pb-3">
             <div className="flex items-center gap-2">
               <span className="inline-block w-2.5 h-2.5 bg-black"></span>

@@ -168,7 +168,7 @@ export const Level3IndexDetail: React.FC<Level3IndexDetailProps> = ({
                   onClick={() => onSelectIndex(idx.id)}
                   className={`px-2.5 py-1 rounded-md whitespace-nowrap transition-all cursor-pointer flex items-center gap-1.5 flex-shrink-0 border ${
                     isSelected
-                      ? 'bg-neutral-800 text-white font-bold border-neutral-700 shadow-pixel-orange'
+                      ? 'bg-neutral-800 text-white font-bold border-neutral-700 '
                       : 'bg-[#0a0a12] text-slate-400 border-[#1a1a28] hover:border-slate-500 hover:text-white'
                   }`}
                 >
@@ -437,7 +437,7 @@ export const Level3IndexDetail: React.FC<Level3IndexDetailProps> = ({
                 onClick={() => setHistoricalViewMode('CHART')}
                 className={`flex items-center gap-1 px-2.5 py-1 rounded transition-all cursor-pointer ${
                   historicalViewMode === 'CHART'
-                    ? 'bg-neutral-800 text-white font-bold shadow-pixel-orange'
+                    ? 'bg-neutral-800 text-white font-bold '
                     : 'text-slate-400 hover:text-white'
                 }`}
               >

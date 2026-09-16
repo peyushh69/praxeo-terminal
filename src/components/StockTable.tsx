@@ -306,7 +306,7 @@ export const StockTable: React.FC<StockTableProps> = ({
               onClick={() => onSelectFilter(tab.id)}
               className={`px-2.5 py-1 whitespace-nowrap text-[8px] sm:text-[9px] rounded-md transition-all cursor-pointer border ${
                 activeFilter === tab.id
-                  ? 'bg-neutral-800 text-white font-bold border-neutral-700 shadow-pixel-orange'
+                  ? 'bg-neutral-800 text-white font-bold border-neutral-700 '
                   : 'bg-[#000000] text-slate-400 border-[#1c1c28] hover:border-slate-500 hover:text-white'
               }`}
             >
