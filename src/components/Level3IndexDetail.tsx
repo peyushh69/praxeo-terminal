@@ -81,7 +81,7 @@ export const Level3IndexDetail: React.FC<Level3IndexDetailProps> = ({
       label: 'EMA 20',
       category: '20D Swing',
       metric: data.summary.aboveEma20,
-      color: '#38bdf8', // Neon Sky Blue
+      color: '#ffffff', // Neon Sky Blue
       description: 'Standard 20-day swing trading trend benchmark.',
     },
     {
@@ -89,7 +89,7 @@ export const Level3IndexDetail: React.FC<Level3IndexDetailProps> = ({
       label: 'EMA 50',
       category: '50D Anchor',
       metric: data.summary.aboveEma50,
-      color: '#bef264', // Neon Lime
+      color: '#ff8800', // Neon Lime
       description: 'Institutional accumulation & pullback support line.',
     },
     {
@@ -120,18 +120,18 @@ export const Level3IndexDetail: React.FC<Level3IndexDetailProps> = ({
             <div className="flex items-center gap-2 min-w-0">
               <button
                 onClick={onBackHome}
-                className="flex items-center gap-1 p-1.5 px-2 rounded-lg bg-[#0a0a10] border border-[#222230] hover:border-[#ff3b00] text-slate-300 hover:text-white transition-all cursor-pointer flex-shrink-0 text-[9px] font-pixel"
+                className="flex items-center gap-1 p-1.5 px-2 rounded-lg bg-[#0a0a10] border border-[#222230] hover:border-neutral-700 text-slate-300 hover:text-white transition-all cursor-pointer flex-shrink-0 text-[9px] font-pixel"
                 title="Return to Home"
               >
-                <ArrowLeft className="w-3.5 h-3.5 text-[#ff3b00]" />
+                <ArrowLeft className="w-3.5 h-3.5 text-white" />
                 <span className="hidden xs:inline">HOME</span>
               </button>
 
               <div className="min-w-0 truncate">
                 <div className="flex items-center gap-1.5 text-[8px] font-pixel text-slate-500">
-                  <span className="text-[#bef264]">{currentIdxDef.stocks.length} STOCKS</span>
+                  <span className="text-white">{currentIdxDef.stocks.length} STOCKS</span>
                   <span>•</span>
-                  <span className="text-[#ff3b00] truncate">{currentIdxDef.category}</span>
+                  <span className="text-white truncate">{currentIdxDef.category}</span>
                 </div>
                 <h1 className="font-pixel text-xs sm:text-sm text-white tracking-tight truncate mt-0.5">
                   {data.indexName || currentIdxDef.name}
@@ -145,7 +145,7 @@ export const Level3IndexDetail: React.FC<Level3IndexDetailProps> = ({
                 <select
                   value={data.indexId || 'NIFTY_50'}
                   onChange={(e) => onSelectIndex(e.target.value)}
-                  className="appearance-none bg-[#0a0a10] border border-[#20202e] hover:border-[#bef264] text-slate-200 text-[10px] sm:text-xs px-2 sm:px-3 py-1 pr-6 sm:pr-7 rounded-lg font-mono cursor-pointer focus:outline-none focus:border-[#bef264]"
+                  className="appearance-none bg-[#0a0a10] border border-[#20202e] hover:border-white/20 text-slate-200 text-[10px] sm:text-xs px-2 sm:px-3 py-1 pr-6 sm:pr-7 rounded-lg font-mono cursor-pointer focus:outline-none focus:border-white/20"
                 >
                   {SECTORAL_INDICES.map((s) => (
                     <option key={s.id} value={s.id} className="bg-[#0a0a10] text-slate-200">
@@ -168,7 +168,7 @@ export const Level3IndexDetail: React.FC<Level3IndexDetailProps> = ({
                   onClick={() => onSelectIndex(idx.id)}
                   className={`px-2.5 py-1 rounded-md whitespace-nowrap transition-all cursor-pointer flex items-center gap-1.5 flex-shrink-0 border ${
                     isSelected
-                      ? 'bg-[#ff3b00] text-black font-bold border-[#ff3b00] shadow-pixel-orange'
+                      ? 'bg-neutral-800 text-white font-bold border-neutral-700 shadow-pixel-orange'
                       : 'bg-[#0a0a12] text-slate-400 border-[#1a1a28] hover:border-slate-500 hover:text-white'
                   }`}
                 >
@@ -189,15 +189,15 @@ export const Level3IndexDetail: React.FC<Level3IndexDetailProps> = ({
           <div className="bg-[#06060a] border border-[#181826] p-2.5 sm:p-3.5 rounded-xl flex flex-col justify-between space-y-2">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5 truncate">
-                <Scale className="w-3.5 h-3.5 text-[#ff3b00] flex-shrink-0" />
+                <Scale className="w-3.5 h-3.5 text-white flex-shrink-0" />
                 <span className="font-pixel text-[8px] sm:text-[9px] text-slate-400 uppercase tracking-wider truncate">
                   A/D RATIO
                 </span>
               </div>
               <span className={`font-pixel text-[7px] sm:text-[8px] px-1.5 py-0.5 rounded uppercase ${
                 data.advanceDecline.ratio >= 1
-                  ? 'bg-[#bef264]/15 text-[#bef264] border border-[#bef264]/30'
-                  : 'bg-[#ff3b00]/15 text-[#ff3b00] border border-[#ff3b00]/30'
+                  ? 'bg-neutral-800/50 text-white border border-white/20'
+                  : 'bg-neutral-800/50 text-white border border-neutral-700/30'
               }`}>
                 {data.advanceDecline.sentiment}
               </span>
@@ -220,18 +220,18 @@ export const Level3IndexDetail: React.FC<Level3IndexDetailProps> = ({
               <div className="h-1.5 w-full bg-[#12121a] rounded-full overflow-hidden flex">
                 <div
                   style={{ width: `${(data.advanceDecline.advances / totalStocks) * 100}%` }}
-                  className="bg-[#bef264] h-full"
+                  className="bg-white h-full"
                 />
                 <div
                   style={{ width: `${(data.advanceDecline.declines / totalStocks) * 100}%` }}
-                  className="bg-[#ff3b00] h-full"
+                  className="bg-neutral-600 h-full"
                 />
               </div>
               <div className="flex justify-between text-[8px] sm:text-[9px] font-mono">
-                <span className="text-[#bef264] font-bold">
+                <span className="text-white font-bold">
                   {data.advanceDecline.advances} Adv
                 </span>
-                <span className="text-[#ff3b00] font-bold">
+                <span className="text-white font-bold">
                   {data.advanceDecline.declines} Dec
                 </span>
               </div>
@@ -242,15 +242,15 @@ export const Level3IndexDetail: React.FC<Level3IndexDetailProps> = ({
           <div className="bg-[#06060a] border border-[#181826] p-2.5 sm:p-3.5 rounded-xl flex flex-col justify-between space-y-2">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5 truncate">
-                <Zap className="w-3.5 h-3.5 text-[#bef264] flex-shrink-0" />
+                <Zap className="w-3.5 h-3.5 text-white flex-shrink-0" />
                 <span className="font-pixel text-[8px] sm:text-[9px] text-slate-400 uppercase tracking-wider truncate">
                   RS SCORE
                 </span>
               </div>
               <span className={`font-pixel text-[7px] sm:text-[8px] px-1.5 py-0.5 rounded uppercase ${
                 data.relativeStrength.outperforming
-                  ? 'bg-[#bef264]/15 text-[#bef264] border border-[#bef264]/30'
-                  : 'bg-[#ff3b00]/15 text-[#ff3b00] border border-[#ff3b00]/30'
+                  ? 'bg-neutral-800/50 text-white border border-white/20'
+                  : 'bg-neutral-800/50 text-white border border-neutral-700/30'
               }`}>
                 {data.relativeStrength.status}
               </span>
@@ -275,14 +275,14 @@ export const Level3IndexDetail: React.FC<Level3IndexDetailProps> = ({
                 <div
                   style={{ width: `${data.relativeStrength.score}%` }}
                   className={`h-full transition-all duration-300 ${
-                    data.relativeStrength.score >= 50 ? 'bg-[#bef264]' : 'bg-[#ff3b00]'
+                    data.relativeStrength.score >= 50 ? 'bg-white' : 'bg-neutral-600'
                   }`}
                 />
               </div>
               <div className="flex justify-between text-[8px] sm:text-[9px] font-mono text-slate-400">
                 <span>Lag</span>
                 <span className="text-slate-500">Benchmark</span>
-                <span className="text-[#bef264]">Lead</span>
+                <span className="text-white">Lead</span>
               </div>
             </div>
           </div>
@@ -294,7 +294,7 @@ export const Level3IndexDetail: React.FC<Level3IndexDetailProps> = ({
           
           <div className="p-2.5 sm:p-3 border-b border-[#141420] flex items-center justify-between gap-2">
             <div>
-              <div className="font-pixel text-[8px] sm:text-[9px] text-[#bef264] uppercase tracking-wider">
+              <div className="font-pixel text-[8px] sm:text-[9px] text-white uppercase tracking-wider">
                 TODAY'S BREADTH SNAPSHOT
               </div>
               <h2 className="font-pixel text-[11px] sm:text-xs text-white mt-0.5">
@@ -352,8 +352,8 @@ export const Level3IndexDetail: React.FC<Level3IndexDetailProps> = ({
                           <span
                             className={`font-pixel text-[10px] sm:text-xs px-2 py-0.5 rounded inline-block ${
                               isBullish
-                                ? 'bg-[#bef264]/15 text-[#bef264] border border-[#bef264]/40'
-                                : 'bg-[#ff3b00]/15 text-[#ff3b00] border border-[#ff3b00]/40'
+                                ? 'bg-neutral-800/50 text-white border border-white/20'
+                                : 'bg-neutral-800/50 text-white border border-neutral-700/40'
                             }`}
                           >
                             {Math.round(row.metric.percentage)}%
@@ -364,7 +364,7 @@ export const Level3IndexDetail: React.FC<Level3IndexDetailProps> = ({
                         <td className="py-2 sm:py-2.5 px-2.5 sm:px-3 text-right">
                           <button
                             onClick={() => setExpandedEma(isExpanded ? null : row.id)}
-                            className="px-2 py-0.5 rounded bg-[#0a0a12] border border-[#1e1e2c] hover:border-[#bef264] text-slate-300 hover:text-white text-[9px] font-pixel transition-colors cursor-pointer"
+                            className="px-2 py-0.5 rounded bg-[#0a0a12] border border-[#1e1e2c] hover:border-white/20 text-slate-300 hover:text-white text-[9px] font-pixel transition-colors cursor-pointer"
                           >
                             {isExpanded ? 'HIDE' : `(${row.metric.bullishSymbols.length})`}
                           </button>
@@ -377,7 +377,7 @@ export const Level3IndexDetail: React.FC<Level3IndexDetailProps> = ({
                         <tr className="bg-[#07070b]">
                           <td colSpan={5} className="py-2.5 px-3 border-b border-[#14141f]">
                             <div className="space-y-1.5">
-                              <div className="text-[9px] font-pixel text-[#bef264] uppercase">
+                              <div className="text-[9px] font-pixel text-white uppercase">
                                 STOCKS ABOVE {row.label}:
                               </div>
                               <div className="flex flex-wrap gap-1">
@@ -413,7 +413,7 @@ export const Level3IndexDetail: React.FC<Level3IndexDetailProps> = ({
           {/* Section Header & Master View Switcher (Heatmap vs Line Chart vs Both) */}
           <div className="bg-[#050508] border border-[#181826] p-2.5 sm:p-3 rounded-xl flex items-center justify-between gap-2 shadow-lg">
             <div className="flex items-center gap-1.5">
-              <Activity className="w-3.5 h-3.5 text-[#bef264]" />
+              <Activity className="w-3.5 h-3.5 text-white" />
               <span className="font-pixel text-[10px] sm:text-xs text-white">
                 HISTORICAL VIEW
               </span>
@@ -425,7 +425,7 @@ export const Level3IndexDetail: React.FC<Level3IndexDetailProps> = ({
                 onClick={() => setHistoricalViewMode('HEATMAP')}
                 className={`flex items-center gap-1 px-2.5 py-1 rounded transition-all cursor-pointer ${
                   historicalViewMode === 'HEATMAP'
-                    ? 'bg-[#bef264] text-black font-bold shadow-pixel-green'
+                    ? 'bg-neutral-800 text-white font-bold shadow-pixel-green'
                     : 'text-slate-400 hover:text-white'
                 }`}
               >
@@ -437,7 +437,7 @@ export const Level3IndexDetail: React.FC<Level3IndexDetailProps> = ({
                 onClick={() => setHistoricalViewMode('CHART')}
                 className={`flex items-center gap-1 px-2.5 py-1 rounded transition-all cursor-pointer ${
                   historicalViewMode === 'CHART'
-                    ? 'bg-[#ff3b00] text-black font-bold shadow-pixel-orange'
+                    ? 'bg-neutral-800 text-white font-bold shadow-pixel-orange'
                     : 'text-slate-400 hover:text-white'
                 }`}
               >
@@ -449,7 +449,7 @@ export const Level3IndexDetail: React.FC<Level3IndexDetailProps> = ({
                 onClick={() => setHistoricalViewMode('BOTH')}
                 className={`hidden xs:flex items-center gap-1 px-2.5 py-1 rounded transition-all cursor-pointer ${
                   historicalViewMode === 'BOTH'
-                    ? 'bg-sky-400 text-black font-bold'
+                    ? 'bg-neutral-300 text-black font-bold'
                     : 'text-slate-400 hover:text-white'
                 }`}
               >
@@ -478,7 +478,7 @@ export const Level3IndexDetail: React.FC<Level3IndexDetailProps> = ({
               {/* Chart Header & Controls */}
               <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-2 pb-2 border-b border-[#14141f]">
                 <div>
-                  <div className="font-pixel text-[8px] sm:text-[9px] text-[#ff3b00] uppercase tracking-wider">
+                  <div className="font-pixel text-[8px] sm:text-[9px] text-white uppercase tracking-wider">
                     TIME-SERIES
                   </div>
                   <h3 className="font-pixel text-[11px] sm:text-xs text-white mt-0.5">
@@ -493,7 +493,7 @@ export const Level3IndexDetail: React.FC<Level3IndexDetailProps> = ({
                       onClick={() => setTimeframe('3M')}
                       className={`px-2 py-0.5 rounded transition-all cursor-pointer ${
                         timeframe === '3M'
-                          ? 'bg-[#ff3b00] text-black font-bold'
+                          ? 'bg-neutral-800 text-white font-bold'
                           : 'text-slate-400 hover:text-white'
                       }`}
                     >
@@ -503,7 +503,7 @@ export const Level3IndexDetail: React.FC<Level3IndexDetailProps> = ({
                       onClick={() => setTimeframe('6M')}
                       className={`px-2 py-0.5 rounded transition-all cursor-pointer ${
                         timeframe === '6M'
-                          ? 'bg-[#ff3b00] text-black font-bold'
+                          ? 'bg-neutral-800 text-white font-bold'
                           : 'text-slate-400 hover:text-white'
                       }`}
                     >
@@ -518,7 +518,7 @@ export const Level3IndexDetail: React.FC<Level3IndexDetailProps> = ({
                         onClick={() => setActiveLineFilter(filter)}
                         className={`px-1.5 py-0.5 rounded transition-all cursor-pointer ${
                           activeLineFilter === filter
-                            ? 'bg-[#bef264] text-black font-bold'
+                            ? 'bg-neutral-800 text-white font-bold'
                             : 'text-slate-400 hover:text-white'
                         }`}
                       >
@@ -591,7 +591,7 @@ export const Level3IndexDetail: React.FC<Level3IndexDetailProps> = ({
                           type="monotone"
                           dataKey="aboveEma20Percent"
                           name="% > 20 EMA"
-                          stroke="#38bdf8"
+                          stroke="#ffffff"
                           strokeWidth={1.5}
                           dot={false}
                         />
@@ -602,7 +602,7 @@ export const Level3IndexDetail: React.FC<Level3IndexDetailProps> = ({
                           type="monotone"
                           dataKey="aboveEma50Percent"
                           name="% > 50 EMA"
-                          stroke="#bef264"
+                          stroke="#ff8800"
                           strokeWidth={2}
                           dot={false}
                         />
@@ -641,15 +641,15 @@ export const Level3IndexDetail: React.FC<Level3IndexDetailProps> = ({
               {/* Chart Legend */}
               <div className="flex flex-wrap items-center justify-center gap-3 text-[9px] font-mono text-slate-400 pt-1 border-t border-[#12121c]">
                 <span className="flex items-center gap-1">
-                  <span className="w-2 h-2 rounded-sm bg-[#ff3b00]" />
+                  <span className="w-2 h-2 rounded-sm bg-neutral-600" />
                   <span>EMA 9</span>
                 </span>
                 <span className="flex items-center gap-1">
-                  <span className="w-2 h-2 rounded-sm bg-[#38bdf8]" />
+                  <span className="w-2 h-2 rounded-sm bg-[#ffffff]" />
                   <span>EMA 20</span>
                 </span>
                 <span className="flex items-center gap-1">
-                  <span className="w-2 h-2 rounded-sm bg-[#bef264]" />
+                  <span className="w-2 h-2 rounded-sm bg-white" />
                   <span>EMA 50</span>
                 </span>
                 <span className="flex items-center gap-1">

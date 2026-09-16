@@ -105,7 +105,7 @@ export const StockDetailModal: React.FC<StockDetailModalProps> = ({ stock, onClo
         <button
           id="btn-close-modal"
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 border border-[#1c2436] rounded-xl text-slate-400 hover:text-white hover:border-[#ff3b00] hover:bg-[#ff3b00]/10 bg-[#06080e] transition-colors cursor-pointer"
+          className="absolute top-4 right-4 p-2 border border-[#1c2436] rounded-xl text-slate-400 hover:text-white hover:border-white/20 hover:bg-neutral-800/50 bg-[#06080e] transition-colors cursor-pointer"
         >
           <X className="w-5 h-5" />
         </button>
@@ -113,14 +113,14 @@ export const StockDetailModal: React.FC<StockDetailModalProps> = ({ stock, onClo
         {/* Stock Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#1c2436]">
           <div>
-            <div className="text-[9px] tracking-widest uppercase font-pixel text-[#ff3b00]">
+            <div className="text-[9px] tracking-widest uppercase font-pixel text-white">
               PRAXIS // QUANT TELEMETRY &bull; {stock.sector}
             </div>
             <div className="flex items-center gap-2.5 flex-wrap mt-1">
               <h3 className="text-2xl sm:text-3xl font-pixel text-white">
                 {stock.symbol}
               </h3>
-              <span className="text-[10px] px-2.5 py-0.5 border border-[#ff3b00] rounded-lg font-pixel bg-[#ff3b00]/20 text-[#ff3b00]">
+              <span className="text-[10px] px-2.5 py-0.5 border border-white/20 rounded-lg font-pixel bg-neutral-800/50 text-white">
                 NSE: {stock.ticker}
               </span>
             </div>
@@ -135,7 +135,7 @@ export const StockDetailModal: React.FC<StockDetailModalProps> = ({ stock, onClo
               </div>
               <div
                 className={`flex items-center sm:justify-end gap-1 text-xs font-pixel tabular-nums mt-0.5 ${
-                  isPositive ? 'text-emerald-400' : 'text-rose-400'
+                  isPositive ? 'text-white' : 'text-neutral-500'
                 }`}
               >
                 {isPositive ? <TrendingUp className="w-3.5 h-3.5" /> : <TrendingDown className="w-3.5 h-3.5" />}
@@ -153,7 +153,7 @@ export const StockDetailModal: React.FC<StockDetailModalProps> = ({ stock, onClo
         <div className="my-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
           {/* EMA Health Score */}
           <div className="p-3 border border-[#1c2436] rounded-xl bg-[#06080e] flex items-center gap-3">
-            <div className="p-2 bg-[#ff3b00]/10 border border-[#ff3b00]/40 text-[#ff3b00] rounded-lg">
+            <div className="p-2 bg-neutral-800/50 border border-white/20 text-white rounded-lg">
               <Zap className="w-4 h-4" />
             </div>
             <div>
@@ -170,11 +170,11 @@ export const StockDetailModal: React.FC<StockDetailModalProps> = ({ stock, onClo
 
           {/* Golden Stack & Golden Cross */}
           <div className="p-3 border border-[#1c2436] rounded-xl bg-[#06080e] flex items-center gap-3">
-            <div className="p-2 bg-amber-950 border border-amber-500/50 text-amber-400 rounded-lg">
+            <div className="p-2 bg-neutral-900 border border-neutral-700/50 text-neutral-400 rounded-lg">
               <Sparkles className="w-4 h-4" />
             </div>
             <div>
-              <div className="font-pixel text-xs text-amber-400">
+              <div className="font-pixel text-xs text-neutral-400">
                 {stock.isGoldenStack ? 'GOLDEN STACK ACTIVE' : stock.isGoldenCross ? 'GOLDEN CROSS ACTIVE' : 'NO ACTIVE STACK'}
               </div>
               <div className="text-slate-400 font-mono text-[10px] mt-0.5">
@@ -209,17 +209,17 @@ export const StockDetailModal: React.FC<StockDetailModalProps> = ({ stock, onClo
             <div
               key={row.period}
               className={`p-3 rounded-xl border transition-all ${
-                row.isAbove ? 'bg-[#06140d] border-emerald-500/40' : 'bg-[#17080a] border-rose-500/40'
+                row.isAbove ? 'bg-[#06140d] border-neutral-700/40' : 'bg-[#17080a] border-neutral-700/40'
               }`}
             >
               <div className="flex items-center justify-between text-xs mb-1">
                 <span className="font-pixel text-[9px] text-slate-200">{row.period}</span>
                 {row.isAbove ? (
-                  <span className="text-[8px] px-1.5 py-0.5 bg-emerald-500/20 text-emerald-400 font-pixel font-bold rounded border border-emerald-500/40">
+                  <span className="text-[8px] px-1.5 py-0.5 bg-neutral-700/20 text-white font-pixel font-bold rounded border border-neutral-700/40">
                     PASS
                   </span>
                 ) : (
-                  <span className="text-[8px] px-1.5 py-0.5 bg-rose-500/20 text-rose-400 font-pixel font-bold rounded border border-rose-500/40">
+                  <span className="text-[8px] px-1.5 py-0.5 bg-neutral-700/20 text-neutral-500 font-pixel font-bold rounded border border-neutral-700/40">
                     FAIL
                   </span>
                 )}
@@ -228,10 +228,10 @@ export const StockDetailModal: React.FC<StockDetailModalProps> = ({ stock, onClo
                 ₹{row.value.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
               </div>
               <div className="flex items-center justify-between mt-2 text-[10px] font-mono tabular-nums pt-1.5 border-t border-[#1c2436]">
-                <span className={row.isAbove ? 'text-emerald-400 font-bold' : 'text-rose-400 font-bold'}>
+                <span className={row.isAbove ? 'text-white font-bold' : 'text-neutral-500 font-bold'}>
                   {row.isAbove ? '▲ ABOVE' : '▼ BELOW'}
                 </span>
-                <span className={`font-bold ${row.diffPercent >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                <span className={`font-bold ${row.diffPercent >= 0 ? 'text-white' : 'text-neutral-500'}`}>
                   {row.diffPercent >= 0 ? '+' : ''}
                   {row.diffPercent.toFixed(2)}%
                 </span>
@@ -244,13 +244,13 @@ export const StockDetailModal: React.FC<StockDetailModalProps> = ({ stock, onClo
         <div className="my-4 p-3.5 border border-[#1c2436] rounded-xl bg-[#06080e]">
           <div className="flex items-center justify-between text-xs font-pixel text-slate-400 mb-2">
             <span>52-WEEK RANGE</span>
-            <span className="text-[#ff3b00]">
+            <span className="text-white">
               {stock.distFrom52WHighPercent.toFixed(1)}% FROM 52W HIGH
             </span>
           </div>
           <div className="relative w-full bg-[#141b2a] h-2.5 rounded-full overflow-hidden border border-[#1c2436]">
             <div
-              className="absolute top-0 bottom-0 bg-gradient-to-r from-rose-500 via-amber-500 to-emerald-500 rounded-full"
+              className="absolute top-0 bottom-0 bg-gradient-to-r from-neutral-700 via-neutral-700 to-neutral-700 rounded-full"
               style={{ width: '100%' }}
             />
             <div
@@ -271,7 +271,7 @@ export const StockDetailModal: React.FC<StockDetailModalProps> = ({ stock, onClo
           <div className="my-4 p-4 border border-[#1c2436] rounded-xl bg-[#06080e]">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
               <h4 className="text-xs sm:text-sm font-pixel text-white flex items-center gap-1.5">
-                <BarChart2 className="w-4 h-4 text-[#ff3b00]" />
+                <BarChart2 className="w-4 h-4 text-white" />
                 <span>TECHNICAL INDICATOR CHARTS (40 TRADING DAYS)</span>
               </h4>
 
@@ -280,7 +280,7 @@ export const StockDetailModal: React.FC<StockDetailModalProps> = ({ stock, onClo
                 <button
                   onClick={() => setActiveChartTab('ema')}
                   className={`px-2.5 py-1 rounded cursor-pointer ${
-                    activeChartTab === 'ema' ? 'bg-[#ff3b00] text-black font-bold' : 'text-slate-400 hover:text-white'
+                    activeChartTab === 'ema' ? 'bg-neutral-800 text-white font-bold' : 'text-slate-400 hover:text-white'
                   }`}
                 >
                   EMA RIBBON
@@ -288,7 +288,7 @@ export const StockDetailModal: React.FC<StockDetailModalProps> = ({ stock, onClo
                 <button
                   onClick={() => setActiveChartTab('rsi')}
                   className={`px-2.5 py-1 rounded cursor-pointer ${
-                    activeChartTab === 'rsi' ? 'bg-[#ff3b00] text-black font-bold' : 'text-slate-400 hover:text-white'
+                    activeChartTab === 'rsi' ? 'bg-neutral-800 text-white font-bold' : 'text-slate-400 hover:text-white'
                   }`}
                 >
                   RSI (14)
@@ -296,7 +296,7 @@ export const StockDetailModal: React.FC<StockDetailModalProps> = ({ stock, onClo
                 <button
                   onClick={() => setActiveChartTab('macd')}
                   className={`px-2.5 py-1 rounded cursor-pointer ${
-                    activeChartTab === 'macd' ? 'bg-[#ff3b00] text-black font-bold' : 'text-slate-400 hover:text-white'
+                    activeChartTab === 'macd' ? 'bg-neutral-800 text-white font-bold' : 'text-slate-400 hover:text-white'
                   }`}
                 >
                   MACD (12,26,9)
@@ -328,7 +328,7 @@ export const StockDetailModal: React.FC<StockDetailModalProps> = ({ stock, onClo
                         if (active && payload && payload.length) {
                           return (
                             <div className="p-3 bg-[#0a0e17] text-white border border-[#1c2436] rounded-xl shadow-2xl text-xs space-y-1 font-mono">
-                              <div className="font-pixel text-xs text-[#ff3b00]">{label}</div>
+                              <div className="font-pixel text-xs text-white">{label}</div>
                               {payload.map((p) => (
                                 <div key={p.name} className="flex justify-between gap-4 font-mono text-[11px]">
                                   <span style={{ color: p.color }}>{p.name}:</span>
@@ -378,7 +378,7 @@ export const StockDetailModal: React.FC<StockDetailModalProps> = ({ stock, onClo
                           const val = Number(payload[0].value);
                           return (
                             <div className="p-3 bg-[#0a0e17] text-white border border-[#1c2436] rounded-xl shadow-2xl text-xs space-y-1 font-mono">
-                              <div className="font-pixel text-xs text-[#ff3b00]">{label}</div>
+                              <div className="font-pixel text-xs text-white">{label}</div>
                               <div className="flex justify-between gap-4 font-mono text-[11px]">
                                 <span className="text-pink-400">RSI(14):</span>
                                 <span className="font-bold">{val.toFixed(2)}</span>
@@ -423,9 +423,9 @@ export const StockDetailModal: React.FC<StockDetailModalProps> = ({ stock, onClo
                           const d = payload[0].payload;
                           return (
                             <div className="p-3 bg-[#0a0e17] text-white border border-[#1c2436] rounded-xl shadow-2xl text-xs space-y-1 font-mono">
-                              <div className="font-pixel text-xs text-[#ff3b00]">{label}</div>
+                              <div className="font-pixel text-xs text-white">{label}</div>
                               <div className="flex justify-between gap-4 font-mono text-[11px]">
-                                <span className="text-amber-400">MACD Line:</span>
+                                <span className="text-neutral-400">MACD Line:</span>
                                 <span className="font-bold">{(d.macd || 0).toFixed(2)}</span>
                               </div>
                               <div className="flex justify-between gap-4 font-mono text-[11px]">
@@ -433,7 +433,7 @@ export const StockDetailModal: React.FC<StockDetailModalProps> = ({ stock, onClo
                                 <span className="font-bold">{(d.macdSignal || 0).toFixed(2)}</span>
                               </div>
                               <div className="flex justify-between gap-4 font-mono text-[11px]">
-                                <span className="text-emerald-400">Histogram:</span>
+                                <span className="text-white">Histogram:</span>
                                 <span className="font-bold">{(d.macdHist || 0).toFixed(2)}</span>
                               </div>
                             </div>
@@ -470,7 +470,7 @@ export const StockDetailModal: React.FC<StockDetailModalProps> = ({ stock, onClo
               href={`https://finance.yahoo.com/quote/${stock.ticker}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-xs font-pixel text-[#ff3b00] hover:underline"
+              className="inline-flex items-center gap-1 text-xs font-pixel text-white hover:underline"
             >
               <span>[YAHOO FINANCE]</span>
               <ExternalLink className="w-3.5 h-3.5" />

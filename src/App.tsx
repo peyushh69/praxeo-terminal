@@ -172,7 +172,7 @@ export default function App() {
   const activeIndexDef = SECTORAL_INDICES.find(s => s.id === currentIndexId) || SECTORAL_INDICES[0];
 
   return (
-    <div className="min-h-screen bg-[#000000] text-slate-100 flex flex-col font-mono selection:bg-[#ff3b00] selection:text-black">
+    <div className="min-h-screen bg-[#000000] text-white flex flex-col font-mono selection:bg-[#ff8800] selection:text-white">
       
       {/* Retro Minimal Header */}
       <MinimalHeader
@@ -215,14 +215,14 @@ export default function App() {
             {/* Error Message */}
             {error && (
               <div className="max-w-6xl mx-auto w-full px-4 pt-6">
-                <div className="p-4 border border-[#ff3b00] bg-[#120505] text-rose-300 flex items-center justify-between gap-3 text-xs rounded-xl shadow-pixel-orange">
+                <div className="p-4 border border-white/20 bg-[#0a0a0a] text-white flex items-center justify-between gap-3 text-xs rounded-xl shadow-none">
                   <div className="flex items-center gap-2.5">
-                    <AlertCircle className="w-5 h-5 shrink-0 text-[#ff3b00]" />
-                    <span className="font-pixel text-[10px]">{error}</span>
+                    <AlertCircle className="w-5 h-5 shrink-0 text-white" />
+                    <span className="font-pixel text-[10px] text-white">{error}</span>
                   </div>
                   <button
                     onClick={() => fetchData(currentIndexId, true)}
-                    className="px-3 py-1.5 bg-[#ff3b00] text-black font-pixel text-[9px] rounded transition-colors shrink-0 cursor-pointer uppercase"
+                    className="px-3 py-1.5 bg-neutral-800 hover:bg-neutral-700 text-white font-pixel text-[9px] rounded transition-colors shrink-0 cursor-pointer uppercase"
                   >
                     RETRY
                   </button>
@@ -233,13 +233,13 @@ export default function App() {
             {/* Loading state if data is fetching for first time */}
             {loading && !data ? (
               <div className="py-24 flex-1 flex flex-col items-center justify-center space-y-4">
-                <div className="p-6 bg-[#060609] border border-[#1a1a28] rounded-xl flex items-center gap-4 max-w-md shadow-pixel-orange">
-                  <RefreshCw className="w-6 h-6 animate-spin text-[#ff3b00]" />
+                <div className="p-6 bg-[#0a0a0a] border border-[#262626] rounded-xl flex items-center gap-4 max-w-md shadow-lg">
+                  <RefreshCw className="w-6 h-6 animate-spin text-white" />
                   <div>
                     <div className="font-pixel text-xs text-white">
                       INITIALIZING {activeIndexDef.name}...
                     </div>
-                    <div className="text-[11px] text-slate-400 mt-1 font-mono">
+                    <div className="text-[11px] text-neutral-400 mt-1 font-mono">
                       Computing 1D candle closes, EMAs 9/20/50/100/200, A/D &amp; RS metrics
                     </div>
                   </div>
@@ -261,14 +261,14 @@ export default function App() {
       </main>
 
       {/* Minimal Hacker Footer */}
-      <footer className="border-t border-[#12121c] py-4 bg-[#000000] text-[11px] text-slate-500 select-none">
+      <footer className="border-t border-[#1a1a1a] py-4 bg-[#000000] text-[11px] text-neutral-500 select-none">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-center sm:text-left">
           <div className="flex items-center gap-2">
-            <span className="font-pixel text-[#bef264] text-[10px]">Prexios</span>
-            <span className="text-slate-700">•</span>
-            <span className="font-mono text-slate-400 text-[11px]">By zero-sum Commune</span>
+            <span className="font-pixel text-white text-[10px]">Prexios</span>
+            <span className="text-neutral-700">•</span>
+            <span className="font-mono text-neutral-400 text-[11px]">By zero-sum Commune</span>
           </div>
-          <div className="text-slate-500 font-mono text-[11px]">
+          <div className="text-neutral-500 font-mono text-[11px]">
             Created by peyush!
           </div>
         </div>

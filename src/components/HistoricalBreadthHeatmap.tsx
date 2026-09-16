@@ -15,41 +15,41 @@ interface HistoricalBreadthHeatmapProps {
 export function getBreadthHeatmapStyle(percent: number): { bg: string; text: string; label: string } {
   if (percent >= 80) {
     return {
-      bg: 'bg-[#22c55e]', // Vibrant Emerald Green
+      bg: 'bg-emerald-400', // Vibrant Emerald Green
       text: 'text-black font-bold',
       label: '≥80% Super Bullish',
     };
   }
   if (percent >= 70) {
     return {
-      bg: 'bg-[#84cc16]', // Lime Green
+      bg: 'bg-[#bef264]', // Lime Green
       text: 'text-black font-bold',
       label: '70-79% Strong',
     };
   }
   if (percent >= 50) {
     return {
-      bg: 'bg-[#facc15]', // Golden Yellow
+      bg: 'bg-[#fbbf24]', // Golden Yellow
       text: 'text-black font-bold',
       label: '50-69% Moderate',
     };
   }
   if (percent >= 35) {
     return {
-      bg: 'bg-[#fb923c]', // Light Orange / Amber
+      bg: 'bg-orange-400', // Light Orange / Amber
       text: 'text-black font-bold',
       label: '35-49% Weak',
     };
   }
   if (percent >= 20) {
     return {
-      bg: 'bg-[#ea580c]', // Deep Orange
+      bg: 'bg-neutral-800', // Deep Orange
       text: 'text-white font-bold',
       label: '20-34% Poor',
     };
   }
   return {
-    bg: 'bg-[#dc2626]', // Crimson Red
+    bg: 'bg-[#991b1b]', // Crimson Red
     text: 'text-white font-bold',
     label: '<20% Oversold',
   };
@@ -110,10 +110,10 @@ export const HistoricalBreadthHeatmap: React.FC<HistoricalBreadthHeatmapProps> =
     <div className="space-y-3 select-none">
       
       {/* Top Header & Controls */}
-      <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-2 pb-2 border-b border-[#161624]">
+      <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-2 pb-2 border-b border-[#262626]">
         <div>
           <div className="flex items-center gap-1.5">
-            <span className="font-pixel text-[8px] sm:text-[9px] text-[#bef264] uppercase tracking-wider">
+            <span className="font-pixel text-[8px] sm:text-[9px] text-white uppercase tracking-wider">
               DAILY MATRIX
             </span>
             <span className="text-slate-600 font-mono text-[10px]">•</span>
@@ -129,12 +129,12 @@ export const HistoricalBreadthHeatmap: React.FC<HistoricalBreadthHeatmapProps> =
         {/* Controls: Timeframe & Column Switch */}
         <div className="flex items-center gap-1.5 self-start xs:self-auto">
           {/* Timeframe Toggle */}
-          <div className="flex items-center rounded-lg bg-[#000000] border border-[#202030] p-0.5 text-[9px] font-pixel">
+          <div className="flex items-center rounded-lg bg-[#0a0a0a] border border-[#262626] p-0.5 text-[9px] font-pixel">
             <button
               onClick={() => onTimeframeChange('3M')}
               className={`px-2 sm:px-2.5 py-1 rounded transition-all cursor-pointer ${
                 timeframe === '3M'
-                  ? 'bg-[#ff3b00] text-black font-bold shadow-pixel-orange'
+                  ? 'bg-neutral-800 text-white font-bold '
                   : 'text-slate-400 hover:text-white'
               }`}
             >
@@ -144,7 +144,7 @@ export const HistoricalBreadthHeatmap: React.FC<HistoricalBreadthHeatmapProps> =
               onClick={() => onTimeframeChange('6M')}
               className={`px-2 sm:px-2.5 py-1 rounded transition-all cursor-pointer ${
                 timeframe === '6M'
-                  ? 'bg-[#ff3b00] text-black font-bold shadow-pixel-orange'
+                  ? 'bg-neutral-800 text-white font-bold '
                   : 'text-slate-400 hover:text-white'
               }`}
             >
@@ -153,12 +153,12 @@ export const HistoricalBreadthHeatmap: React.FC<HistoricalBreadthHeatmapProps> =
           </div>
 
           {/* Column Toggle (+ 9 EMA) */}
-          <div className="flex items-center rounded-lg bg-[#000000] border border-[#202030] p-0.5 text-[9px] font-pixel">
+          <div className="flex items-center rounded-lg bg-[#0a0a0a] border border-[#262626] p-0.5 text-[9px] font-pixel">
             <button
               onClick={() => setColumnMode(columnMode === 'STANDARD' ? 'WITH_9' : 'STANDARD')}
               className={`px-2 py-1 rounded transition-all cursor-pointer ${
                 columnMode === 'WITH_9'
-                  ? 'bg-[#bef264] text-black font-bold'
+                  ? 'bg-neutral-800 text-white font-bold'
                   : 'text-slate-400 hover:text-white'
               }`}
               title="Toggle EMA 9 column"
@@ -170,10 +170,10 @@ export const HistoricalBreadthHeatmap: React.FC<HistoricalBreadthHeatmapProps> =
       </div>
 
       {/* Main Heatmap Container - Fixed Height Scrollable Window (Sliding Viewport) */}
-      <div className="w-full bg-[#050508] border border-[#202032] rounded-xl overflow-hidden shadow-2xl flex flex-col">
+      <div className="w-full bg-[#0a0a0a] border border-[#262626] rounded-xl overflow-hidden shadow-2xl flex flex-col">
         
         {/* Table Title Banner: "Stocks Above" + Quick Scroll Jump Actions */}
-        <div className="bg-[#0a0a14] py-1.5 px-3 border-b border-[#1e1e30] flex items-center justify-between">
+        <div className="bg-[#0a0a0a] py-1.5 px-3 border-b border-[#262626] flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="font-pixel text-[10px] sm:text-xs text-slate-200 tracking-wider">
               Stocks Above
@@ -187,17 +187,17 @@ export const HistoricalBreadthHeatmap: React.FC<HistoricalBreadthHeatmapProps> =
           <div className="flex items-center gap-1">
             <button
               onClick={scrollToTop}
-              className="p-1 rounded bg-[#0e0e1a] border border-[#222234] hover:border-[#bef264] text-slate-400 hover:text-white transition-colors cursor-pointer"
+              className="p-1 rounded bg-[#0a0a0a] border border-[#262626] hover:border-[#262626] text-slate-400 hover:text-white transition-colors cursor-pointer"
               title="Scroll to Latest (Top)"
             >
-              <ArrowUp className="w-3 h-3 text-[#bef264]" />
+              <ArrowUp className="w-3 h-3 text-white" />
             </button>
             <button
               onClick={scrollToBottom}
-              className="p-1 rounded bg-[#0e0e1a] border border-[#222234] hover:border-[#ff3b00] text-slate-400 hover:text-white transition-colors cursor-pointer"
+              className="p-1 rounded bg-[#0a0a0a] border border-[#262626] hover:border-[#262626] text-slate-400 hover:text-white transition-colors cursor-pointer"
               title="Scroll to Oldest (Bottom)"
             >
-              <ArrowDown className="w-3 h-3 text-[#ff3b00]" />
+              <ArrowDown className="w-3 h-3 text-white" />
             </button>
           </div>
         </div>
@@ -211,37 +211,37 @@ export const HistoricalBreadthHeatmap: React.FC<HistoricalBreadthHeatmapProps> =
           <table className="w-full table-fixed border-collapse font-mono text-center select-none min-w-[320px]">
             {/* Sticky Table Header */}
             <thead className="sticky top-0 z-10 shadow-md">
-              <tr className="border-b border-[#1e1e30] bg-[#090912] text-slate-300 font-pixel text-[9px] sm:text-[10px]">
+              <tr className="border-b border-[#262626] bg-[#0a0a0a] text-slate-300 font-pixel text-[9px] sm:text-[10px]">
                 {/* Date & Close Column */}
-                <th className={`py-2 px-1 sm:px-2 text-left border-r border-[#1a1a2c] bg-[#090912] ${columnMode === 'WITH_9' ? 'w-[22%] sm:w-[20%]' : 'w-[24%] sm:w-[20%]'}`}>
-                  <div className="text-sky-400 font-bold">Date</div>
+                <th className={`py-2 px-1 sm:px-2 text-left border-r border-[#262626] bg-[#0a0a0a] ${columnMode === 'WITH_9' ? 'w-[22%] sm:w-[20%]' : 'w-[24%] sm:w-[20%]'}`}>
+                  <div className="text-neutral-300 font-bold">Date</div>
                   <div className="text-[8px] sm:text-[9px] text-slate-400 font-mono font-normal">Close</div>
                 </th>
 
                 {/* Optional EMA 9 */}
                 {columnMode === 'WITH_9' && (
-                  <th className="py-2 px-1 sm:px-1.5 border-r border-[#1a1a2c] text-[#ff3b00] bg-[#090912] w-[15.6%] sm:w-[16%]">
+                  <th className="py-2 px-1 sm:px-1.5 border-r border-[#262626] text-white bg-[#0a0a0a] w-[15.6%] sm:w-[16%]">
                     <div>EMA 9</div>
                   </th>
                 )}
 
                 {/* SMA / EMA 20 */}
-                <th className="py-2 px-1 sm:px-1.5 border-r border-[#1a1a2c] text-[#38bdf8] bg-[#090912] w-[19%] sm:w-[20%]">
+                <th className="py-2 px-1 sm:px-1.5 border-r border-[#262626] text-white bg-[#0a0a0a] w-[19%] sm:w-[20%]">
                   <div>SMA 20</div>
                 </th>
 
                 {/* SMA / EMA 50 */}
-                <th className="py-2 px-1 sm:px-1.5 border-r border-[#1a1a2c] text-[#bef264] bg-[#090912] w-[19%] sm:w-[20%]">
+                <th className="py-2 px-1 sm:px-1.5 border-r border-[#262626] text-white bg-[#0a0a0a] w-[19%] sm:w-[20%]">
                   <div>SMA 50</div>
                 </th>
 
                 {/* SMA / EMA 100 */}
-                <th className="py-2 px-1 sm:px-1.5 border-r border-[#1a1a2c] text-[#c084fc] bg-[#090912] w-[19%] sm:w-[20%]">
+                <th className="py-2 px-1 sm:px-1.5 border-r border-[#262626] text-white bg-[#0a0a0a] w-[19%] sm:w-[20%]">
                   <div>SMA 100</div>
                 </th>
 
                 {/* SMA / EMA 200 */}
-                <th className="py-2 px-1 sm:px-1.5 text-[#f59e0b] bg-[#090912] w-[19%] sm:w-[20%]">
+                <th className="py-2 px-1 sm:px-1.5 text-white bg-[#0a0a0a] w-[19%] sm:w-[20%]">
                   <div>SMA 200</div>
                 </th>
               </tr>
@@ -266,7 +266,7 @@ export const HistoricalBreadthHeatmap: React.FC<HistoricalBreadthHeatmapProps> =
                       className="hover:brightness-110 transition-all"
                     >
                       {/* Date & Close Price Column */}
-                      <td className="py-1.5 sm:py-2 px-1.5 sm:px-2.5 text-left border-r border-[#1a1a2c] bg-[#07070d]">
+                      <td className="py-1.5 sm:py-2 px-1.5 sm:px-2.5 text-left border-r border-[#262626] bg-[#0a0a0a]">
                         <div className="font-bold text-slate-100 text-[10px] sm:text-xs leading-tight">
                           {displayDate}
                         </div>
@@ -326,9 +326,9 @@ export const HistoricalBreadthHeatmap: React.FC<HistoricalBreadthHeatmapProps> =
         </div>
 
         {/* Heatmap Footer: Scroll Indicator Status */}
-        <div className="p-2 sm:p-2.5 bg-[#06060a] border-t border-[#1a1a2c] flex items-center justify-between gap-2 text-[9px] sm:text-[10px] font-mono text-slate-400">
+        <div className="p-2 sm:p-2.5 bg-[#0a0a0a] border-t border-[#262626] flex items-center justify-between gap-2 text-[9px] sm:text-[10px] font-mono text-slate-400">
           <div className="flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#bef264] animate-pulse" />
+            <span className="w-1.5 h-1.5 rounded-full bg-[#0a0a0a] animate-pulse" />
             <span>Showing <span className="text-white font-bold">{filteredSeries.length}</span> daily sessions</span>
           </div>
 
@@ -340,30 +340,30 @@ export const HistoricalBreadthHeatmap: React.FC<HistoricalBreadthHeatmapProps> =
       </div>
 
       {/* Compact Participation Color Legend */}
-      <div className="bg-[#050508] border border-[#181826] p-2 sm:p-2.5 rounded-lg">
+      <div className="bg-[#0a0a0a] border border-[#262626] p-2 sm:p-2.5 rounded-lg">
         <div className="grid grid-cols-3 sm:grid-cols-6 gap-1.5 text-[9px] sm:text-[10px] font-mono">
           <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-sm bg-[#22c55e] flex-shrink-0" />
+            <span className="w-2.5 h-2.5 rounded-sm bg-[#0a0a0a] flex-shrink-0" />
             <span className="text-slate-300">≥80% Bull</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-sm bg-[#84cc16] flex-shrink-0" />
+            <span className="w-2.5 h-2.5 rounded-sm bg-[#0a0a0a] flex-shrink-0" />
             <span className="text-slate-300">70-79%</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-sm bg-[#facc15] flex-shrink-0" />
+            <span className="w-2.5 h-2.5 rounded-sm bg-[#0a0a0a] flex-shrink-0" />
             <span className="text-slate-300">50-69%</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-sm bg-[#fb923c] flex-shrink-0" />
+            <span className="w-2.5 h-2.5 rounded-sm bg-[#0a0a0a] flex-shrink-0" />
             <span className="text-slate-300">35-49%</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-sm bg-[#ea580c] flex-shrink-0" />
+            <span className="w-2.5 h-2.5 rounded-sm bg-[#0a0a0a] flex-shrink-0" />
             <span className="text-slate-300">20-34%</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-sm bg-[#dc2626] flex-shrink-0" />
+            <span className="w-2.5 h-2.5 rounded-sm bg-[#0a0a0a] flex-shrink-0" />
             <span className="text-slate-300">&lt;20% Bear</span>
           </div>
         </div>

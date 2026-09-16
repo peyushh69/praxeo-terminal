@@ -109,20 +109,20 @@ export const Header: React.FC<HeaderProps> = ({
           <button
             id="btn-back-to-hub"
             onClick={onNavigateHome}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#08080c] hover:bg-[#14141c] border border-[#22222e] hover:border-[#ff3b00] text-slate-300 hover:text-white rounded-lg text-xs font-bold transition-all cursor-pointer group shadow-sm"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#08080c] hover:bg-[#14141c] border border-[#22222e] hover:border-white/20 text-slate-300 hover:text-white rounded-lg text-xs font-bold transition-all cursor-pointer group shadow-sm"
             title="Return to Terminal Homepage"
           >
-            <ArrowLeft className="w-3.5 h-3.5 text-[#ff3b00] group-hover:-translate-x-1 transition-transform" />
+            <ArrowLeft className="w-3.5 h-3.5 text-white group-hover:-translate-x-1 transition-transform" />
             <span className="font-mono">TERMINAL HUB</span>
           </button>
 
           <div className="h-4 w-px bg-[#20202c]"></div>
 
           <div className="flex items-baseline gap-2">
-            <span className="font-pixel text-xl sm:text-2xl text-[#bef264] tracking-tight drop-shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:text-[#d9f99d] transition-colors">
+            <span className="font-pixel text-xl sm:text-2xl text-white tracking-tight drop-shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:text-[#d9f99d] transition-colors">
               praxis
             </span>
-            <span className="font-pixel text-[9px] text-[#ff3b00] tracking-widest hidden sm:inline">
+            <span className="font-pixel text-[9px] text-white tracking-widest hidden sm:inline">
               // BREADTH MATRIX
             </span>
           </div>
@@ -136,10 +136,10 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               id="btn-index-selector-dropdown"
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              className="flex items-center gap-2 px-3 py-1.5 bg-[#09090e] border border-[#2a2a3a] hover:border-[#ff3b00] rounded-lg text-xs font-bold text-white transition-all cursor-pointer"
+              className="flex items-center gap-2 px-3 py-1.5 bg-[#09090e] border border-[#2a2a3a] hover:border-white/20 rounded-lg text-xs font-bold text-white transition-all cursor-pointer"
             >
-              <span className="w-2 h-2 rounded-full bg-[#ff3b00] animate-pulse"></span>
-              <span className="text-[#ff3b00] font-pixel text-[10px]">ACTIVE:</span>
+              <span className="w-2 h-2 rounded-full bg-neutral-800 animate-pulse"></span>
+              <span className="text-white font-pixel text-[10px]">ACTIVE:</span>
               <span className="max-w-[140px] truncate">{activeIndexDef.name}</span>
               <span className="text-[10px] text-slate-400 font-normal">({totalConstituents})</span>
               <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
@@ -160,18 +160,18 @@ export const Header: React.FC<HeaderProps> = ({
                     }}
                     className={`flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs text-left transition-all cursor-pointer ${
                       idx.id === currentIndexId
-                        ? 'bg-[#ff3b00] text-black font-bold'
+                        ? 'bg-neutral-800 text-white font-bold'
                         : 'text-slate-300 hover:bg-[#151520] hover:text-white'
                     }`}
                   >
                     <div className="truncate">
                       <div>{idx.name}</div>
-                      <div className={`text-[10px] ${idx.id === currentIndexId ? 'text-black/80' : 'text-slate-500'}`}>
+                      <div className={`text-[10px] ${idx.id === currentIndexId ? 'text-white/80' : 'text-slate-500'}`}>
                         {idx.category}
                       </div>
                     </div>
                     <span className={`text-[10px] px-1.5 py-0.5 rounded ${
-                      idx.id === currentIndexId ? 'bg-black/20 text-black' : 'bg-[#12121c] text-slate-400'
+                      idx.id === currentIndexId ? 'bg-black/20 text-white' : 'bg-[#12121c] text-slate-400'
                     }`}>
                       {idx.stocks.length}
                     </span>
@@ -186,14 +186,14 @@ export const Header: React.FC<HeaderProps> = ({
             id="btn-sync-action"
             onClick={onRefresh}
             disabled={loading}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#08080c] border border-[#ff3b00] text-[#ff3b00] hover:bg-[#ff3b00] hover:text-black rounded-lg transition-all cursor-pointer shadow-pixel-orange text-[11px] font-bold"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#08080c] border border-white/20 text-white hover:bg-neutral-800 hover:text-white rounded-lg transition-all cursor-pointer shadow-pixel-orange text-[11px] font-bold"
             title="Refresh live breadth data"
           >
             <RefreshCw className={`w-3 h-3 ${loading ? 'animate-spin' : ''}`} />
             <span>{loading ? 'SYNCING...' : 'SYNC FEED'}</span>
           </button>
 
-          <div className="p-1.5 border border-[#18181f] bg-[#08080c] text-[#ff3b00] rounded-lg">
+          <div className="p-1.5 border border-[#18181f] bg-[#08080c] text-white rounded-lg">
             <Smartphone className="w-4 h-4" />
           </div>
 
@@ -216,12 +216,12 @@ export const Header: React.FC<HeaderProps> = ({
                 onClick={() => onSelectIndex(idx.id)}
                 className={`px-2.5 py-1 rounded-md text-[11px] font-mono font-medium transition-all cursor-pointer flex items-center gap-1.5 ${
                   isActive
-                    ? 'bg-[#ff3b00] text-black font-bold shadow-sm'
+                    ? 'bg-neutral-800 text-white font-bold shadow-sm'
                     : 'bg-[#0a0a10] hover:bg-[#161622] text-slate-300 hover:text-white border border-[#1e1e2c]'
                 }`}
               >
                 <span>{idx.shortName}</span>
-                <span className={`text-[9px] px-1 rounded ${isActive ? 'bg-black/20 text-black' : 'bg-[#181824] text-slate-400'}`}>
+                <span className={`text-[9px] px-1 rounded ${isActive ? 'bg-black/20 text-white' : 'bg-[#181824] text-slate-400'}`}>
                   {idx.stocks.length}
                 </span>
               </button>
@@ -236,15 +236,15 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Box 1: 9 EMA Ratio */}
           <div className="praxis-card p-2.5 sm:p-3 flex flex-col justify-between">
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded-full border-2 border-[#ff3b00] border-t-transparent animate-spin-slow"></div>
+              <div className="w-4 h-4 rounded-full border-2 border-white/20 border-t-transparent animate-spin-slow"></div>
               <span className="font-pixel text-[11px] sm:text-xs text-white">
-                {data ? `${data.summary.aboveEma9.count}` : '0'}<span className="text-[#ff3b00]">/{totalConstituents}</span>
+                {data ? `${data.summary.aboveEma9.count}` : '0'}<span className="text-white">/{totalConstituents}</span>
               </span>
               <span className="text-[9px] font-pixel text-slate-400 hidden sm:inline ml-auto">9 EMA</span>
             </div>
             <div className="w-full bg-[#141b2a] h-1.5 rounded-full mt-2 overflow-hidden">
               <div
-                className="bg-[#ff3b00] h-full rounded-full transition-all duration-500"
+                className="bg-neutral-800 h-full rounded-full transition-all duration-500"
                 style={{ width: `${data ? data.summary.aboveEma9.percentage : 0}%` }}
               ></div>
             </div>
@@ -274,7 +274,7 @@ export const Header: React.FC<HeaderProps> = ({
             <div className="flex items-center justify-between">
               <span className="font-pixel text-[9px] text-slate-400">BIAS:</span>
               <span className={`font-pixel text-[10px] px-1.5 py-0.5 rounded ${
-                stance.includes('Bullish') ? 'bg-emerald-950 text-emerald-400 border border-emerald-500/40' : 'bg-[#ff3b00]/20 text-[#ff3b00] border border-[#ff3b00]/40'
+                stance.includes('Bullish') ? 'bg-neutral-900 text-white border border-neutral-700/40' : 'bg-neutral-800/20 text-white border border-white/20/40'
               }`}>
                 {stance}
               </span>
@@ -287,7 +287,7 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Box 4: Auto countdown & clock */}
           <div className="praxis-card p-2.5 sm:p-3 flex flex-col justify-between">
             <div className="flex items-center justify-between">
-              <span className="font-pixel text-[9px] text-[#ff3b00]">AUTO SYNC</span>
+              <span className="font-pixel text-[9px] text-white">AUTO SYNC</span>
               <span className="font-pixel text-[10px] text-white tabular-nums">{autoRefreshCountdown}S</span>
             </div>
             <div className="flex items-center justify-between text-[9px] font-mono text-slate-400 mt-1">
@@ -301,8 +301,8 @@ export const Header: React.FC<HeaderProps> = ({
       {/* Retro Ticker Tape */}
       <div className="bg-[#04060a] border-y border-[#18181f] px-3 sm:px-6 py-1.5 overflow-x-auto scrollbar-none">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4 min-w-[760px] text-xs font-mono">
-          <div className="flex items-center gap-1.5 font-pixel text-[9px] text-[#ff3b00] shrink-0">
-            <span className="inline-block w-2 h-2 rounded-full bg-[#ff3b00] animate-ping"></span>
+          <div className="flex items-center gap-1.5 font-pixel text-[9px] text-white shrink-0">
+            <span className="inline-block w-2 h-2 rounded-full bg-neutral-800 animate-ping"></span>
             <span>FEED</span>
             <span className="text-slate-600">|</span>
           </div>
@@ -317,7 +317,7 @@ export const Header: React.FC<HeaderProps> = ({
                   {item.price}
                 </span>
                 <span className={`text-[10px] font-pixel px-1 rounded ${
-                  item.isPos ? 'text-emerald-400 bg-emerald-950/60' : 'text-[#ff3b00] bg-[#ff3b00]/10'
+                  item.isPos ? 'text-white bg-neutral-900/60' : 'text-white bg-neutral-800/10'
                 }`}>
                   {item.change}
                 </span>

@@ -143,21 +143,21 @@ export async function fetchLiveMarketNews(forceRefresh = false): Promise<MarketN
     },
     {
       // Breaking recent market headlines
-      url: 'https://news.google.com/rss/search?q=when:4h+NIFTY+OR+Sensex+OR+SEBI+OR+RBI+OR+stocks+India&hl=en-IN&gl=IN&ceid=IN:en',
+      url: 'https://news.google.com/rss/search?q=when:48h+NIFTY+OR+Sensex+OR+SEBI+OR+RBI+OR+stocks+India&hl=en-IN&gl=IN&ceid=IN:en',
       source: 'Google News (Markets)',
       code: 'GN-MKT',
       category: 'MARKET' as const,
     },
     {
       // Bluechip corporate announcements & earnings
-      url: 'https://news.google.com/rss/search?q=when:8h+Tata+Motors+OR+Reliance+OR+HDFC+Bank+OR+Infosys+OR+TCS+stocks&hl=en-IN&gl=IN&ceid=IN:en',
+      url: 'https://news.google.com/rss/search?q=when:48h+Tata+Motors+OR+Reliance+OR+HDFC+Bank+OR+Infosys+OR+TCS+stocks&hl=en-IN&gl=IN&ceid=IN:en',
       source: 'Google News (Corporate)',
       code: 'GN-CORP',
       category: 'CORPORATE' as const,
     },
     {
       // Macro Economy & Policy Wire
-      url: 'https://news.google.com/rss/search?q=when:12h+Indian+Economy+RBI+inflation+GDP+forex&hl=en-IN&gl=IN&ceid=IN:en',
+      url: 'https://news.google.com/rss/search?q=when:48h+Indian+Economy+RBI+inflation+GDP+forex&hl=en-IN&gl=IN&ceid=IN:en',
       source: 'Google News (Economy)',
       code: 'GN-ECO',
       category: 'ECONOMY' as const,

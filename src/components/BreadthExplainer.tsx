@@ -23,11 +23,11 @@ export const BreadthExplainer: React.FC = () => {
         onClick={() => setIsOpen(!isOpen)}
       >
         <div className="flex items-center gap-3">
-          <div className="p-2.5 bg-[#ff3b00]/10 border border-[#ff3b00]/40 text-[#ff3b00] rounded-xl">
+          <div className="p-2.5 bg-neutral-800/50 border border-white/20 text-white rounded-xl">
             <BookOpen className="w-5 h-5" />
           </div>
           <div>
-            <div className="text-[9px] tracking-widest uppercase font-pixel text-[#ff3b00]">
+            <div className="text-[9px] tracking-widest uppercase font-pixel text-white">
               PRAXIS PROTOCOL // QUANTITATIVE INDICATOR SUITE
             </div>
             <h3 className="font-pixel text-sm sm:text-base text-white mt-1">
@@ -40,9 +40,9 @@ export const BreadthExplainer: React.FC = () => {
         </div>
         <button
           id="btn-toggle-explainer"
-          className="p-2 border border-[#1c2436] rounded-xl text-slate-400 hover:text-white hover:border-[#ff3b00] bg-[#06080e] transition-colors cursor-pointer"
+          className="p-2 border border-[#1c2436] rounded-xl text-slate-400 hover:text-white hover:border-white/40 bg-[#06080e] transition-colors cursor-pointer"
         >
-          {isOpen ? <ChevronUp className="w-4 h-4 text-[#ff3b00]" /> : <ChevronDown className="w-4 h-4" />}
+          {isOpen ? <ChevronUp className="w-4 h-4 text-white" /> : <ChevronDown className="w-4 h-4" />}
         </button>
       </div>
 
@@ -52,7 +52,7 @@ export const BreadthExplainer: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             {/* EMA 9 */}
             <div className="p-3.5 border border-[#1c2436] rounded-xl bg-[#0a0e17]">
-              <div className="text-[9px] uppercase font-pixel text-[#ff3b00] mb-1">
+              <div className="text-[9px] uppercase font-pixel text-white mb-1">
                 [EMA 9] MOMENTUM
               </div>
               <div className="font-pixel text-xs text-white mb-2">
@@ -131,8 +131,8 @@ export const BreadthExplainer: React.FC = () => {
 
           {/* Strategy Signatures */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div className="p-4 border border-amber-500/30 bg-amber-950/15 rounded-xl">
-              <div className="flex items-center gap-2 text-amber-400 font-pixel text-xs mb-1.5">
+            <div className="p-4 border border-neutral-700/30 bg-neutral-900/15 rounded-xl">
+              <div className="flex items-center gap-2 text-neutral-400 font-pixel text-xs mb-1.5">
                 <Sparkles className="w-4 h-4" />
                 <span>GOLDEN STACK ALIGNMENT</span>
               </div>
@@ -158,8 +158,8 @@ export const BreadthExplainer: React.FC = () => {
               MARKET BREADTH INTERPRETATION MATRIX
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-              <div className="p-3.5 border border-emerald-500/40 rounded-xl bg-emerald-950/20">
-                <span className="font-pixel text-emerald-400 block mb-1.5 text-xs">
+              <div className="p-3.5 border border-neutral-700/40 rounded-xl bg-neutral-900/20">
+                <span className="font-pixel text-white block mb-1.5 text-xs">
                   HYPER-BULLISH (&gt;80%)
                 </span>
                 <span className="leading-relaxed text-slate-300">
@@ -174,8 +174,8 @@ export const BreadthExplainer: React.FC = () => {
                   25 to 40 stocks holding EMAs. Healthy swing-trading environment with selective rotation into leaders.
                 </span>
               </div>
-              <div className="p-3.5 border border-rose-500/40 rounded-xl bg-rose-950/20">
-                <span className="font-pixel text-rose-400 block mb-1.5 text-xs">
+              <div className="p-3.5 border border-neutral-700/40 rounded-xl bg-neutral-900/20">
+                <span className="font-pixel text-neutral-500 block mb-1.5 text-xs">
                   EXTREME PANIC (&lt;25%)
                 </span>
                 <span className="leading-relaxed text-slate-300">

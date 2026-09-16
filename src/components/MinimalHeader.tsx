@@ -125,12 +125,12 @@ export const MinimalHeader: React.FC<MinimalHeaderProps> = ({
     return (
       <div
         key={`${prefix}-${item.symbol}-${idx}`}
-        className="inline-flex items-center gap-2 px-4 py-0.5 border-r border-slate-200 whitespace-nowrap group cursor-default"
+        className="inline-flex items-center gap-2 px-4 py-0.5 border-r border-[#14141d] whitespace-nowrap group cursor-default"
       >
-        <span className="font-pixel text-[8px] sm:text-[9px] text-slate-700 font-bold tracking-wider">
+        <span className="font-pixel text-[8px] sm:text-[9px] text-slate-400 font-bold tracking-wider">
           {item.symbol}
         </span>
-        <span className="font-mono text-[11px] sm:text-xs text-black font-bold tabular-nums">
+        <span className="font-mono text-[11px] sm:text-xs text-white font-bold tabular-nums">
           {isVix
             ? item.price.toFixed(2)
             : `₹${item.price.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
@@ -138,11 +138,11 @@ export const MinimalHeader: React.FC<MinimalHeaderProps> = ({
         <span
           className={`inline-flex items-center gap-0.5 font-pixel text-[8px] sm:text-[9px] tabular-nums px-1.5 py-0.5 rounded font-semibold ${
             isPos
-              ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
-              : 'bg-rose-100 text-rose-800 border border-rose-300'
+              ? 'bg-neutral-900 text-white border border-neutral-700'
+              : 'bg-neutral-800/50 text-white border border-white/30'
           }`}
         >
-          {isPos ? <TrendingUp className="w-2.5 h-2.5 text-emerald-700" /> : <TrendingDown className="w-2.5 h-2.5 text-rose-700" />}
+          {isPos ? <TrendingUp className="w-2.5 h-2.5 text-emerald-400" /> : <TrendingDown className="w-2.5 h-2.5 text-rose-400" />}
           {isPos ? '+' : ''}
           {item.changePercent.toFixed(2)}%
         </span>
@@ -163,7 +163,7 @@ export const MinimalHeader: React.FC<MinimalHeaderProps> = ({
             className="flex items-center gap-2 text-left cursor-pointer group focus:outline-none"
             title="Prexios - Home"
           >
-            <span className="font-pixel text-[#bef264] text-lg sm:text-xl tracking-wider group-hover:brightness-125 transition-all">
+            <span className="font-pixel text-white text-lg sm:text-xl tracking-wider group-hover:text-white transition-colors">
               Prexios
             </span>
           </button>
@@ -174,10 +174,10 @@ export const MinimalHeader: React.FC<MinimalHeaderProps> = ({
               <button
                 onClick={onNavigateHome}
                 id="btn-header-home"
-                className="flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#0d0d15] border border-[#222234] hover:border-[#bef264] text-slate-300 hover:text-white font-pixel text-[9px] sm:text-[10px] tracking-wider transition-all cursor-pointer group shadow-sm"
+                className="flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#0d0d15] border border-[#222234] hover:border-white text-slate-300 hover:text-white font-pixel text-[9px] sm:text-[10px] tracking-wider transition-all cursor-pointer group shadow-sm"
                 title="Return to Home"
               >
-                <ArrowLeft className="w-3.5 h-3.5 text-[#bef264] group-hover:-translate-x-0.5 transition-transform" />
+                <ArrowLeft className="w-3.5 h-3.5 text-white group-hover:-translate-x-0.5 transition-transform" />
                 <span>HOME</span>
               </button>
             )}
@@ -187,7 +187,7 @@ export const MinimalHeader: React.FC<MinimalHeaderProps> = ({
       </header>
 
       {/* 2. RUNNING TICKER TAPE (Continuous infinite scroll on high-contrast white background) */}
-      <div className="border-b border-slate-200 bg-white overflow-hidden relative text-xs text-slate-900 shadow-sm h-[26px] flex items-center">
+      <div className="border-b border-[#14141d] bg-[#000000] overflow-hidden relative text-xs text-white shadow-sm h-[26px] flex items-center">
         <div className="flex items-center w-full h-full">
 
           {/* Running Continuous Marquee Ticker */}

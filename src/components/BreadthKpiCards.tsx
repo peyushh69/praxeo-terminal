@@ -167,7 +167,7 @@ export const BreadthKpiCards: React.FC<BreadthKpiCardsProps> = ({
               <span className="font-pixel text-4xl sm:text-5xl text-white tracking-tight">
                 {activeMetric.count}
               </span>
-              <span className="font-pixel text-2xl sm:text-3xl text-[#ff3b00]">
+              <span className="font-pixel text-2xl sm:text-3xl text-white">
                 S
               </span>
               <span className="font-pixel text-xs sm:text-sm text-slate-400">
@@ -177,7 +177,7 @@ export const BreadthKpiCards: React.FC<BreadthKpiCardsProps> = ({
 
             {/* Tag line in Praxis arcade styling */}
             <div className="flex items-center gap-2 mt-2">
-              <span className="font-pixel text-xs sm:text-sm text-[#ff3b00] tracking-wide">
+              <span className="font-pixel text-xs sm:text-sm text-white tracking-wide">
                 [{indexName.toUpperCase()} BREADTH MATRIX]
               </span>
               <span className="text-slate-500">&bull;</span>
@@ -188,7 +188,7 @@ export const BreadthKpiCards: React.FC<BreadthKpiCardsProps> = ({
 
             {/* Explanatory description */}
             <p className="text-xs text-slate-400 font-mono mt-2 max-w-2xl leading-relaxed">
-              <span className="text-[#ff3b00] font-bold font-pixel text-[10px]">
+              <span className="text-white font-bold font-pixel text-[10px]">
                 {activeMetric.count} OF {totalStocks}
               </span>{' '}
               {indexName.toUpperCase()} CONSTITUENTS HOLDING ABOVE CRITICAL TECHNICAL THRESHOLD (
@@ -205,7 +205,7 @@ export const BreadthKpiCards: React.FC<BreadthKpiCardsProps> = ({
                     activeFilter === currentTabFilterKey ? 'all' : currentTabFilterKey
                   )
                 }
-                className="inline-flex items-center gap-2 px-3.5 py-2 border border-[#ff3b00] bg-[#0c1017] text-[#ff3b00] hover:bg-[#ff3b00] hover:text-black font-pixel text-[10px] rounded-lg transition-all cursor-pointer shadow-pixel-orange"
+                className="inline-flex items-center gap-2 px-3.5 py-2 border border-[#262626] bg-[#0a0a0a] text-white hover:bg-[#0a0a0a] hover:text-white font-pixel text-[10px] rounded-lg transition-all cursor-pointer "
               >
                 <Calendar className="w-3.5 h-3.5" />
                 <span>
@@ -219,19 +219,19 @@ export const BreadthKpiCards: React.FC<BreadthKpiCardsProps> = ({
 
           {/* Quick Signal Badges */}
           <div className="grid grid-cols-2 sm:grid-cols-1 gap-2.5 shrink-0">
-            <div className="p-3 border border-[#1c2436] bg-[#070a12] rounded-xl flex items-center gap-3">
-              <div className="p-2 bg-amber-950/60 border border-amber-500/50 text-amber-400 rounded-lg">
+            <div className="p-3 border border-[#262626] bg-[#0a0a0a] rounded-xl flex items-center gap-3">
+              <div className="p-2 bg-neutral-900/60 border border-neutral-700/50 text-neutral-400 rounded-lg">
                 <Sparkles className="w-4 h-4" />
               </div>
               <div>
-                <div className="font-pixel text-[9px] text-amber-400">GOLDEN STACK</div>
+                <div className="font-pixel text-[9px] text-neutral-400">GOLDEN STACK</div>
                 <div className="font-pixel text-sm text-white mt-0.5">
                   {goldenStackCount} / {totalStocks} STOCKS
                 </div>
               </div>
             </div>
 
-            <div className="p-3 border border-[#1c2436] bg-[#070a12] rounded-xl flex items-center gap-3">
+            <div className="p-3 border border-[#262626] bg-[#0a0a0a] rounded-xl flex items-center gap-3">
               <div className="p-2 bg-purple-950/60 border border-purple-500/50 text-purple-400 rounded-lg">
                 <Compass className="w-4 h-4" />
               </div>
@@ -246,8 +246,8 @@ export const BreadthKpiCards: React.FC<BreadthKpiCardsProps> = ({
         </div>
 
         {/* Visual 50-Dot Bead Matrix */}
-        <div className="mt-6 pt-5 border-t border-[#1c2436]">
-          <div className="p-4 bg-[#06080e] border border-[#1c2436] rounded-xl">
+        <div className="mt-6 pt-5 border-t border-[#262626]">
+          <div className="p-4 bg-[#0a0a0a] border border-[#262626] rounded-xl">
             <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5 sm:gap-3 py-2">
               {Array.from({ length: totalStocks }).map((_, idx) => {
                 const isHolding = idx < activeMetric.count;
@@ -256,15 +256,15 @@ export const BreadthKpiCards: React.FC<BreadthKpiCardsProps> = ({
                     key={idx}
                     className={`dot-bead relative transition-all duration-200 cursor-pointer ${
                       isHolding
-                        ? 'bg-[#ff3b00] shadow-[0_0_8px_rgba(255,59,0,0.8)] border border-[#ff7744]'
-                        : 'bg-[#94a3b8] border border-slate-300/40 opacity-60'
+                        ? 'bg-[#0a0a0a] shadow-[0_0_8px_rgba(255,59,0,0.8)] border border-[#262626]'
+                        : 'bg-[#0a0a0a] border border-slate-300/40 opacity-60'
                     }`}
                     title={`Constituent #${idx + 1}: ${
                       isHolding ? 'Passing Criteria' : 'Failing Criteria'
                     }`}
                   >
                     {idx === 0 && (
-                      <div className="absolute -inset-1 rounded-full border border-[#ff3b00] animate-ping opacity-60"></div>
+                      <div className="absolute -inset-1 rounded-full border border-[#262626] animate-ping opacity-60"></div>
                     )}
                   </div>
                 );
@@ -272,22 +272,22 @@ export const BreadthKpiCards: React.FC<BreadthKpiCardsProps> = ({
             </div>
 
             {/* Dot Matrix Legend */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mt-4 pt-3 border-t border-[#1c2436] text-[10px] font-pixel text-slate-400">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mt-4 pt-3 border-t border-[#262626] text-[10px] font-pixel text-slate-400">
               <div className="flex items-center gap-4 flex-wrap">
                 <div className="flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#ff3b00] shadow-[0_0_6px_#ff3b00]"></span>
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#0a0a0a] shadow-[0_0_6px_#ff3b00]"></span>
                   <span className="text-slate-300">
                     PASSING ({activeMetric.count} STOCKS)
                   </span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#94a3b8]"></span>
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#0a0a0a]"></span>
                   <span className="text-slate-400">
                     LAGGING ({totalStocks - activeMetric.count} STOCKS)
                   </span>
                 </div>
               </div>
-              <div className="text-[#ff3b00]">
+              <div className="text-white">
                 BULLISH THRESHOLD: &gt;60% ({Math.round(totalStocks * 0.6)} STOCKS)
               </div>
             </div>
@@ -298,8 +298,8 @@ export const BreadthKpiCards: React.FC<BreadthKpiCardsProps> = ({
       {/* 2. PRAXIS INTERACTIVE CARD WITH ORANGE SOLID HIGHLIGHT PANEL */}
       <div className="praxis-card p-4 sm:p-5 shadow-2xl">
         {/* Indicator Switcher Tabs */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[#1c2436]">
-          <div className="flex items-center gap-1.5 bg-[#06080e] p-1 border border-[#1c2436] rounded-xl font-pixel text-[10px] overflow-x-auto scrollbar-none">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[#262626]">
+          <div className="flex items-center gap-1.5 bg-[#0a0a0a] p-1 border border-[#262626] rounded-xl font-pixel text-[10px] overflow-x-auto scrollbar-none">
             {[
               { id: '9', label: 'EMA 9' },
               { id: '20', label: 'EMA 20' },
@@ -316,8 +316,8 @@ export const BreadthKpiCards: React.FC<BreadthKpiCardsProps> = ({
                   onClick={() => setSelectedIndicatorTab(tab.id as any)}
                   className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer font-pixel whitespace-nowrap ${
                     isActive
-                      ? 'bg-[#ff3b00] text-black font-bold shadow-pixel-orange'
-                      : 'text-slate-400 hover:text-white hover:bg-[#141b2a]'
+                      ? 'bg-neutral-800 text-white font-bold '
+                      : 'text-slate-400 hover:text-white hover:bg-[#0a0a0a]'
                   }`}
                 >
                   {tab.label}
@@ -329,7 +329,7 @@ export const BreadthKpiCards: React.FC<BreadthKpiCardsProps> = ({
           <div className="flex items-center gap-2 font-pixel text-[10px]">
             <button
               onClick={() => onSelectFilter(currentTabFilterKey)}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-[#0e1422] border border-[#ff3b00] text-[#ff3b00] hover:bg-[#ff3b00] hover:text-black rounded-lg transition-all cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-[#0a0a0a] border border-[#262626] text-white hover:bg-[#0a0a0a] hover:text-white rounded-lg transition-all cursor-pointer"
             >
               <Maximize2 className="w-3 h-3" />
               <span>ISOLATE IN TABLE</span>
@@ -338,7 +338,7 @@ export const BreadthKpiCards: React.FC<BreadthKpiCardsProps> = ({
         </div>
 
         {/* Giant Bright Orange Focus Card */}
-        <div className="mt-4 praxis-card-orange p-5 sm:p-6 shadow-pixel-orange">
+        <div className="mt-4 praxis-card-orange p-5 sm:p-6 ">
           <div className="flex items-center justify-between font-pixel text-[10px] text-black border-b border-black/20 pb-3">
             <div className="flex items-center gap-2">
               <span className="inline-block w-2.5 h-2.5 bg-black"></span>
@@ -347,7 +347,7 @@ export const BreadthKpiCards: React.FC<BreadthKpiCardsProps> = ({
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="px-2 py-0.5 bg-black text-[#ff3b00] rounded font-bold uppercase">
+              <span className="px-2 py-0.5 bg-black text-white rounded font-bold uppercase">
                 ACTIVE
               </span>
               <span className="text-black/80 font-bold hidden sm:inline">
@@ -388,14 +388,14 @@ export const BreadthKpiCards: React.FC<BreadthKpiCardsProps> = ({
         </div>
 
         {/* Bottom Segmented Battery Track */}
-        <div className="mt-4 p-2 bg-[#06080e] border border-[#1c2436] rounded-xl flex items-center gap-1 overflow-hidden">
+        <div className="mt-4 p-2 bg-[#0a0a0a] border border-[#262626] rounded-xl flex items-center gap-1 overflow-hidden">
           {Array.from({ length: 25 }).map((_, i) => {
             const filled = (i / 25) * 100 < activeMetric.percentage;
             return (
               <div
                 key={i}
                 className={`flex-1 h-2 rounded-xs transition-all ${
-                  filled ? 'bg-[#ff3b00] shadow-[0_0_4px_#ff3b00]' : 'bg-[#141b2a]'
+                  filled ? 'bg-[#0a0a0a] shadow-[0_0_4px_#ff3b00]' : 'bg-[#0a0a0a]'
                 }`}
               />
             );
@@ -418,15 +418,15 @@ export const BreadthKpiCards: React.FC<BreadthKpiCardsProps> = ({
               }
               className={`praxis-card p-3.5 transition-all duration-150 cursor-pointer select-none ${
                 isSelected
-                  ? 'border-[#ff3b00] bg-[#101624] shadow-pixel-orange'
-                  : 'hover:border-slate-500 bg-[#0a0e17]'
+                  ? 'border-rose-500 bg-[#0a0a0a] shadow-[0_0_15px_rgba(244,63,94,0.2)]'
+                  : 'hover:border-slate-500 bg-[#0a0a0a]'
               }`}
             >
-              <div className="flex items-center justify-between pb-2 border-b border-[#1c2436]">
-                <span className="font-pixel text-[10px] text-[#ff3b00] truncate">
+              <div className="flex items-center justify-between pb-2 border-b border-[#262626]">
+                <span className="font-pixel text-[10px] text-white truncate">
                   {card.tag}
                 </span>
-                <span className="font-pixel text-[9px] px-1.5 py-0.5 bg-[#141b2a] text-slate-300 rounded border border-[#1c2436]">
+                <span className="font-pixel text-[9px] px-1.5 py-0.5 bg-[#0a0a0a] text-slate-300 rounded border border-[#262626]">
                   1D
                 </span>
               </div>
@@ -441,7 +441,7 @@ export const BreadthKpiCards: React.FC<BreadthKpiCardsProps> = ({
               </div>
 
               {/* Progress bar */}
-              <div className="w-full bg-[#06080e] h-1.5 rounded-full mt-2.5 overflow-hidden border border-[#1c2436]">
+              <div className="w-full bg-[#0a0a0a] h-1.5 rounded-full mt-2.5 overflow-hidden border border-[#262626]">
                 <div
                   className="h-full rounded-full transition-all duration-500"
                   style={{
@@ -451,9 +451,9 @@ export const BreadthKpiCards: React.FC<BreadthKpiCardsProps> = ({
                 />
               </div>
 
-              <div className="flex items-center justify-between text-[9px] font-mono text-slate-400 mt-2 pt-2 border-t border-[#1c2436]">
+              <div className="flex items-center justify-between text-[9px] font-mono text-slate-400 mt-2 pt-2 border-t border-[#262626]">
                 <span className="truncate">{card.label}</span>
-                <span className="font-pixel text-[9px] text-[#ff3b00] shrink-0 ml-1">
+                <span className="font-pixel text-[9px] text-white shrink-0 ml-1">
                   {isSelected ? '[ON]' : '[FILTER]'}
                 </span>
               </div>
@@ -471,12 +471,12 @@ export const BreadthKpiCards: React.FC<BreadthKpiCardsProps> = ({
           }
           className={`praxis-card p-3.5 transition-all cursor-pointer flex items-center justify-between ${
             activeFilter === 'golden-stack'
-              ? 'border-amber-500 bg-[#16140b] shadow-[0_0_15px_rgba(245,158,11,0.2)]'
+              ? 'border-neutral-700 bg-[#0a0a0a] shadow-[0_0_15px_rgba(245,158,11,0.2)]'
               : 'hover:border-slate-500'
           }`}
         >
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-amber-950 border border-amber-500/50 text-amber-400 rounded-lg">
+            <div className="p-2 bg-neutral-900 border border-neutral-700/50 text-neutral-400 rounded-lg">
               <Sparkles className="w-4 h-4" />
             </div>
             <div>
@@ -486,7 +486,7 @@ export const BreadthKpiCards: React.FC<BreadthKpiCardsProps> = ({
               </div>
             </div>
           </div>
-          <div className="font-pixel text-lg text-amber-400">{goldenStackCount}</div>
+          <div className="font-pixel text-lg text-neutral-400">{goldenStackCount}</div>
         </div>
 
         {/* Golden Cross (50 > 200) */}
@@ -496,7 +496,7 @@ export const BreadthKpiCards: React.FC<BreadthKpiCardsProps> = ({
           }
           className={`praxis-card p-3.5 transition-all cursor-pointer flex items-center justify-between ${
             activeFilter === 'golden-cross'
-              ? 'border-purple-500 bg-[#140b1e] shadow-[0_0_15px_rgba(168,85,247,0.2)]'
+              ? 'border-purple-500 bg-[#0a0a0a] shadow-[0_0_15px_rgba(168,85,247,0.2)]'
               : 'hover:border-slate-500'
           }`}
         >
@@ -521,12 +521,12 @@ export const BreadthKpiCards: React.FC<BreadthKpiCardsProps> = ({
           }
           className={`praxis-card p-3.5 transition-all cursor-pointer flex items-center justify-between ${
             activeFilter === 'above-all'
-              ? 'border-emerald-500 bg-[#091711] shadow-[0_0_15px_rgba(16,185,129,0.2)]'
+              ? 'border-neutral-700 bg-[#0a0a0a] shadow-[0_0_15px_rgba(16,185,129,0.2)]'
               : 'hover:border-slate-500'
           }`}
         >
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-emerald-950 border border-emerald-500/50 text-emerald-400 rounded-lg">
+            <div className="p-2 bg-neutral-900 border border-neutral-700/50 text-white rounded-lg">
               <Layers className="w-4 h-4" />
             </div>
             <div>
@@ -536,7 +536,7 @@ export const BreadthKpiCards: React.FC<BreadthKpiCardsProps> = ({
               </div>
             </div>
           </div>
-          <div className="font-pixel text-lg text-emerald-400">
+          <div className="font-pixel text-lg text-white">
             {aboveAllEmasCount}
           </div>
         </div>
@@ -548,22 +548,22 @@ export const BreadthKpiCards: React.FC<BreadthKpiCardsProps> = ({
           }
           className={`praxis-card p-3.5 transition-all cursor-pointer flex items-center justify-between ${
             activeFilter === 'below-all'
-              ? 'border-[#ff3b00] bg-[#1a0b08] shadow-pixel-orange'
+              ? 'border-rose-500 bg-[#0a0a0a] shadow-[0_0_15px_rgba(244,63,94,0.2)]'
               : 'hover:border-slate-500'
           }`}
         >
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-[#ff3b00]/20 border border-[#ff3b00]/50 text-[#ff3b00] rounded-lg">
+            <div className="p-2 bg-rose-950 border border-rose-500/50 text-rose-400 rounded-lg">
               <TrendingDown className="w-4 h-4" />
             </div>
             <div>
-              <div className="font-pixel text-[10px] text-[#ff3b00]">FULL BREAKDOWN</div>
+              <div className="font-pixel text-[10px] text-rose-300">FULL BREAKDOWN</div>
               <div className="text-[10px] text-slate-400 font-mono">
                 BELOW ALL 5 KEY EMAS
               </div>
             </div>
           </div>
-          <div className="font-pixel text-lg text-[#ff3b00]">
+          <div className="font-pixel text-lg text-white">
             {belowAllEmasCount}
           </div>
         </div>

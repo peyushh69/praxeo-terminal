@@ -128,15 +128,15 @@ export const Level1Homepage: React.FC<Level1HomepageProps> = ({
       
       {/* 1. TOP CENTER QUOTE SECTION (Prominently centered at the top) */}
       <div className="w-full max-w-6xl mx-auto mb-6 text-center">
-        <div className="inline-flex items-start sm:items-center gap-3 bg-[#07070e] border border-[#222238] hover:border-[#bef264]/60 rounded-xl px-5 py-3 shadow-lg max-w-3xl mx-auto text-left transition-all">
-          <Quote className="w-5 h-5 text-[#bef264] shrink-0 mt-0.5 sm:mt-0 opacity-90" />
+        <div className="inline-flex items-start sm:items-center gap-3 bg-[#0a0a0a] border border-[#262626] hover:border-white/40/60 rounded-xl px-5 py-3 shadow-lg max-w-3xl mx-auto text-left transition-all">
+          <Quote className="w-5 h-5 text-white shrink-0 mt-0.5 sm:mt-0 opacity-90" />
           <div className="space-y-1 flex-1">
             <p className="text-white text-xs sm:text-sm md:text-base font-mono font-medium tracking-normal leading-relaxed">
               &ldquo;{currentQuote.quote}&rdquo;
             </p>
-            <div className="flex items-center justify-between text-slate-400 text-[10px] sm:text-xs font-mono">
-              <span className="text-[#bef264] font-medium">— {currentQuote.author}</span>
-              <span className="text-[9px] text-slate-600 font-pixel">#DAILY INSIGHT</span>
+            <div className="flex items-center justify-between text-neutral-400 text-[10px] sm:text-xs font-mono">
+              <span className="text-white font-medium">— {currentQuote.author}</span>
+              <span className="text-[9px] text-neutral-600 font-pixel">#DAILY INSIGHT</span>
             </div>
           </div>
         </div>
@@ -149,31 +149,31 @@ export const Level1Homepage: React.FC<Level1HomepageProps> = ({
         <div className="lg:col-span-5 flex flex-col space-y-3.5">
           
           <div className="flex items-center justify-between px-1">
-            <span className="font-pixel text-[10px] text-[#ff8800] tracking-wider">
+            <span className="font-pixel text-[10px] text-white tracking-wider">
               PRIMARY SUITE MODULES
             </span>
-            <span className="text-slate-500 font-mono text-[10px]">
+            <span className="text-neutral-500 font-mono text-[10px]">
               3 ACTIVE ENGINES
             </span>
           </div>
 
           {/* OPTION 01: MARKET BREADTH */}
-          <div className="w-full bg-[#050508] border-2 border-[#ff3b00]/50 hover:border-[#ff3b00] rounded-xl p-4 sm:p-4.5 text-left space-y-3 transition-all duration-150 shadow-lg group">
+          <div className="w-full bg-[#0a0a0a] border border-[#262626] hover:border-white/40 rounded-xl p-4 sm:p-4.5 text-left space-y-3 transition-all duration-150 shadow-lg group">
             <div className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-lg bg-[#ff3b00]/10 border border-[#ff3b00]/40 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                  <Layers className="w-4.5 h-4.5 text-[#ff3b00]" />
+                <div className="w-9 h-9 rounded-lg bg-neutral-800/50 border border-white/20 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                  <Layers className="w-4.5 h-4.5 text-white" />
                 </div>
                 <div>
                   <h2 className="font-pixel text-xs sm:text-sm text-white tracking-wide">
                     MARKET BREADTH
                   </h2>
-                  <p className="text-[10px] text-slate-400 font-mono">
+                  <p className="text-[10px] text-neutral-400 font-mono">
                     Advance/Decline & 52-Week Multi-Sector Health
                   </p>
                 </div>
               </div>
-              <span className="px-2 py-0.5 rounded text-[8px] font-pixel bg-[#160808] text-[#ff3b00] border border-[#ff3b00]/40">
+              <span className="px-2 py-0.5 rounded text-[8px] font-pixel bg-neutral-800/50 text-white border border-white/20">
                 {SECTORAL_INDICES.length} INDICES
               </span>
             </div>
@@ -181,30 +181,30 @@ export const Level1Homepage: React.FC<Level1HomepageProps> = ({
             <button
               id="btn-market-breadth-launch"
               onClick={onEnterBreadth}
-              className="w-full py-2.5 sm:py-3 bg-[#ff3b00] hover:bg-[#ff4d14] text-black font-pixel text-[11px] tracking-wider rounded-lg transition-all flex items-center justify-center gap-2 cursor-pointer font-bold shadow-md active:scale-[0.99]"
+              className="w-full py-2.5 sm:py-3 bg-neutral-800 hover:bg-neutral-700 text-white font-pixel text-[11px] tracking-wider rounded-lg transition-all flex items-center justify-center gap-2 cursor-pointer font-bold shadow-md active:scale-[0.99]"
             >
               <span>LAUNCH MARKET BREADTH</span>
-              <ArrowRight className="w-3.5 h-3.5 text-black" />
+              <ArrowRight className="w-3.5 h-3.5 text-white" />
             </button>
           </div>
 
           {/* OPTION 02: SECTOR ROTATION MATRIX */}
-          <div className="w-full bg-[#050508] border-2 border-[#bef264]/50 hover:border-[#bef264] rounded-xl p-4 sm:p-4.5 text-left space-y-3 transition-all duration-150 shadow-lg group">
+          <div className="w-full bg-[#0a0a0a] border border-[#262626] hover:border-white/40 rounded-xl p-4 sm:p-4.5 text-left space-y-3 transition-all duration-150 shadow-lg group">
             <div className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-lg bg-[#bef264]/10 border border-[#bef264]/40 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                  <Compass className="w-4.5 h-4.5 text-[#bef264]" />
+                <div className="w-9 h-9 rounded-lg bg-neutral-800/50 border border-white/20 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                  <Compass className="w-4.5 h-4.5 text-white" />
                 </div>
                 <div>
                   <h2 className="font-pixel text-xs sm:text-sm text-white tracking-wide">
                     SECTOR ROTATION MATRIX
                   </h2>
-                  <p className="text-[10px] text-slate-400 font-mono">
+                  <p className="text-[10px] text-neutral-400 font-mono">
                     Relative Strength vs Momentum (1W to 5Y RRG)
                   </p>
                 </div>
               </div>
-              <span className="px-2 py-0.5 rounded text-[8px] font-pixel bg-[#0b1408] text-[#bef264] border border-[#bef264]/40">
+              <span className="px-2 py-0.5 rounded text-[8px] font-pixel bg-neutral-800/50 text-white border border-white/20">
                 MOMENTUM
               </span>
             </div>
@@ -212,50 +212,50 @@ export const Level1Homepage: React.FC<Level1HomepageProps> = ({
             <button
               id="btn-rotation-matrix-launch"
               onClick={onEnterRotation}
-              className="w-full py-2.5 sm:py-3 bg-[#bef264] hover:bg-[#cbf77f] text-black font-pixel text-[11px] tracking-wider rounded-lg transition-all flex items-center justify-center gap-2 cursor-pointer font-bold shadow-md active:scale-[0.99]"
+              className="w-full py-2.5 sm:py-3 bg-neutral-800 hover:bg-neutral-700 text-white font-pixel text-[11px] tracking-wider rounded-lg transition-all flex items-center justify-center gap-2 cursor-pointer font-bold shadow-md active:scale-[0.99]"
             >
               <span>LAUNCH ROTATION MATRIX</span>
-              <ArrowRight className="w-3.5 h-3.5 text-black" />
+              <ArrowRight className="w-3.5 h-3.5 text-white" />
             </button>
           </div>
 
           {/* OPTION 03: NIFTY 50 CROSS-SECTIONAL RETURN SCATTER (KOYFIN STYLE) */}
-          <div className="w-full bg-[#050508] border-2 border-[#00e5ff]/50 hover:border-[#00e5ff] rounded-xl p-4 sm:p-4.5 text-left space-y-3 transition-all duration-150 shadow-lg group">
+          <div className="w-full bg-[#0a0a0a] border border-[#262626] hover:border-white/40 rounded-xl p-4 sm:p-4.5 text-left space-y-3 transition-all duration-150 shadow-lg group">
             <div className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-lg bg-[#00e5ff]/10 border border-[#00e5ff]/40 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                  <Sliders className="w-4.5 h-4.5 text-[#00e5ff]" />
+                <div className="w-9 h-9 rounded-lg bg-neutral-800/50 border border-white/20 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                  <Sliders className="w-4.5 h-4.5 text-white" />
                 </div>
                 <div>
                   <h2 className="font-pixel text-xs sm:text-sm text-white tracking-wide flex items-center gap-2">
                     <span>RETURN SCATTER PLOT</span>
                   </h2>
-                  <p className="text-[10px] text-slate-400 font-mono">
+                  <p className="text-[10px] text-neutral-400 font-mono">
                     Koyfin-Style Cross-Sectional Alpha & Regression
                   </p>
                 </div>
               </div>
-              <span className="px-2 py-0.5 rounded text-[8px] font-pixel bg-[#03141a] text-[#00e5ff] border border-[#00e5ff]/40">
+              <span className="px-2 py-0.5 rounded text-[8px] font-pixel bg-neutral-800/50 text-white border border-white/20">
                 5 BENCHMARKS
               </span>
             </div>
 
-            <p className="text-[10px] text-slate-400 font-mono">
+            <p className="text-[10px] text-neutral-400 font-mono">
               Koyfin-Style Alpha Matrix for Nifty 50, 500, Next 50, Midcap & Smallcap
             </p>
 
             <button
               id="btn-scatter-plot-launch"
               onClick={onEnterScatter}
-              className="w-full py-2.5 sm:py-3 bg-[#00e5ff] hover:bg-[#38bdf8] text-black font-pixel text-[11px] tracking-wider rounded-lg transition-all flex items-center justify-center gap-2 cursor-pointer font-bold shadow-md active:scale-[0.99]"
+              className="w-full py-2.5 sm:py-3 bg-neutral-800 hover:bg-neutral-700 text-white font-pixel text-[11px] tracking-wider rounded-lg transition-all flex items-center justify-center gap-2 cursor-pointer font-bold shadow-md active:scale-[0.99]"
             >
               <span>LAUNCH SCATTER PLOT</span>
-              <ArrowRight className="w-3.5 h-3.5 text-black" />
+              <ArrowRight className="w-3.5 h-3.5 text-white" />
             </button>
           </div>
 
           {/* Small Feature Footnote */}
-          <div className="text-[9px] text-slate-600 font-mono px-1 flex items-center justify-between pt-1">
+          <div className="text-[9px] text-neutral-600 font-mono px-1 flex items-center justify-between pt-1">
             <span>REAL-TIME NSE / BSE REFRESH</span>
             <span>PROPRIETARY QUANT ALGO</span>
           </div>
@@ -266,12 +266,12 @@ export const Level1Homepage: React.FC<Level1HomepageProps> = ({
         <div className="lg:col-span-7 flex flex-col space-y-2">
           <div className="flex items-center justify-between px-1">
             <div className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-[#ff3b00] animate-ping" />
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
               <span className="font-pixel text-[10px] text-white tracking-wider">
                 LIVE FINANCIAL INTELLIGENCE WIRE
               </span>
             </div>
-            <span className="text-[9px] font-pixel text-[#bef264]">
+            <span className="text-[9px] font-pixel text-white">
               ONE-LINE BULLETINS
             </span>
           </div>

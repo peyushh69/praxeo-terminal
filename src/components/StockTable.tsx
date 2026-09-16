@@ -245,7 +245,7 @@ export const StockTable: React.FC<StockTableProps> = ({
           <div className="flex items-center gap-2">
             <h3 className="font-pixel text-xs sm:text-sm text-white flex items-center gap-2">
               <span>{indexName.toUpperCase()} CONSTITUENTS</span>
-              <span className="text-[9px] px-1.5 py-0.5 border border-[#bef264]/40 bg-[#bef264]/10 text-[#bef264] font-pixel rounded">
+              <span className="text-[9px] px-1.5 py-0.5 border border-white/20 bg-neutral-800/50 text-white font-pixel rounded">
                 {filteredAndSortedStocks.length} OF {stocks.length}
               </span>
             </h3>
@@ -261,7 +261,7 @@ export const StockTable: React.FC<StockTableProps> = ({
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="SEARCH TICKER..."
-                className="w-full pl-2.5 pr-7 py-1.5 text-[10px] sm:text-xs border border-[#202030] bg-[#000000] rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-[#ff3b00] font-mono"
+                className="w-full pl-2.5 pr-7 py-1.5 text-[10px] sm:text-xs border border-[#202030] bg-[#000000] rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-neutral-700 font-mono"
               />
               <span className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none">
                 <Search className="w-3 h-3" />
@@ -274,7 +274,7 @@ export const StockTable: React.FC<StockTableProps> = ({
                 id="select-sector-filter"
                 value={selectedSector}
                 onChange={(e) => onSelectSector(e.target.value)}
-                className="py-1.5 px-2 text-[10px] sm:text-xs border border-[#202030] bg-[#000000] rounded-lg text-white focus:outline-none focus:border-[#ff3b00] cursor-pointer font-mono"
+                className="py-1.5 px-2 text-[10px] sm:text-xs border border-[#202030] bg-[#000000] rounded-lg text-white focus:outline-none focus:border-neutral-700 cursor-pointer font-mono"
               >
                 {sectors.map((sec) => (
                   <option key={sec} value={sec} className="bg-[#0a0a12] text-white">
@@ -288,10 +288,10 @@ export const StockTable: React.FC<StockTableProps> = ({
             <button
               id="btn-export-csv"
               onClick={handleExportCSV}
-              className="inline-flex items-center gap-1 px-2.5 py-1.5 text-[9px] font-pixel border border-[#202030] bg-[#000000] text-slate-300 hover:text-white hover:border-[#ff3b00] rounded-lg transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1 px-2.5 py-1.5 text-[9px] font-pixel border border-[#202030] bg-[#000000] text-slate-300 hover:text-white hover:border-neutral-700 rounded-lg transition-colors cursor-pointer"
               title="Download quantitative indicator data as CSV"
             >
-              <Download className="w-3 h-3 text-[#ff3b00]" />
+              <Download className="w-3 h-3 text-white" />
               <span className="hidden xs:inline">CSV</span>
             </button>
           </div>
@@ -306,7 +306,7 @@ export const StockTable: React.FC<StockTableProps> = ({
               onClick={() => onSelectFilter(tab.id)}
               className={`px-2.5 py-1 whitespace-nowrap text-[8px] sm:text-[9px] rounded-md transition-all cursor-pointer border ${
                 activeFilter === tab.id
-                  ? 'bg-[#ff3b00] text-black font-bold border-[#ff3b00] shadow-pixel-orange'
+                  ? 'bg-neutral-800 text-white font-bold border-neutral-700 shadow-pixel-orange'
                   : 'bg-[#000000] text-slate-400 border-[#1c1c28] hover:border-slate-500 hover:text-white'
               }`}
             >
@@ -329,9 +329,9 @@ export const StockTable: React.FC<StockTableProps> = ({
                   <span>STOCK</span>
                   {sortField === 'symbol' ? (
                     sortDirection === 'asc' ? (
-                      <ArrowUp className="w-3 h-3 text-[#ff3b00]" />
+                      <ArrowUp className="w-3 h-3 text-white" />
                     ) : (
-                      <ArrowDown className="w-3 h-3 text-[#ff3b00]" />
+                      <ArrowDown className="w-3 h-3 text-white" />
                     )
                   ) : (
                     <ArrowUpDown className="w-3 h-3 opacity-30" />
@@ -347,9 +347,9 @@ export const StockTable: React.FC<StockTableProps> = ({
                   <span>LTP (₹)</span>
                   {sortField === 'currentPrice' && (
                     sortDirection === 'asc' ? (
-                      <ArrowUp className="w-3 h-3 text-[#ff3b00]" />
+                      <ArrowUp className="w-3 h-3 text-white" />
                     ) : (
-                      <ArrowDown className="w-3 h-3 text-[#ff3b00]" />
+                      <ArrowDown className="w-3 h-3 text-white" />
                     )
                   )}
                 </div>
@@ -363,9 +363,9 @@ export const StockTable: React.FC<StockTableProps> = ({
                   <span>CHG %</span>
                   {sortField === 'changePercent' && (
                     sortDirection === 'asc' ? (
-                      <ArrowUp className="w-3 h-3 text-[#ff3b00]" />
+                      <ArrowUp className="w-3 h-3 text-white" />
                     ) : (
-                      <ArrowDown className="w-3 h-3 text-[#ff3b00]" />
+                      <ArrowDown className="w-3 h-3 text-white" />
                     )
                   )}
                 </div>
@@ -378,7 +378,7 @@ export const StockTable: React.FC<StockTableProps> = ({
                 <div className="flex items-center justify-center gap-1">
                   <span>9 EMA</span>
                   {sortField === 'diffEma9' && (
-                    sortDirection === 'asc' ? <ArrowUp className="w-3 h-3 text-[#ff3b00]" /> : <ArrowDown className="w-3 h-3 text-[#ff3b00]" />
+                    sortDirection === 'asc' ? <ArrowUp className="w-3 h-3 text-white" /> : <ArrowDown className="w-3 h-3 text-white" />
                   )}
                 </div>
               </th>
@@ -390,7 +390,7 @@ export const StockTable: React.FC<StockTableProps> = ({
                 <div className="flex items-center justify-center gap-1">
                   <span>20 EMA</span>
                   {sortField === 'diffEma20' && (
-                    sortDirection === 'asc' ? <ArrowUp className="w-3 h-3 text-[#ff3b00]" /> : <ArrowDown className="w-3 h-3 text-[#ff3b00]" />
+                    sortDirection === 'asc' ? <ArrowUp className="w-3 h-3 text-white" /> : <ArrowDown className="w-3 h-3 text-white" />
                   )}
                 </div>
               </th>
@@ -402,7 +402,7 @@ export const StockTable: React.FC<StockTableProps> = ({
                 <div className="flex items-center justify-center gap-1">
                   <span>50 EMA</span>
                   {sortField === 'diffEma50' && (
-                    sortDirection === 'asc' ? <ArrowUp className="w-3 h-3 text-[#ff3b00]" /> : <ArrowDown className="w-3 h-3 text-[#ff3b00]" />
+                    sortDirection === 'asc' ? <ArrowUp className="w-3 h-3 text-white" /> : <ArrowDown className="w-3 h-3 text-white" />
                   )}
                 </div>
               </th>
@@ -414,7 +414,7 @@ export const StockTable: React.FC<StockTableProps> = ({
                 <div className="flex items-center justify-center gap-1">
                   <span>200 EMA</span>
                   {sortField === 'diffEma200' && (
-                    sortDirection === 'asc' ? <ArrowUp className="w-3 h-3 text-[#ff3b00]" /> : <ArrowDown className="w-3 h-3 text-[#ff3b00]" />
+                    sortDirection === 'asc' ? <ArrowUp className="w-3 h-3 text-white" /> : <ArrowDown className="w-3 h-3 text-white" />
                   )}
                 </div>
               </th>
@@ -426,7 +426,7 @@ export const StockTable: React.FC<StockTableProps> = ({
                 <div className="flex items-center justify-center gap-1">
                   <span>RSI (14)</span>
                   {sortField === 'rsi14' && (
-                    sortDirection === 'asc' ? <ArrowUp className="w-3 h-3 text-[#ff3b00]" /> : <ArrowDown className="w-3 h-3 text-[#ff3b00]" />
+                    sortDirection === 'asc' ? <ArrowUp className="w-3 h-3 text-white" /> : <ArrowDown className="w-3 h-3 text-white" />
                   )}
                 </div>
               </th>
@@ -438,7 +438,7 @@ export const StockTable: React.FC<StockTableProps> = ({
                 <div className="flex items-center justify-center gap-1">
                   <span>SCORE</span>
                   {sortField === 'bullishScore' && (
-                    sortDirection === 'asc' ? <ArrowUp className="w-3 h-3 text-[#ff3b00]" /> : <ArrowDown className="w-3 h-3 text-[#ff3b00]" />
+                    sortDirection === 'asc' ? <ArrowUp className="w-3 h-3 text-white" /> : <ArrowDown className="w-3 h-3 text-white" />
                   )}
                 </div>
               </th>
@@ -471,13 +471,13 @@ export const StockTable: React.FC<StockTableProps> = ({
                       <div className="flex items-start gap-1.5">
                         <div>
                           <div className="flex items-center gap-1.5 flex-wrap">
-                            <span className="font-pixel text-[11px] sm:text-xs text-white group-hover:text-[#bef264] transition-all">
+                            <span className="font-pixel text-[11px] sm:text-xs text-white group-hover:text-white transition-all">
                               {stock.symbol}
                             </span>
                             {stock.isGoldenStack && (
                               <span
                                 title="Golden Stack (Price > 9 > 20 > 50 > 100 > 200)"
-                                className="px-1 py-0.5 bg-[#ff3b00] text-black text-[7px] font-bold font-pixel rounded"
+                                className="px-1 py-0.5 bg-neutral-800 text-white text-[7px] font-bold font-pixel rounded"
                               >
                                 GOLDEN
                               </span>
@@ -509,7 +509,7 @@ export const StockTable: React.FC<StockTableProps> = ({
 
                     {/* EMA 9 */}
                     <td className="py-2 sm:py-2.5 px-2 text-center border-r border-[#12121e] font-mono text-[10px]">
-                      <span className={`font-bold ${emas.isAboveEma9 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                      <span className={`font-bold ${emas.isAboveEma9 ? 'text-white' : 'text-neutral-500'}`}>
                         {emas.isAboveEma9 ? '+' : ''}
                         {emas.diffEma9Percent.toFixed(1)}%
                       </span>
@@ -517,7 +517,7 @@ export const StockTable: React.FC<StockTableProps> = ({
 
                     {/* EMA 20 */}
                     <td className="py-2 sm:py-2.5 px-2 text-center border-r border-[#12121e] font-mono text-[10px]">
-                      <span className={`font-bold ${emas.isAboveEma20 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                      <span className={`font-bold ${emas.isAboveEma20 ? 'text-white' : 'text-neutral-500'}`}>
                         {emas.isAboveEma20 ? '+' : ''}
                         {emas.diffEma20Percent.toFixed(1)}%
                       </span>
@@ -525,7 +525,7 @@ export const StockTable: React.FC<StockTableProps> = ({
 
                     {/* EMA 50 */}
                     <td className="py-2 sm:py-2.5 px-2 text-center border-r border-[#12121e] font-mono text-[10px]">
-                      <span className={`font-bold ${emas.isAboveEma50 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                      <span className={`font-bold ${emas.isAboveEma50 ? 'text-white' : 'text-neutral-500'}`}>
                         {emas.isAboveEma50 ? '+' : ''}
                         {emas.diffEma50Percent.toFixed(1)}%
                       </span>
@@ -533,7 +533,7 @@ export const StockTable: React.FC<StockTableProps> = ({
 
                     {/* EMA 200 */}
                     <td className="py-2 sm:py-2.5 px-2 text-center border-r border-[#12121e] font-mono text-[10px]">
-                      <span className={`font-bold ${emas.isAboveEma200 ? 'text-purple-400' : 'text-rose-400'}`}>
+                      <span className={`font-bold ${emas.isAboveEma200 ? 'text-purple-400' : 'text-neutral-500'}`}>
                         {emas.isAboveEma200 ? '+' : ''}
                         {emas.diffEma200Percent.toFixed(1)}%
                       </span>
@@ -544,11 +544,11 @@ export const StockTable: React.FC<StockTableProps> = ({
                       <span
                         className={
                           rsi.isOverbought
-                            ? 'text-amber-400 font-bold'
+                            ? 'text-neutral-400 font-bold'
                             : rsi.isOversold
                             ? 'text-cyan-400 font-bold'
                             : rsi.isAbove50
-                            ? 'text-emerald-400 font-bold'
+                            ? 'text-white font-bold'
                             : 'text-slate-400'
                         }
                       >
@@ -561,11 +561,11 @@ export const StockTable: React.FC<StockTableProps> = ({
                       <span
                         className={`inline-block px-1.5 py-0.5 text-[8px] font-pixel rounded ${
                           stock.bullishScore === 5
-                            ? 'bg-emerald-950 text-emerald-300 border border-emerald-500/50'
+                            ? 'bg-neutral-900 text-emerald-300 border border-neutral-700/50'
                             : stock.bullishScore >= 3
                             ? 'bg-blue-950 text-blue-300 border border-blue-500/50'
                             : stock.bullishScore === 0
-                            ? 'bg-rose-950 text-rose-300 border border-rose-500/50'
+                            ? 'bg-neutral-900 text-rose-300 border border-neutral-700/50'
                             : 'bg-slate-900 text-slate-300 border border-slate-700'
                         }`}
                       >
@@ -580,10 +580,10 @@ export const StockTable: React.FC<StockTableProps> = ({
                           e.stopPropagation();
                           onSelectStock(stock);
                         }}
-                        className="p-1 text-slate-400 hover:text-white hover:bg-[#ff3b00]/20 rounded border border-transparent hover:border-[#ff3b00]/40 transition-colors cursor-pointer"
+                        className="p-1 text-slate-400 hover:text-white hover:bg-neutral-800/50 rounded border border-transparent hover:border-neutral-700/40 transition-colors cursor-pointer"
                         title="Open Technical Chart & Multi-Indicator Analysis"
                       >
-                        <Eye className="w-3.5 h-3.5 text-[#ff3b00]" />
+                        <Eye className="w-3.5 h-3.5 text-white" />
                       </button>
                     </td>
                   </tr>

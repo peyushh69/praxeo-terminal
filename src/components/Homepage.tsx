@@ -90,26 +90,26 @@ export const Homepage: React.FC<HomepageProps> = ({ onSelectModule }) => {
   );
 
   return (
-    <div className="min-h-screen bg-black text-slate-100 flex flex-col font-mono selection:bg-[#ff3b00] selection:text-black bg-grid-praxis">
+    <div className="min-h-screen bg-black text-slate-100 flex flex-col font-mono selection:bg-neutral-800 selection:text-white bg-grid-praxis">
       
       {/* Top Terminal Status Strip */}
       <div className="border-b border-[#18181f] bg-[#000000] px-4 py-1.5 text-xs text-slate-400 flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-4">
-          <span className="flex items-center gap-1.5 text-emerald-400 font-bold">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping inline-block"></span>
+          <span className="flex items-center gap-1.5 text-white font-bold">
+            <span className="w-2 h-2 rounded-full bg-white animate-ping inline-block"></span>
             SYS_STATUS: ONLINE
           </span>
           <span className="hidden sm:inline text-slate-600">|</span>
           <span className="hidden sm:inline text-slate-400">FEED: NSE_REALTIME_DAILY</span>
           <span className="hidden md:inline text-slate-600">|</span>
-          <span className="hidden md:inline text-[#ff3b00]">ENGINE: PRAXIS QUANT v3.4</span>
+          <span className="hidden md:inline text-white">ENGINE: PRAXIS QUANT v3.4</span>
         </div>
         <div className="flex items-center gap-3 text-slate-400">
           <span className="flex items-center gap-1">
             <Clock className="w-3.5 h-3.5 text-slate-500" />
             IST {currentTime || '--:--:--'}
           </span>
-          <span className="px-2 py-0.5 rounded bg-emerald-950/80 border border-emerald-800/60 text-emerald-300 font-bold text-[10px]">
+          <span className="px-2 py-0.5 rounded bg-neutral-900/80 border border-emerald-800/60 text-emerald-300 font-bold text-[10px]">
             MARKET OPEN
           </span>
         </div>
@@ -119,14 +119,14 @@ export const Homepage: React.FC<HomepageProps> = ({ onSelectModule }) => {
       <header className="border-b border-[#18181f] bg-[#050507] py-4 px-4 sm:px-8">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-[#ff3b00] text-black font-black text-xl flex items-center justify-center shadow-pixel-orange">
+            <div className="w-10 h-10 rounded-lg bg-neutral-800 text-white font-black text-xl flex items-center justify-center ">
               PX
             </div>
             <div>
               <div className="flex items-center gap-2">
                 <h1 className="text-xl sm:text-2xl font-black tracking-tight text-white flex items-center gap-2">
                   PRAXIS QUANT SUITE
-                  <span className="text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded bg-[#ff3b00]/20 text-[#ff3b00] border border-[#ff3b00]/40">
+                  <span className="text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded bg-neutral-800/20 text-white border border-white/20">
                     TERMINAL HUB
                   </span>
                 </h1>
@@ -141,7 +141,7 @@ export const Homepage: React.FC<HomepageProps> = ({ onSelectModule }) => {
             <button
               id="btn-nav-market-breadth-top"
               onClick={() => onSelectModule('market-breadth', 'NIFTY_50')}
-              className="flex items-center gap-2 px-4 py-2 bg-[#ff3b00] hover:bg-[#ff5500] text-black font-bold text-xs rounded-lg transition-all shadow-pixel-orange cursor-pointer"
+              className="flex items-center gap-2 px-4 py-2 bg-neutral-800 hover:bg-neutral-700 text-white font-bold text-xs rounded-lg transition-all  cursor-pointer"
             >
               <Activity className="w-4 h-4" />
               <span>LAUNCH MARKET BREADTH</span>
@@ -158,23 +158,23 @@ export const Homepage: React.FC<HomepageProps> = ({ onSelectModule }) => {
         <section id="section-featured-breadth">
           <div className="relative group">
             {/* Animated Glow Border */}
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-[#ff3b00] via-amber-500 to-[#ff3b00] rounded-2xl blur-sm opacity-60 group-hover:opacity-100 transition duration-500"></div>
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-neutral-700 via-neutral-600 to-neutral-700 rounded-2xl blur-sm opacity-60 group-hover:opacity-100 transition duration-500"></div>
 
-            <div className="relative bg-[#050507] border-2 border-[#ff3b00] rounded-2xl p-6 sm:p-8 flex flex-col gap-6 shadow-2xl">
+            <div className="relative bg-[#050507] border-2 border-white/20 rounded-2xl p-6 sm:p-8 flex flex-col gap-6 shadow-2xl">
               
               {/* Card Top Pill & Tagline */}
               <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#251515] pb-4">
                 <div className="flex items-center gap-2.5">
-                  <span className="px-2.5 py-1 rounded-md bg-[#ff3b00] text-black text-xs font-black tracking-wider uppercase flex items-center gap-1.5 shadow-sm">
+                  <span className="px-2.5 py-1 rounded-md bg-neutral-800 text-white text-xs font-black tracking-wider uppercase flex items-center gap-1.5 shadow-sm">
                     <Radio className="w-3.5 h-3.5 animate-pulse" />
                     PRIMARY INDICATOR #01
                   </span>
-                  <span className="px-2.5 py-1 rounded-md bg-emerald-950/80 border border-emerald-600/40 text-emerald-400 text-xs font-bold">
+                  <span className="px-2.5 py-1 rounded-md bg-neutral-900/80 border border-emerald-600/40 text-white text-xs font-bold">
                     LIVE & FULLY OPERATIONAL
                   </span>
                 </div>
                 <div className="text-xs text-slate-400 flex items-center gap-2">
-                  <Terminal className="w-3.5 h-3.5 text-[#ff3b00]" />
+                  <Terminal className="w-3.5 h-3.5 text-white" />
                   <span>15 SECTORAL INDICES • 180+ CONSTITUENTS</span>
                 </div>
               </div>
@@ -183,20 +183,20 @@ export const Homepage: React.FC<HomepageProps> = ({ onSelectModule }) => {
               <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-2">
-                    <div className="p-3 bg-[#ff3b00]/10 border border-[#ff3b00]/30 rounded-xl text-[#ff3b00]">
+                    <div className="p-3 bg-neutral-800/10 border border-white/20 rounded-xl text-white">
                       <Activity className="w-8 h-8" />
                     </div>
                     <div>
                       <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
                         MARKET BREADTH MATRIX
                       </h2>
-                      <p className="text-sm font-semibold text-[#ff3b00]">
+                      <p className="text-sm font-semibold text-white">
                         Multi-Index Moving Average, RSI & MACD Quantitative Participation Engine
                       </p>
                     </div>
                   </div>
                   <p className="text-xs sm:text-sm text-slate-300 leading-relaxed mt-3 max-w-3xl">
-                    Live quantitative tracking of stocks trading above <span className="text-amber-300 font-bold">EMA 9, 20, 50, 100 & 200</span>, <span className="text-emerald-400 font-bold">RSI(14)</span> momentum strength, <span className="text-cyan-400 font-bold">MACD Crossovers</span>, and <span className="text-[#ff3b00] font-bold">Golden Stack (9&gt;20&gt;50&gt;100&gt;200)</span> setups across Nifty 50, Nifty 500, Nifty Next 50, Midcap, Smallcap, and all 14 NSE Sectoral Indices.
+                    Live quantitative tracking of stocks trading above <span className="text-amber-300 font-bold">EMA 9, 20, 50, 100 & 200</span>, <span className="text-white font-bold">RSI(14)</span> momentum strength, <span className="text-cyan-400 font-bold">MACD Crossovers</span>, and <span className="text-white font-bold">Golden Stack (9&gt;20&gt;50&gt;100&gt;200)</span> setups across Nifty 50, Nifty 500, Nifty Next 50, Midcap, Smallcap, and all 14 NSE Sectoral Indices.
                   </p>
                 </div>
 
@@ -205,7 +205,7 @@ export const Homepage: React.FC<HomepageProps> = ({ onSelectModule }) => {
                   <button
                     id="btn-enter-market-breadth"
                     onClick={() => onSelectModule('market-breadth', 'NIFTY_50')}
-                    className="w-full py-4 px-6 bg-[#ff3b00] hover:bg-[#ff5500] active:scale-[0.98] text-black font-black text-sm rounded-xl transition-all shadow-pixel-orange flex items-center justify-center gap-3 cursor-pointer"
+                    className="w-full py-4 px-6 bg-neutral-800 hover:bg-neutral-700 active:scale-[0.98] text-white font-black text-sm rounded-xl transition-all  flex items-center justify-center gap-3 cursor-pointer"
                   >
                     <span>ENTER MARKET BREADTH</span>
                     <ArrowRight className="w-5 h-5" />
@@ -228,9 +228,9 @@ export const Homepage: React.FC<HomepageProps> = ({ onSelectModule }) => {
                       key={idx.id}
                       id={`btn-quick-sector-${idx.id}`}
                       onClick={() => onSelectModule('market-breadth', idx.id)}
-                      className="flex items-center gap-2 p-2 bg-[#09090e] hover:bg-[#151520] border border-[#20202a] hover:border-[#ff3b00] rounded-lg text-left transition-all group/btn cursor-pointer"
+                      className="flex items-center gap-2 p-2 bg-[#09090e] hover:bg-[#151520] border border-[#20202a] hover:border-white/20 rounded-lg text-left transition-all group/btn cursor-pointer"
                     >
-                      <div className="p-1 rounded bg-[#000000] border border-[#252535] text-slate-300 group-hover/btn:text-[#ff3b00] group-hover/btn:border-[#ff3b00]/40">
+                      <div className="p-1 rounded bg-[#000000] border border-[#252535] text-slate-300 group-hover/btn:text-white group-hover/btn:border-white/20">
                         {getSectorIcon(idx.iconName, 'w-3 h-3')}
                       </div>
                       <div className="min-w-0 flex-1">
@@ -255,7 +255,7 @@ export const Homepage: React.FC<HomepageProps> = ({ onSelectModule }) => {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <h2 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2">
-                <Layers className="w-5 h-5 text-[#ff3b00]" />
+                <Layers className="w-5 h-5 text-white" />
                 NSE BROAD MARKET & SECTORAL INDICES SUITE ({SECTORAL_INDICES.length})
               </h2>
               <p className="text-xs text-slate-400">
@@ -272,7 +272,7 @@ export const Homepage: React.FC<HomepageProps> = ({ onSelectModule }) => {
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 placeholder="Search sector (e.g. Auto, Bank, FMCG)..."
-                className="w-full pl-9 pr-3 py-1.5 bg-[#09090e] border border-[#20202a] text-slate-200 rounded-lg text-xs placeholder:text-slate-600 focus:outline-none focus:border-[#ff3b00]"
+                className="w-full pl-9 pr-3 py-1.5 bg-[#09090e] border border-[#20202a] text-slate-200 rounded-lg text-xs placeholder:text-slate-600 focus:outline-none focus:border-white/20"
               />
             </div>
           </div>
@@ -283,16 +283,16 @@ export const Homepage: React.FC<HomepageProps> = ({ onSelectModule }) => {
                 key={idx.id}
                 id={`card-sector-full-${idx.id}`}
                 onClick={() => onSelectModule('market-breadth', idx.id)}
-                className="praxis-card p-4 hover:border-[#ff3b00]/80 transition-all cursor-pointer group flex flex-col justify-between gap-3 bg-[#07070a]"
+                className="praxis-card p-4 hover:border-white/20 transition-all cursor-pointer group flex flex-col justify-between gap-3 bg-[#07070a]"
               >
                 <div>
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex items-center gap-2.5">
-                      <div className="p-2 rounded-lg bg-[#000000] border border-[#20202c] text-[#ff3b00] group-hover:border-[#ff3b00] group-hover:bg-[#ff3b00]/10 transition-colors">
+                      <div className="p-2 rounded-lg bg-[#000000] border border-[#20202c] text-white group-hover:border-white/20 group-hover:bg-neutral-800/10 transition-colors">
                         {getSectorIcon(idx.iconName, 'w-4 h-4')}
                       </div>
                       <div>
-                        <div className="font-bold text-sm text-white group-hover:text-[#ff3b00] transition-colors">
+                        <div className="font-bold text-sm text-white group-hover:text-white transition-colors">
                           {idx.name}
                         </div>
                         <div className="text-[10px] text-slate-500">
@@ -311,10 +311,10 @@ export const Homepage: React.FC<HomepageProps> = ({ onSelectModule }) => {
                 </div>
 
                 <div className="pt-3 border-t border-[#181822] flex items-center justify-between text-xs text-slate-400 group-hover:text-white">
-                  <div className="flex items-center gap-1 text-[11px] text-slate-500 group-hover:text-[#ff3b00]">
+                  <div className="flex items-center gap-1 text-[11px] text-slate-500 group-hover:text-white">
                     <span>EMA 9/20/50/100/200 • RSI • MACD</span>
                   </div>
-                  <div className="flex items-center gap-1 text-xs font-bold text-[#ff3b00]">
+                  <div className="flex items-center gap-1 text-xs font-bold text-white">
                     <span>Launch</span>
                     <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                   </div>
@@ -329,7 +329,7 @@ export const Homepage: React.FC<HomepageProps> = ({ onSelectModule }) => {
           <div className="border-t border-[#18181f] pt-8">
             <div className="flex items-center justify-between mb-1">
               <h2 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-amber-400" />
+                <Sparkles className="w-5 h-5 text-neutral-400" />
                 EXTENDED QUANTITATIVE INDICATOR SUITE
               </h2>
               <span className="text-xs text-slate-500">MULTI-FACTOR ECOSYSTEM</span>
@@ -345,13 +345,13 @@ export const Homepage: React.FC<HomepageProps> = ({ onSelectModule }) => {
             <div className="praxis-card p-5 opacity-90 border-[#1f202b] flex flex-col justify-between gap-4">
               <div>
                 <div className="flex items-center justify-between gap-2 mb-2">
-                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-amber-950/60 border border-amber-800/40 text-amber-400">
+                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-neutral-900/60 border border-amber-800/40 text-neutral-400">
                     INDICATOR #02
                   </span>
                   <span className="text-[10px] text-slate-500">TREND SUITE</span>
                 </div>
                 <h3 className="text-base font-bold text-white mb-1 flex items-center gap-2">
-                  <TrendingUp className="w-4 h-4 text-amber-400" />
+                  <TrendingUp className="w-4 h-4 text-neutral-400" />
                   Momentum & Trend Following Vector
                 </h3>
                 <p className="text-xs text-slate-400 leading-relaxed">
@@ -359,10 +359,10 @@ export const Homepage: React.FC<HomepageProps> = ({ onSelectModule }) => {
                 </p>
               </div>
               <div className="flex items-center justify-between text-xs text-slate-500 border-t border-[#151520] pt-3">
-                <span className="text-[11px] text-emerald-400 font-semibold">Integrates with Breadth</span>
+                <span className="text-[11px] text-white font-semibold">Integrates with Breadth</span>
                 <button
                   onClick={() => onSelectModule('market-breadth', 'NIFTY_50')}
-                  className="text-xs text-amber-400 hover:text-amber-300 font-bold flex items-center gap-1 cursor-pointer"
+                  className="text-xs text-neutral-400 hover:text-amber-300 font-bold flex items-center gap-1 cursor-pointer"
                 >
                   <span>View RSI/MACD</span>
                   <ArrowRight className="w-3 h-3" />
@@ -403,13 +403,13 @@ export const Homepage: React.FC<HomepageProps> = ({ onSelectModule }) => {
             <div className="praxis-card p-5 opacity-90 border-[#1f202b] flex flex-col justify-between gap-4">
               <div>
                 <div className="flex items-center justify-between gap-2 mb-2">
-                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-rose-950/60 border border-rose-800/40 text-rose-400">
+                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-neutral-900/60 border border-rose-800/40 text-neutral-500">
                     INDICATOR #04
                   </span>
                   <span className="text-[10px] text-slate-500">VOLATILITY</span>
                 </div>
                 <h3 className="text-base font-bold text-white mb-1 flex items-center gap-2">
-                  <Zap className="w-4 h-4 text-rose-400" />
+                  <Zap className="w-4 h-4 text-neutral-500" />
                   Regime & Volatility Squeeze Radar
                 </h3>
                 <p className="text-xs text-slate-400 leading-relaxed">
@@ -417,10 +417,10 @@ export const Homepage: React.FC<HomepageProps> = ({ onSelectModule }) => {
                 </p>
               </div>
               <div className="flex items-center justify-between text-xs text-slate-500 border-t border-[#151520] pt-3">
-                <span className="text-[11px] text-rose-400 font-semibold">Regime Stance Synced</span>
+                <span className="text-[11px] text-neutral-500 font-semibold">Regime Stance Synced</span>
                 <button
                   onClick={() => onSelectModule('market-breadth', 'NIFTY_50')}
-                  className="text-xs text-rose-400 hover:text-rose-300 font-bold flex items-center gap-1 cursor-pointer"
+                  className="text-xs text-neutral-500 hover:text-rose-300 font-bold flex items-center gap-1 cursor-pointer"
                 >
                   <span>Explore Breadth</span>
                   <ArrowRight className="w-3 h-3" />
@@ -436,7 +436,7 @@ export const Homepage: React.FC<HomepageProps> = ({ onSelectModule }) => {
       {/* Terminal Footer */}
       <footer className="border-t border-[#18181f] bg-[#000000] py-6 px-4 text-center text-xs text-slate-500 flex flex-col sm:flex-row items-center justify-between max-w-7xl mx-auto w-full gap-3">
         <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-[#ff3b00]"></span>
+          <span className="w-2 h-2 rounded-full bg-neutral-800"></span>
           <span className="font-bold text-slate-400">PRAXIS QUANT TERMINAL</span>
           <span>• Multi-Indicator Breadth & Technical Analysis Engine</span>
         </div>

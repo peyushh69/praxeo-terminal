@@ -460,7 +460,7 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
       case 'Weakening':
         return '#fbbf24'; // Amber yellow
       case 'Lagging':
-        return '#f43f5e'; // Rose red
+        return '#f87171'; // Rose red
       case 'Improving':
         return '#38bdf8'; // Sky blue
     }
@@ -469,9 +469,9 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
   const getQuadrantBadge = (quad: RRGQuadrant) => {
     switch (quad) {
       case 'Leading':
-        return 'bg-emerald-950/80 text-[#bef264] border-emerald-700/60';
+        return 'bg-emerald-950/80 text-emerald-400 border-emerald-700/60';
       case 'Weakening':
-        return 'bg-amber-950/80 text-[#fbbf24] border-amber-700/60';
+        return 'bg-amber-950/80 text-amber-400 border-amber-700/60';
       case 'Lagging':
         return 'bg-rose-950/80 text-rose-400 border-rose-700/60';
       case 'Improving':
@@ -483,12 +483,12 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
     <div className="w-full max-w-6xl mx-auto px-2 sm:px-4 py-4 space-y-5 font-mono select-none">
       
       {/* 1. TOP SUB-NAV BAR (Breadcrumbs & Direct Switch) */}
-      <div className="flex flex-wrap items-center justify-between gap-3 bg-[#06060a] border border-[#181824] rounded-xl p-3 sm:p-4">
+      <div className="flex flex-wrap items-center justify-between gap-3 bg-[#0a0a0a] border border-[#262626] rounded-xl p-3 sm:p-4">
         
         {/* Left: Indicator Title & Benchmark Info */}
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-[#ff3b00]/10 border border-[#ff3b00]/30 flex items-center justify-center shrink-0">
-            <Compass className="w-5 h-5 text-[#ff3b00]" />
+          <div className="w-9 h-9 rounded-lg bg-[#0a0a0a]/10 border border-[#262626]/30 flex items-center justify-center shrink-0">
+            <Compass className="w-5 h-5 text-white" />
           </div>
           <div>
             <h2 className="font-pixel text-sm sm:text-base text-white tracking-wide">
@@ -502,7 +502,7 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
           {/* Guide / Methodology Drawer Trigger */}
           <button
             onClick={() => setShowGuide(!showGuide)}
-            className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-[#0e0e16] border border-[#222232] hover:border-[#ff3b00] text-slate-300 hover:text-[#ff3b00] font-pixel text-[8px] sm:text-[9px] transition-all cursor-pointer"
+            className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-[#0a0a0a] border border-[#262626] hover:border-[#262626] text-slate-300 hover:text-white font-pixel text-[8px] sm:text-[9px] transition-all cursor-pointer"
             title="How to interpret Rotation Matrix"
           >
             <HelpCircle className="w-3.5 h-3.5" />
@@ -513,10 +513,10 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
           <button
             onClick={() => fetchRRGData(true)}
             disabled={loading || isRevalidating}
-            className="p-1.5 rounded-lg bg-[#0e0e16] border border-[#222232] hover:border-[#bef264] text-slate-300 hover:text-[#bef264] transition-all disabled:opacity-50 cursor-pointer"
+            className="p-1.5 rounded-lg bg-[#0a0a0a] border border-[#262626] hover:border-[#262626] text-slate-300 hover:text-white transition-all disabled:opacity-50 cursor-pointer"
             title="Refresh Rotation Matrix"
           >
-            <RefreshCw className={`w-3.5 h-3.5 ${loading || isRevalidating ? 'animate-spin text-[#bef264]' : ''}`} />
+            <RefreshCw className={`w-3.5 h-3.5 ${loading || isRevalidating ? 'animate-spin text-white' : ''}`} />
           </button>
         </div>
 
@@ -524,17 +524,17 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
 
       {/* 2. METHODOLOGY & TRADING STRATEGY ACCORDION / GUIDE */}
       {showGuide && (
-        <div className="bg-[#08080e] border-2 border-[#ff3b00]/40 rounded-xl p-4 sm:p-5 space-y-4 animate-in fade-in duration-200">
-          <div className="flex items-center justify-between border-b border-[#1c1c28] pb-3">
+        <div className="bg-[#0a0a0a] border-2 border-[#262626]/40 rounded-xl p-4 sm:p-5 space-y-4 animate-in fade-in duration-200">
+          <div className="flex items-center justify-between border-b border-[#262626] pb-3">
             <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-[#ff3b00]" />
+              <Sparkles className="w-4 h-4 text-white" />
               <h3 className="font-pixel text-xs text-white">
                 SECTOR ROTATION MATRIX — METHODOLOGY &amp; TRADING GUIDE
               </h3>
             </div>
             <button
               onClick={() => setShowGuide(false)}
-              className="text-slate-400 hover:text-white font-pixel text-[9px] px-2 py-0.5 rounded bg-[#12121c] border border-[#222230]"
+              className="text-slate-400 hover:text-white font-pixel text-[9px] px-2 py-0.5 rounded bg-[#0a0a0a] border border-[#262626]"
             >
               CLOSE [X]
             </button>
@@ -542,63 +542,63 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-3 text-xs">
             {/* 1. Leading */}
-            <div className="p-3 rounded-lg bg-[#05150c] border border-emerald-800/40 space-y-1.5">
+            <div className="p-3 rounded-lg bg-[#0a0a0a] border border-emerald-800/40 space-y-1.5">
               <div className="flex items-center justify-between">
-                <span className="font-pixel text-[9px] text-[#bef264]">1. LEADING (TOP-RIGHT)</span>
-                <span className="text-[10px] text-emerald-400 font-bold">&gt;100 / &gt;100</span>
+                <span className="font-pixel text-[9px] text-emerald-400">1. LEADING (TOP-RIGHT)</span>
+                <span className="text-[10px] text-white font-bold">&gt;100 / &gt;100</span>
               </div>
               <p className="text-slate-300 text-[11px] leading-relaxed">
-                <strong className="text-[#bef264]">Strong Outperformance + Accelerating Momentum.</strong> Sectors in this quadrant have high relative strength and are leading the benchmark rally.
+                <strong className="text-emerald-400">Strong Outperformance + Accelerating Momentum.</strong> Sectors in this quadrant have high relative strength and are leading the benchmark rally.
               </p>
-              <div className="text-[10px] text-emerald-300/80 font-mono bg-emerald-950/40 p-1.5 rounded">
+              <div className="text-[10px] text-emerald-300/80 font-mono bg-neutral-900/40 p-1.5 rounded">
                 ⚡ Action: Aggressive Long / Trend Following
               </div>
             </div>
 
             {/* 2. Weakening */}
-            <div className="p-3 rounded-lg bg-[#181105] border border-amber-800/40 space-y-1.5">
+            <div className="p-3 rounded-lg bg-[#0a0a0a] border border-amber-800/40 space-y-1.5">
               <div className="flex items-center justify-between">
-                <span className="font-pixel text-[9px] text-[#fbbf24]">2. WEAKENING (BOTTOM-RIGHT)</span>
-                <span className="text-[10px] text-amber-400 font-bold">&gt;100 / &lt;100</span>
+                <span className="font-pixel text-[9px] text-amber-400">2. WEAKENING (BOTTOM-RIGHT)</span>
+                <span className="text-[10px] text-neutral-400 font-bold">&gt;100 / &lt;100</span>
               </div>
               <p className="text-slate-300 text-[11px] leading-relaxed">
-                <strong className="text-[#fbbf24]">Outperforming but Losing Momentum.</strong> Still above benchmark trend, but velocity is slowing down and rotating toward Lagging.
+                <strong className="text-emerald-400">Outperforming but Losing Momentum.</strong> Still above benchmark trend, but velocity is slowing down and rotating toward Lagging.
               </p>
-              <div className="text-[10px] text-amber-300/80 font-mono bg-amber-950/40 p-1.5 rounded">
+              <div className="text-[10px] text-amber-300/80 font-mono bg-neutral-900/40 p-1.5 rounded">
                 ⚡ Action: Trail Tight Stop-Loss / Book Profits
               </div>
             </div>
 
             {/* 3. Lagging */}
-            <div className="p-3 rounded-lg bg-[#1a0808] border border-rose-800/40 space-y-1.5">
+            <div className="p-3 rounded-lg bg-[#0a0a0a] border border-rose-800/40 space-y-1.5">
               <div className="flex items-center justify-between">
                 <span className="font-pixel text-[9px] text-rose-400">3. LAGGING (BOTTOM-LEFT)</span>
-                <span className="text-[10px] text-rose-400 font-bold">&lt;100 / &lt;100</span>
+                <span className="text-[10px] text-neutral-500 font-bold">&lt;100 / &lt;100</span>
               </div>
               <p className="text-slate-300 text-[11px] leading-relaxed">
-                <strong className="text-rose-400">Underperforming + Negative Momentum.</strong> Weakest sectors lagging behind the market with deteriorating relative strength.
+                <strong className="text-neutral-500">Underperforming + Negative Momentum.</strong> Weakest sectors lagging behind the market with deteriorating relative strength.
               </p>
-              <div className="text-[10px] text-rose-300/80 font-mono bg-rose-950/40 p-1.5 rounded">
+              <div className="text-[10px] text-rose-300/80 font-mono bg-neutral-900/40 p-1.5 rounded">
                 ⚡ Action: Avoid / Short Hedging / Underweight
               </div>
             </div>
 
             {/* 4. Improving */}
-            <div className="p-3 rounded-lg bg-[#06121f] border border-sky-800/40 space-y-1.5">
+            <div className="p-3 rounded-lg bg-[#0a0a0a] border border-sky-800/40 space-y-1.5">
               <div className="flex items-center justify-between">
                 <span className="font-pixel text-[9px] text-sky-400">4. IMPROVING (TOP-LEFT)</span>
-                <span className="text-[10px] text-sky-400 font-bold">&lt;100 / &gt;100</span>
+                <span className="text-[10px] text-neutral-300 font-bold">&lt;100 / &gt;100</span>
               </div>
               <p className="text-slate-300 text-[11px] leading-relaxed">
-                <strong className="text-sky-400">Underperforming but Gaining Velocity.</strong> Bottoming out and rotating upward with rising momentum towards Leading.
+                <strong className="text-neutral-300">Underperforming but Gaining Velocity.</strong> Bottoming out and rotating upward with rising momentum towards Leading.
               </p>
-              <div className="text-[10px] text-sky-300/80 font-mono bg-sky-950/40 p-1.5 rounded">
+              <div className="text-[10px] text-sky-300/80 font-mono bg-neutral-900/40 p-1.5 rounded">
                 ⚡ Action: Early Breakout Watchlist / Accumulate
               </div>
             </div>
           </div>
 
-          <div className="text-slate-400 text-[11px] font-mono border-t border-[#181824] pt-2 flex items-center justify-between">
+          <div className="text-slate-400 text-[11px] font-mono border-t border-[#262626] pt-2 flex items-center justify-between">
             <span>
               💡 <em>Rotational Principle:</em> Sectors naturally travel in a <strong>clockwise cycle</strong> across the four quadrants over time.
             </span>
@@ -613,13 +613,13 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
           onClick={() => setSelectedQuadrant(selectedQuadrant === 'Leading' ? 'ALL' : 'Leading')}
           className={`p-3 rounded-xl border transition-all cursor-pointer ${
             selectedQuadrant === 'Leading'
-              ? 'bg-[#061a0e] border-[#bef264] shadow-[0_0_15px_rgba(190,242,100,0.2)]'
-              : 'bg-[#050e09] border-emerald-900/40 hover:border-emerald-700/60'
+              ? 'bg-[#0a0a0a] border-[#262626] shadow-[0_0_15px_rgba(190,242,100,0.2)]'
+              : 'bg-[#0a0a0a] border-emerald-900/40 hover:border-emerald-700/60'
           }`}
         >
           <div className="flex items-center justify-between text-xs">
-            <span className="font-pixel text-[9px] text-[#bef264]">LEADING</span>
-            <span className="font-pixel text-xs px-1.5 py-0.5 rounded bg-emerald-950 text-[#bef264] border border-emerald-800/60">
+            <span className="font-pixel text-[9px] text-emerald-400">LEADING</span>
+            <span className="font-pixel text-xs px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800/60">
               {data?.quadrantCounts.leading || 0}
             </span>
           </div>
@@ -633,13 +633,13 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
           onClick={() => setSelectedQuadrant(selectedQuadrant === 'Weakening' ? 'ALL' : 'Weakening')}
           className={`p-3 rounded-xl border transition-all cursor-pointer ${
             selectedQuadrant === 'Weakening'
-              ? 'bg-[#1a1406] border-[#fbbf24] shadow-[0_0_15px_rgba(251,191,36,0.2)]'
-              : 'bg-[#0e0c05] border-amber-900/40 hover:border-amber-700/60'
+              ? 'bg-[#0a0a0a] border-[#262626] shadow-[0_0_15px_rgba(251,191,36,0.2)]'
+              : 'bg-[#0a0a0a] border-amber-900/40 hover:border-amber-700/60'
           }`}
         >
           <div className="flex items-center justify-between text-xs">
-            <span className="font-pixel text-[9px] text-[#fbbf24]">WEAKENING</span>
-            <span className="font-pixel text-xs px-1.5 py-0.5 rounded bg-amber-950 text-[#fbbf24] border border-amber-800/60">
+            <span className="font-pixel text-[9px] text-amber-400">WEAKENING</span>
+            <span className="font-pixel text-xs px-1.5 py-0.5 rounded bg-amber-950 text-amber-400 border border-amber-800/60">
               {data?.quadrantCounts.weakening || 0}
             </span>
           </div>
@@ -653,8 +653,8 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
           onClick={() => setSelectedQuadrant(selectedQuadrant === 'Lagging' ? 'ALL' : 'Lagging')}
           className={`p-3 rounded-xl border transition-all cursor-pointer ${
             selectedQuadrant === 'Lagging'
-              ? 'bg-[#1c0808] border-rose-500 shadow-[0_0_15px_rgba(244,63,94,0.2)]'
-              : 'bg-[#0e0505] border-rose-900/40 hover:border-rose-700/60'
+              ? 'bg-[#0a0a0a] border-neutral-700 shadow-[0_0_15px_rgba(244,63,94,0.2)]'
+              : 'bg-[#0a0a0a] border-rose-900/40 hover:border-rose-700/60'
           }`}
         >
           <div className="flex items-center justify-between text-xs">
@@ -673,8 +673,8 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
           onClick={() => setSelectedQuadrant(selectedQuadrant === 'Improving' ? 'ALL' : 'Improving')}
           className={`p-3 rounded-xl border transition-all cursor-pointer ${
             selectedQuadrant === 'Improving'
-              ? 'bg-[#061421] border-sky-400 shadow-[0_0_15px_rgba(56,189,248,0.2)]'
-              : 'bg-[#050a12] border-sky-900/40 hover:border-sky-700/60'
+              ? 'bg-[#0a0a0a] border-neutral-300 shadow-[0_0_15px_rgba(56,189,248,0.2)]'
+              : 'bg-[#0a0a0a] border-sky-900/40 hover:border-sky-700/60'
           }`}
         >
           <div className="flex items-center justify-between text-xs">
@@ -690,35 +690,35 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
       </div>
 
       {/* 4. MAIN INTERACTIVE RRG CANVAS CONTAINER */}
-      <div className="bg-[#030306] border border-[#1a1a28] rounded-xl p-3 sm:p-5 space-y-4 shadow-2xl relative">
+      <div className="bg-[#0a0a0a] border border-[#262626] rounded-xl p-3 sm:p-5 space-y-4 shadow-2xl relative">
         
         {/* Controls Toolbar (Top of Chart) */}
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#141420] pb-3 text-xs">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#262626] pb-3 text-xs">
           
           {/* Left: Timeframe & Trail Length */}
           <div className="flex items-center gap-2 flex-wrap">
             {/* Benchmark Selector */}
-            <div className="flex items-center gap-1 bg-[#090910] border border-[#202030] rounded-lg px-2 py-1">
-              <Crosshair className="w-3.5 h-3.5 text-[#ff3b00]" />
+            <div className="flex items-center gap-1 bg-[#0a0a0a] border border-[#262626] rounded-lg px-2 py-1">
+              <Crosshair className="w-3.5 h-3.5 text-white" />
               <span className="text-slate-400 text-[10px] font-pixel">BENCHMARK:</span>
               <select
                 value={benchmark}
                 onChange={(e) => setBenchmark(e.target.value)}
                 className="bg-transparent text-white font-pixel text-[9px] focus:outline-none cursor-pointer"
               >
-                <option value="^NSEI" className="bg-[#090910]">NIFTY 50</option>
-                <option value="^NSEBANK" className="bg-[#090910]">NIFTY BANK</option>
-                <option value="^BSESN" className="bg-[#090910]">BSE SENSEX</option>
+                <option value="^NSEI" className="bg-[#0a0a0a]">NIFTY 50</option>
+                <option value="^NSEBANK" className="bg-[#0a0a0a]">NIFTY BANK</option>
+                <option value="^BSESN" className="bg-[#0a0a0a]">BSE SENSEX</option>
               </select>
             </div>
 
             {/* Timeframe Selector with Expandable Arrow & Sliding Bar */}
-            <div className="relative flex items-center rounded-lg bg-[#090910] border border-[#202030] p-0.5" ref={timeframeDropdownRef}>
+            <div className="relative flex items-center rounded-lg bg-[#0a0a0a] border border-[#262626] p-0.5" ref={timeframeDropdownRef}>
               {/* Daily Button */}
               <button
                 onClick={() => handleSelectTimeframe('daily')}
                 className={`px-2.5 py-1 rounded font-pixel text-[8px] sm:text-[9px] transition-all cursor-pointer ${
-                  timeframe === 'daily' ? 'bg-[#ff3b00] text-black font-bold' : 'text-slate-400 hover:text-white'
+                  timeframe === 'daily' ? 'bg-neutral-800 text-white font-bold' : 'text-slate-400 hover:text-white'
                 }`}
               >
                 DAILY (1D)
@@ -728,7 +728,7 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
               <button
                 onClick={() => setShowTimeframeDropdown(!showTimeframeDropdown)}
                 className={`flex items-center gap-1 px-2.5 py-1 rounded font-pixel text-[8px] sm:text-[9px] transition-all cursor-pointer ${
-                  isHistoricalActive ? 'bg-[#ff3b00] text-black font-bold shadow-sm' : 'text-slate-400 hover:text-white'
+                  isHistoricalActive ? 'bg-neutral-800 text-white font-bold shadow-sm' : 'text-slate-400 hover:text-white'
                 }`}
                 title="Select historical rotation timeframe (1W, 1M, 3M, 6M, 1Y)"
               >
@@ -742,13 +742,13 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
 
               {/* Expandable Dropdown with Sliding Bar */}
               {showTimeframeDropdown && (
-                <div className="absolute top-full left-0 mt-1.5 z-50 w-80 bg-[#090914] border-2 border-[#ff3b00] rounded-xl p-3 shadow-2xl space-y-3">
-                  <div className="flex items-center justify-between border-b border-[#1c1c2e] pb-1.5">
+                <div className="absolute top-full left-0 mt-1.5 z-50 w-80 bg-[#0a0a0a] border-2 border-[#262626] rounded-xl p-3 shadow-2xl space-y-3">
+                  <div className="flex items-center justify-between border-b border-[#262626] pb-1.5">
                     <div className="flex items-center gap-1.5">
-                      <History className="w-3.5 h-3.5 text-[#ff3b00]" />
+                      <History className="w-3.5 h-3.5 text-white" />
                       <span className="font-pixel text-[9px] text-white">HISTORICAL LOOKBACK</span>
                     </div>
-                    <span className="font-mono text-[9px] text-[#bef264] font-bold">
+                    <span className="font-mono text-[9px] text-white font-bold">
                       {activeHistoricalOption.shortLabel}
                     </span>
                   </div>
@@ -763,8 +763,8 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
                           onClick={() => handleSelectTimeframe(opt.id)}
                           className={`py-1.5 rounded font-pixel text-[8px] transition-all cursor-pointer text-center ${
                             isSelected
-                              ? 'bg-[#ff3b00] text-black font-bold ring-1 ring-[#ff3b00]'
-                              : 'bg-[#121220] text-slate-300 hover:text-white hover:bg-[#1a1a2e]'
+                              ? 'bg-neutral-800 text-white font-bold ring-1 ring-white'
+                              : 'bg-[#0a0a0a] text-slate-300 hover:text-white hover:bg-[#0a0a0a]'
                           }`}
                         >
                           {opt.shortLabel}
@@ -774,10 +774,10 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
                   </div>
 
                   {/* 2. Interactive Sliding Bar (Slider) */}
-                  <div className="space-y-1.5 bg-[#05050a] border border-[#1a1a28] rounded-lg p-2.5">
+                  <div className="space-y-1.5 bg-[#0a0a0a] border border-[#262626] rounded-lg p-2.5">
                     <div className="flex justify-between text-[8px] font-pixel text-slate-400">
                       <span>SLIDING RANGE:</span>
-                      <span className="text-[#ff3b00] font-bold">{activeHistoricalOption.label}</span>
+                      <span className="text-white font-bold">{activeHistoricalOption.label}</span>
                     </div>
                     <input
                       type="range"
@@ -792,13 +792,13 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
                           handleSelectTimeframe(selectedOpt.id);
                         }
                       }}
-                      className="w-full accent-[#ff3b00] cursor-pointer"
+                      className="w-full accent-neutral-500 cursor-pointer"
                     />
                     <div className="flex justify-between text-[8px] font-mono text-slate-500 px-0.5">
                       {HISTORICAL_TIMEFRAME_OPTIONS.map((opt) => (
                         <span
                           key={opt.id}
-                          className={`cursor-pointer hover:text-white transition-colors ${timeframe === opt.id ? 'text-[#bef264] font-bold' : ''}`}
+                          className={`cursor-pointer hover:text-white transition-colors ${timeframe === opt.id ? 'text-white font-bold' : ''}`}
                           onClick={() => handleSelectTimeframe(opt.id)}
                         >
                           {opt.shortLabel}
@@ -808,7 +808,7 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
                   </div>
 
                   {/* Description */}
-                  <div className="text-[10px] text-slate-400 font-mono leading-tight bg-[#040408] rounded p-1.5 border border-[#141420]">
+                  <div className="text-[10px] text-slate-400 font-mono leading-tight bg-[#0a0a0a] rounded p-1.5 border border-[#262626]">
                     {activeHistoricalOption.description}
                   </div>
                 </div>
@@ -816,14 +816,14 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
             </div>
 
             {/* Adaptive Trail Length */}
-            <div className="flex items-center gap-1 bg-[#090910] border border-[#202030] rounded-lg px-2 py-1">
+            <div className="flex items-center gap-1 bg-[#0a0a0a] border border-[#262626] rounded-lg px-2 py-1">
               <span className="text-slate-400 text-[10px] font-pixel">TRAIL:</span>
               {currentTrailOptions.map((len) => (
                 <button
                   key={len}
                   onClick={() => setTrailLength(len)}
                   className={`px-1.5 py-0.5 rounded text-[8px] font-pixel cursor-pointer ${
-                    trailLength === len ? 'bg-[#bef264] text-black font-bold' : 'text-slate-400 hover:text-white'
+                    trailLength === len ? 'bg-neutral-800 text-white font-bold' : 'text-slate-400 hover:text-white'
                   }`}
                   title={`${len} Periods Lookback Trail`}
                 >
@@ -840,11 +840,11 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
               onClick={() => setIsPlaying(!isPlaying)}
               className={`flex items-center gap-1.5 px-3 py-1 rounded-lg font-pixel text-[8px] sm:text-[9px] border transition-all cursor-pointer ${
                 isPlaying
-                  ? 'bg-emerald-950 text-[#bef264] border-emerald-600 animate-pulse'
-                  : 'bg-[#0a0a14] text-slate-300 border-[#222232] hover:border-[#bef264]'
+                  ? 'bg-neutral-900 text-white border-emerald-600 animate-pulse'
+                  : 'bg-[#0a0a0a] text-slate-300 border-[#262626] hover:border-[#262626]'
               }`}
             >
-              {isPlaying ? <Pause className="w-3 h-3 text-[#bef264]" /> : <Play className="w-3 h-3 text-[#bef264]" />}
+              {isPlaying ? <Pause className="w-3 h-3 text-white" /> : <Play className="w-3 h-3 text-white" />}
               <span>{isPlaying ? 'PAUSE ROTATION' : 'PLAY ROTATION'}</span>
             </button>
 
@@ -852,7 +852,7 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
             <button
               onClick={() => setShowLabels(!showLabels)}
               className={`px-2 py-1 rounded-lg font-pixel text-[8px] border transition-all cursor-pointer ${
-                showLabels ? 'bg-[#181824] text-slate-200 border-[#303046]' : 'bg-[#090910] text-slate-500 border-[#1a1a24]'
+                showLabels ? 'bg-[#0a0a0a] text-slate-200 border-[#262626]' : 'bg-[#0a0a0a] text-slate-500 border-[#262626]'
               }`}
               title="Toggle ticker labels on chart"
             >
@@ -863,7 +863,7 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
             <button
               onClick={() => setShowTrails(!showTrails)}
               className={`px-2 py-1 rounded-lg font-pixel text-[8px] border transition-all cursor-pointer ${
-                showTrails ? 'bg-[#181824] text-slate-200 border-[#303046]' : 'bg-[#090910] text-slate-500 border-[#1a1a24]'
+                showTrails ? 'bg-[#0a0a0a] text-slate-200 border-[#262626]' : 'bg-[#0a0a0a] text-slate-500 border-[#262626]'
               }`}
               title="Toggle historical rotation trails"
             >
@@ -874,7 +874,7 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
             {highlightedSectorId && (
               <button
                 onClick={() => setHighlightedSectorId(null)}
-                className="px-2 py-1 rounded-lg font-pixel text-[8px] bg-rose-950 text-rose-300 border border-rose-800/60 cursor-pointer"
+                className="px-2 py-1 rounded-lg font-pixel text-[8px] bg-neutral-900 text-rose-300 border border-rose-800/60 cursor-pointer"
               >
                 CLEAR FOCUS
               </button>
@@ -887,7 +887,7 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
         <div ref={containerRef} className="relative w-full overflow-hidden flex items-center justify-center">
           {loading && !data ? (
             <div className="h-[400px] flex flex-col items-center justify-center space-y-3">
-              <RefreshCw className="w-8 h-8 animate-spin text-[#ff3b00]" />
+              <RefreshCw className="w-8 h-8 animate-spin text-white" />
               <div className="font-pixel text-xs text-white">COMPUTING SECTOR ROTATION MATRIX...</div>
               <div className="text-slate-500 text-[11px] font-mono">
                 Calculating Relative Strength &amp; Momentum Trajectory across 15 NSE Sectoral Indices
@@ -983,7 +983,7 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
               <text
                 x={padding.left + 15}
                 y={padding.top + 22}
-                fill="#38bdf8"
+                fill="#ffffff"
                 fontSize="11"
                 fontWeight="bold"
                 fontFamily="'Press Start 2P', monospace"
@@ -994,7 +994,7 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
               <text
                 x={dimensions.width - padding.right - 15}
                 y={padding.top + 22}
-                fill="#bef264"
+                fill="#ff8800"
                 fontSize="11"
                 fontWeight="bold"
                 fontFamily="'Press Start 2P', monospace"
@@ -1017,7 +1017,7 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
               <text
                 x={dimensions.width - padding.right - 15}
                 y={dimensions.height - padding.bottom - 12}
-                fill="#fbbf24"
+                fill="#aaaaaa"
                 fontSize="11"
                 fontWeight="bold"
                 fontFamily="'Press Start 2P', monospace"
@@ -1269,13 +1269,13 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
           {/* Floating Tooltip Box */}
           {hoveredSector && (
             <div
-              className="absolute pointer-events-none z-30 bg-[#080812] border-2 border-[#ff3b00] rounded-xl p-3 shadow-2xl space-y-1.5 text-xs text-left max-w-xs"
+              className="absolute pointer-events-none z-30 bg-[#0a0a0a] border-2 border-[#262626] rounded-xl p-3 shadow-2xl space-y-1.5 text-xs text-left max-w-xs"
               style={{
                 left: Math.min(dimensions.width - 220, Math.max(10, tooltipPos.x + 15)),
                 top: Math.min(dimensions.height - 180, Math.max(10, tooltipPos.y - 40)),
               }}
             >
-              <div className="flex items-center justify-between gap-2 border-b border-[#1c1c28] pb-1.5">
+              <div className="flex items-center justify-between gap-2 border-b border-[#262626] pb-1.5">
                 <span className="font-pixel text-[10px] text-white">{hoveredSector.name}</span>
                 <span className={`px-1.5 py-0.2 rounded text-[7px] font-pixel border ${getQuadrantBadge(hoveredSector.quadrant)}`}>
                   {hoveredSector.quadrant}
@@ -1285,21 +1285,21 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
                 <div className="text-slate-400">RS-Ratio:</div>
                 <div className="text-white font-bold tabular-nums">
                   {hoveredSector.currentRsRatio.toFixed(2)}
-                  <span className={`text-[9px] ml-1 ${hoveredSector.ratioChange >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                  <span className={`text-[9px] ml-1 ${hoveredSector.ratioChange >= 0 ? 'text-white' : 'text-neutral-500'}`}>
                     ({hoveredSector.ratioChange >= 0 ? '+' : ''}{hoveredSector.ratioChange.toFixed(2)})
                   </span>
                 </div>
                 <div className="text-slate-400">RS-Momentum:</div>
                 <div className="text-white font-bold tabular-nums">
                   {hoveredSector.currentRsMomentum.toFixed(2)}
-                  <span className={`text-[9px] ml-1 ${hoveredSector.momentumChange >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                  <span className={`text-[9px] ml-1 ${hoveredSector.momentumChange >= 0 ? 'text-white' : 'text-neutral-500'}`}>
                     ({hoveredSector.momentumChange >= 0 ? '+' : ''}{hoveredSector.momentumChange.toFixed(2)})
                   </span>
                 </div>
                 <div className="text-slate-400">Center Dist:</div>
                 <div className="text-slate-200 tabular-nums">{hoveredSector.distanceFromBenchmark.toFixed(2)} pts</div>
                 <div className="text-slate-400">Heading:</div>
-                <div className="text-[#bef264] tabular-nums">{hoveredSector.headingAngle}° (Clockwise)</div>
+                <div className="text-white tabular-nums">{hoveredSector.headingAngle}° (Clockwise)</div>
               </div>
             </div>
           )}
@@ -1307,9 +1307,9 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
 
         {/* Playback Progress Slider (When playing or scrubbing) */}
         {data && (
-          <div className="flex flex-wrap items-center gap-3 bg-[#06060c] border border-[#161622] rounded-lg p-2.5 text-xs">
+          <div className="flex flex-wrap items-center gap-3 bg-[#0a0a0a] border border-[#262626] rounded-lg p-2.5 text-xs">
             <div className="flex items-center gap-1.5 whitespace-nowrap">
-              <History className="w-3.5 h-3.5 text-[#ff3b00]" />
+              <History className="w-3.5 h-3.5 text-white" />
               <span className="text-slate-400 font-pixel text-[8px]">TIMELINE SCRUB:</span>
             </div>
             <input
@@ -1321,11 +1321,11 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
                 setIsPlaying(false);
                 setPlaybackIndex(parseInt(e.target.value, 10));
               }}
-              className="flex-1 min-w-[140px] accent-[#ff3b00] cursor-pointer"
+              className="flex-1 min-w-[140px] accent-neutral-500 cursor-pointer"
             />
             <div className="flex items-center gap-2 whitespace-nowrap">
               {data.sectors[0]?.trail && (
-                <span className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-[#10101a] border border-[#222234] text-[#bef264] font-mono text-[9px]">
+                <span className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-[#0a0a0a] border border-[#262626] text-white font-mono text-[9px]">
                   <Calendar className="w-2.5 h-2.5" />
                   {playbackIndex !== null && data.sectors[0].trail[playbackIndex]
                     ? data.sectors[0].trail[playbackIndex].date
@@ -1344,22 +1344,22 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
       </div>
 
       {/* 5. SECTOR SELECTION CHIPS & QUICK TOGGLE */}
-      <div className="bg-[#050508] border border-[#181824] rounded-xl p-3 sm:p-4 space-y-3">
-        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#141420] pb-2">
+      <div className="bg-[#0a0a0a] border border-[#262626] rounded-xl p-3 sm:p-4 space-y-3">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#262626] pb-2">
           <div className="flex items-center gap-2">
-            <Sliders className="w-3.5 h-3.5 text-[#bef264]" />
+            <Sliders className="w-3.5 h-3.5 text-white" />
             <span className="font-pixel text-[9px] text-slate-200">SECTOR CONSTITUENT SELECTOR:</span>
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={selectAllSectors}
-              className="px-2 py-0.5 rounded bg-[#10101c] border border-[#242436] text-[8px] font-pixel text-slate-300 hover:text-white cursor-pointer"
+              className="px-2 py-0.5 rounded bg-[#0a0a0a] border border-[#262626] text-[8px] font-pixel text-slate-300 hover:text-white cursor-pointer"
             >
               SELECT ALL
             </button>
             <button
               onClick={deselectAllSectors}
-              className="px-2 py-0.5 rounded bg-[#10101c] border border-[#242436] text-[8px] font-pixel text-slate-300 hover:text-white cursor-pointer"
+              className="px-2 py-0.5 rounded bg-[#0a0a0a] border border-[#262626] text-[8px] font-pixel text-slate-300 hover:text-white cursor-pointer"
             >
               DESELECT ALL
             </button>
@@ -1382,9 +1382,9 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
                 className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-[9px] font-mono transition-all cursor-pointer ${
                   isChecked
                     ? isFocused
-                      ? 'bg-[#181828] border-white text-white shadow-sm'
-                      : 'bg-[#090912] border-[#222234] text-slate-200 hover:border-slate-500'
-                    : 'bg-[#030306] border-[#12121c] text-slate-600'
+                      ? 'bg-[#0a0a0a] border-white text-white shadow-sm'
+                      : 'bg-[#0a0a0a] border-[#262626] text-slate-200 hover:border-slate-500'
+                    : 'bg-[#0a0a0a] border-[#262626] text-slate-600'
                 }`}
               >
                 <span
@@ -1400,10 +1400,10 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
       </div>
 
       {/* 6. COMPREHENSIVE DATA MATRIX TABLE */}
-      <div className="bg-[#050508] border border-[#181824] rounded-xl p-3 sm:p-5 space-y-3">
-        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#141420] pb-2">
+      <div className="bg-[#0a0a0a] border border-[#262626] rounded-xl p-3 sm:p-5 space-y-3">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#262626] pb-2">
           <div className="flex items-center gap-2">
-            <Zap className="w-4 h-4 text-[#ff3b00]" />
+            <Zap className="w-4 h-4 text-white" />
             <h3 className="font-pixel text-xs text-white">NSE SECTOR ROTATION MATRIX</h3>
           </div>
           <span className="text-[10px] text-slate-500 font-mono">
@@ -1414,7 +1414,7 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
         <div className="overflow-x-auto scrollbar-none">
           <table className="w-full text-left text-xs font-mono">
             <thead>
-              <tr className="border-b border-[#181824] text-[9px] font-pixel text-slate-500 uppercase">
+              <tr className="border-b border-[#262626] text-[9px] font-pixel text-slate-500 uppercase">
                 <th className="py-2 px-2">SECTOR INDEX</th>
                 <th className="py-2 px-2 text-center">QUADRANT</th>
                 <th className="py-2 px-2 text-right">RS-RATIO (TREND)</th>
@@ -1438,8 +1438,8 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
                       key={sec.id}
                       onMouseEnter={() => setHighlightedSectorId(sec.id)}
                       onMouseLeave={() => setHighlightedSectorId(null)}
-                      className={`hover:bg-[#0a0a14] transition-colors cursor-pointer ${
-                        isFocused ? 'bg-[#121220]' : ''
+                      className={`hover:bg-[#0a0a0a] transition-colors cursor-pointer ${
+                        isFocused ? 'bg-[#0a0a0a]' : ''
                       }`}
                     >
                       {/* Name */}
@@ -1464,7 +1464,7 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
                       {/* RS-Ratio */}
                       <td className="py-2.5 px-2 text-right font-bold tabular-nums text-white">
                         {sec.currentRsRatio.toFixed(2)}
-                        <span className={`text-[9px] ml-1 font-normal ${isPosRatio ? 'text-emerald-400' : 'text-rose-400'}`}>
+                        <span className={`text-[9px] ml-1 font-normal ${isPosRatio ? 'text-white' : 'text-neutral-500'}`}>
                           {isPosRatio ? '+' : ''}{sec.ratioChange.toFixed(2)}
                         </span>
                       </td>
@@ -1472,7 +1472,7 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
                       {/* RS-Momentum */}
                       <td className="py-2.5 px-2 text-right font-bold tabular-nums text-white">
                         {sec.currentRsMomentum.toFixed(2)}
-                        <span className={`text-[9px] ml-1 font-normal ${isPosMom ? 'text-emerald-400' : 'text-rose-400'}`}>
+                        <span className={`text-[9px] ml-1 font-normal ${isPosMom ? 'text-white' : 'text-neutral-500'}`}>
                           {isPosMom ? '+' : ''}{sec.momentumChange.toFixed(2)}
                         </span>
                       </td>
@@ -1483,14 +1483,14 @@ export const RRGView: React.FC<RRGViewProps> = ({ onBackHome, onNavigateBreadth 
                       </td>
 
                       {/* Heading Angle */}
-                      <td className="py-2.5 px-2 text-right tabular-nums text-[#bef264]">
+                      <td className="py-2.5 px-2 text-right tabular-nums text-white">
                         {sec.headingAngle}°
                       </td>
 
                       {/* Rotation Status */}
                       <td className="py-2.5 px-2 text-center">
                         {sec.previousQuadrant !== sec.quadrant ? (
-                          <span className="text-[9px] font-pixel text-[#bef264]">
+                          <span className="text-[9px] font-pixel text-white">
                             {sec.previousQuadrant} &rarr; {sec.quadrant}
                           </span>
                         ) : (

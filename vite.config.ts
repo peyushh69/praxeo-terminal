@@ -11,7 +11,7 @@ export default defineConfig(() => {
       tailwindcss(),
       VitePWA({
         registerType: 'autoUpdate',
-        includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'icon.svg'],
+        includeAssets: ['apple-touch-icon.png', 'icon.svg'],
         manifest: {
           id: '/',
           name: 'Praxeo Terminal',
